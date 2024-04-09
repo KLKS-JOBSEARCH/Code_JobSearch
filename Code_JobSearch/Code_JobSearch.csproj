@@ -134,6 +134,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\style.css" />
+    <Content Include="Content\img\backgroud.png" />
     <Content Include="Content\img\Job.svg" />
     <Content Include="Content\js\main.js" />
     <Content Include="Content\lib\animate\animate.css" />
@@ -270,6 +271,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Reg_log_user.cshtml" />
     <Content Include="Views\Auth\DangKy.cshtml" />
+    <Content Include="Views\Auth\Dangnhap.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

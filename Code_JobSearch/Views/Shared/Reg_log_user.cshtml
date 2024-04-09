@@ -38,9 +38,10 @@
         gtag('js', new Date());
         gtag('config', 'UA-119386393-1');
     </script>
+
     <style>
         .navbar-brand .logo {
-            max-height: 120px; /* Đặt chiều cao tối đa cho logo */
+            max-height: 140px; 
         }
 
     </style>
@@ -48,7 +49,6 @@
 <body class="login-page">
     <div class="login-header box-shadow">
         <div class="container-fluid d-flex justify-content-center align-items-center">
-            <!-- Thay đổi lớp d-flex và thêm lớp justify-content-center và align-items-center -->
             <a href="@Url.Action("Index","Home")" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
                 <img src="~/Content/img/Job.svg" alt="Logo" class="logo">
             </a>
@@ -90,15 +90,7 @@
                             <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
                             <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <h5 class="text-white mb-4">Newsletter</h5>
-                        <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
-                        <div class="position-relative mx-auto" style="max-width: 400px;">
-                            <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
-                            <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
-                        </div>
-                    </div>
+                    </div>                    
                 </div>
             </div>
             <div class="container">
@@ -124,7 +116,7 @@
 
     </div>
 
-    </div>
+   
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -136,5 +128,6 @@
 
     <!-- Template Javascript -->
     <script src="~/Content/js/main.js"></script>
+
 </body>
 </html>
