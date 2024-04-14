@@ -51,8 +51,7 @@
                     <a href="@Url.Action("Index","Home")" class="nav-item nav-link active">Tìm việc làm</a>
                     <a href="@Url.Action("Index","Home")" class="nav-item nav-link">Tìm kiếm công ty</a>
                     <a href="@Url.Action("DangKy","Auth")" class="nav-item nav-link">Đăng ký</a>
-                    <a href="@Url.Action("Dangnhap","Auth")" class="nav-item nav-link">Đăng nhập</a>
-
+                    <a href="@Url.Action("Dangnhap","Auth")" class="nav-item nav-link">Đăng nhập</a>                  
                 </div>
                 <a href="" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Dành cho nhà tuyển dụng<i class="fa fa-arrow-right ms-3"></i></a>
             </div>
@@ -60,6 +59,9 @@
         <!-- Navbar End -->
         <div class="container-xxl py-5">
             <div class="container">
+                <div>
+                    @Html.Partial("_Search")
+                </div>
                 @RenderBody()
                 <hr />
             </div>
