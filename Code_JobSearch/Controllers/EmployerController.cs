@@ -6,14 +6,10 @@ using System.Web.Mvc;
 
 namespace Code_JobSearch.Controllers
 {
-    public class AuthController : Controller
+    public class EmployerController : Controller
     {
-        // GET: Auth
-        public ActionResult Register()
-        {
-            return View();
-        }
-        public ActionResult Login()
+        // GET: Employer
+        public ActionResult Index()
         {
             return View();
         }

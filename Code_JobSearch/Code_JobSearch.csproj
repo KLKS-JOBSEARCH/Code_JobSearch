@@ -125,6 +125,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\EmployerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -1490,6 +1491,7 @@
     <Content Include="Content\css\style.css" />
     <Content Include="Content\img\backgroud.png" />
     <Content Include="Content\img\Job.svg" />
+    <Content Include="Content\js\API_Distric.js" />
     <Content Include="Content\js\main.js" />
     <Content Include="Content\lib\animate\animate.css" />
     <Content Include="Content\lib\animate\animate.min.css" />
@@ -1866,14 +1868,17 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Reg_log_user.cshtml" />
-    <Content Include="Views\Auth\DangKy.cshtml" />
-    <Content Include="Views\Auth\Dangnhap.cshtml" />
     <Content Include="Views\Shared\_Search.cshtml" />
+    <Content Include="Views\Auth\Register.cshtml" />
+    <Content Include="Views\Auth\Login.cshtml" />
+    <Content Include="Views\Home\Company.cshtml" />
+    <Content Include="Views\Shared\_search_company.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Employer\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
