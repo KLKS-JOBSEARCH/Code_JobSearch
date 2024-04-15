@@ -1,5 +1,4 @@
 ﻿<style>
-
     .input-group {
         background-color: #f0f8ff;
         padding: 10px;
@@ -21,18 +20,8 @@
     <div class="input-group mb-3">
         <input class="form-control" type="search" name="TenViec" placeholder="Tìm kiếm công việc..." aria-label="Search">
 
-        <select class="form-select" name="KinhNghiem" id="KinhNghiem">
-            <option value="">Chọn kinh nghiệm</option>
-            <option value="0">Chưa có kinh nghiệm</option>
-            <option value="1">1 năm</option>
-            <option value="2">2 năm</option>
-        </select>
-
-        <select class="form-select" name="Luong" id="Luong">
-            <option value="">Chọn mức lương</option>
-            <option value="1">Dưới 5 triệu</option>
-            <option value="2">5 - 10 triệu</option>
-            <option value="3">Trên 10 triệu</option>
+        <select class="form-select" id="city" name="Tinh" required>
+            <option value="" disabled selected>Chọn Tỉnh/thành phố...</option>
         </select>
 
         <button type="submit" class="btn btn-success">
@@ -41,4 +30,42 @@
     </div>
 }
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const host = "https://provinces.open-api.vn/api/";
+        var callAPI = (api) => {
+            return axios.get(api)
+                .then((response) => {
+                    renderData(response.data, "city");
+                });
+        }
+        callAPI('https://provinces.open-api.vn/api/?depth=1');
+        var callApiDistrict = (api) => {
+            return axios.get(api)
+                .then((response) => {
+                    renderData(response.data.districts, "district");
+                });
+        }
+        var callApiWard = (api) => {
+            return axios.get(api)
+                .then((response) => {
+                    renderData(response.data.wards, "ward");
+                });
+        }
+        var renderData = (array, select) => {
+            let row = `<option disable value="">Chọn</option>`;
+            array.forEach(element => {
+                row += `<option data-id="${element.code}" value="${element.name}">${element.name}</option>`
+            });
+            document.querySelector("#" + select).innerHTML = row
+        }
+        $("#city").change(() => {
+            callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
+        });
+        $("#district").change(() => {
+            callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
+        });
 
+    });
+</script>

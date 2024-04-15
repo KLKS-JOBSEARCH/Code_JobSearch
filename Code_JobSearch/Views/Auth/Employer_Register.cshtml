@@ -22,7 +22,7 @@
 
         <div class="col-md-6" style="padding-left: 0px; padding-right: 24px; margin-top: 20px;">
             <h2 style="color:green">Chào mừng bạn đến với JobStar</h2>
-            <p>Cùng xây dựng một hồ sơ nổi bật và nhận được các cơ hội sự nghiệp lý tưởng</p>
+            <p>Đăng ký hồ sơ cho nhà tuyển dụng</p>
             <form id="registerForm">
                 <div class="mb-3">
                     <label for="fullName" class="form-label">Tên người dùng</label>
@@ -59,14 +59,28 @@
                         <input type="password" class="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu">
                     </div>
                 </div>
+
                 <div class="mb-3">
-                    <label for="confirmPassword" class="form-label">Xác nhận mật khẩu</label>
+                    <label for="username" class="form-label">Tên công ty</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-success text-white"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu">
+                        <span class="input-group-text bg-success text-white"><i class="bi bi-house"></i></span>
+                        <input type="text" class="form-control" id="username" placeholder="Nhập tên công ty">
                     </div>
                 </div>
-
+                <div class="mb-3">
+                    <label for="username" class="form-label">Địa chỉ</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-success text-white"><i class="bi bi-person-circle"></i></span>
+                        <input type="text" class="form-control" id="username" placeholder="Tỉnh/Thành phố">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Số điện thoại</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-success text-white"><i class="bi bi-telephone"></i></span>
+                        <input type="number" class="form-control" id="username" placeholder="Nhập SĐT Công Ty">
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="input-group mb-0">
@@ -81,7 +95,7 @@
                             <center>
                                 <h7>Bạn chưa có tài khoản</h7>
                                 &nbsp;
-                                <h7>@Html.ActionLink("Đã có tài khoản", "Login", null, new { style = "color: green;" })</h7>
+                                <h7>@Html.ActionLink("Đã có tài khoản", "Dangnhap", null, new { style = "color: green;" })</h7>
                             </center>
                         </div>
                     </div>

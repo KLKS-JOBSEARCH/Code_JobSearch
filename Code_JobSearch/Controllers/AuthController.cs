@@ -17,5 +17,9 @@ namespace Code_JobSearch.Controllers
         {
             return View();
         }
+        public ActionResult Employer_Register()
+        {
+            return View();
+        }
     }
 }
