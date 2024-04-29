@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
+@using Code_JobSearch.Models;
 <html lang="en">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -20,7 +20,9 @@
     <link rel="stylesheet" type="text/css" href="~/Areas/Admin/Content/js/select.dataTables.min.css">
     <link href="~/Areas/Admin/Content/css/vertical-layout-light/style.css" rel="stylesheet" />
     <link rel="shortcut icon" href="~/Areas/Admin/Content/images/favicon.png" />
-
+    @{
+        NhanVien nv = Session["NV"] as NhanVien;
+    }
 </head>
 
 <body class="with-welcome-text">

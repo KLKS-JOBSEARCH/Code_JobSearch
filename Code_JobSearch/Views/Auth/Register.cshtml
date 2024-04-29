@@ -3,6 +3,20 @@
     ViewBag.Title = "Đăng Ký";
     Layout = "~/Views/Shared/Reg_log_user.cshtml";
 }
+<style>
+    .custom-input-group {
+    margin-bottom: 15px;
+    }
+
+    .error-message {
+    color: red;
+    text-align: left;
+    }
+
+    .btn-register {
+    width: 100%;
+    }
+</style>
 <div class="container centered-form">
     <div class="row">
         <div class="col-md-6 order-last" id="jobStarSection" style="padding:20px; position: relative;">
@@ -23,54 +37,40 @@
         <div class="col-md-6" style="padding-left: 0px; padding-right: 24px; margin-top: 20px;">
             <h2 style="color:green">Chào mừng bạn đến với JobStar</h2>
             <p>Cùng xây dựng một hồ sơ nổi bật và nhận được các cơ hội sự nghiệp lý tưởng</p>
-            <form id="registerForm">
-                <div class="mb-3">
-                    <label for="fullName" class="form-label">Tên người dùng</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-success text-white"><i class="bi bi-person"></i></span>
-                        <input type="text" class="form-control" id="fullName" placeholder="Nhập tên của bạn">
-                    </div>
+            @using (Html.BeginForm("Register", "Auth", FormMethod.Post, new { id = "myForm" }))
+            {
+                @Html.ValidationSummary(true)
+
+                <h7 class="error-message">@ViewData["Loi"]</h7>
+                <div class="input-group custom-input-group">
+                    @Html.TextBox("HotenKH", ViewData["HotenKH"], new { @class = "form-control", type = "text", placeholder = "Họ Tên Khách Hàng" })
                 </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-success text-white"><i class="bi bi-envelope"></i></span>
-                        <input type="email" class="form-control" id="email" placeholder="Nhập email của bạn">
-                    </div>
+
+                <h7 class="error-message">@ViewData["Loi3"]</h7>
+                <div class="input-group custom-input-group">
+                    @Html.TextBox("Email", ViewData["Email"], new { @class = "form-control", type = "email", placeholder = "Email" })
                 </div>
-                <div class="mb-3">
-                    <label for="username" class="form-label">Tên đăng nhập</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-success text-white"><i class="bi bi-person-circle"></i></span>
-                        <input type="text" class="form-control" id="username" placeholder="Nhập tên đăng nhập">
-                    </div>
+
+                <h7 class="error-message">@ViewData["Loi2"]</h7>
+                <div class="input-group custom-input-group">
+                    @Html.TextBox("TenDN", ViewData["TenDN"], new { @class = "form-control", type = "text", placeholder = "Tên Đăng Nhập" })
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Mật khẩu</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-success text-white"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" id="password" placeholder="Nhập mật khẩu">
-                    </div>
+
+                <h7 class="error-message">@ViewData["Loi4"]</h7>
+                <div class="input-group custom-input-group">
+                    @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Mật Khẩu" })
                 </div>
-                <div class="mb-3">
-                    <label for="confirmPassword" class="form-label">Xác nhận mật khẩu</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-success text-white"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu">
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="confirmPassword" class="form-label">Xác nhận mật khẩu</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-success text-white"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu">
-                    </div>
+
+
+                <h7 class="error-message">@ViewData["Loi1"]</h7>
+                <div class="input-group custom-input-group">
+                    @Html.Password("ReMatkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Lại Mật Khẩu" })
                 </div>
 
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="input-group mb-0">
-                            <input type="submit" value="Đăng ký" class="btn btn-success" />
+                            <input type="submit" value="Đăng ký" class="btn btn-success btn-register" />
                         </div>
                     </div>
                 </div>
@@ -86,10 +86,13 @@
                         </div>
                     </div>
                 </div>
-
-            </form>
-
+            }
+            </br>
+            <p>Yêu cầu tạo một mật khẩu mạnh</p>
+            <div id="password-conditions"></div>
         </div>
+
+
 
 
     </div>
@@ -107,5 +110,47 @@
 
     window.addEventListener('load', hideOnMobile);
     window.addEventListener('resize', hideOnMobile);
+    // Function to show password conditions
+function showPasswordConditions() {
+    var passwordInput = document.getElementById("Matkhau");
+    var conditionsDiv = document.getElementById("password-conditions");
+
+    // Clear previous conditions
+    conditionsDiv.innerHTML = "";
+
+    // Get password value
+    var password = passwordInput.value;
+
+    // Check conditions and display messages
+    if (password.length < 8) {
+        conditionsDiv.innerHTML += "<p>Mật khẩu phải có ít nhất 8 ký tự</p>";
+    }
+
+    if (!/[a-z]/.test(password)) {
+        conditionsDiv.innerHTML += "<p>Mật khẩu phải chứa ít nhất một ký tự thường (a-z)</p>";
+    }
+
+    if (!/[A-Z]/.test(password)) {
+        conditionsDiv.innerHTML += "<p>Mật khẩu phải chứa ít nhất một ký tự hoa (A-Z)</p>";
+    }
+
+    if (!/\d/.test(password)) {
+        conditionsDiv.innerHTML += "<p>Mật khẩu phải chứa ít nhất một số (0-9)</p>";
+    }
+
+    if (!/[!@@#$%^&*(),.?":{}|<>]/.test(password)) {
+        conditionsDiv.innerHTML += "<p>Mật khẩu phải chứa ít nhất một ký tự đặc biệt</p>";
+    }
+}
+
+// Add event listener to password input
+document.addEventListener("DOMContentLoaded", function () {
+    var passwordInput = document.getElementById("Matkhau");
+    passwordInput.addEventListener("input", showPasswordConditions);
+});
+
+// Call showPasswordConditions on page load
+showPasswordConditions();
+
 </script>
 

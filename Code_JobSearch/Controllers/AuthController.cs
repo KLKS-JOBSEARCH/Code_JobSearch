@@ -1,25 +1,215 @@
-﻿using System;
+﻿using Code_JobSearch.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
 namespace Code_JobSearch.Controllers
 {
+    [HandleError]
     public class AuthController : Controller
     {
         // GET: Auth
-        public ActionResult Register()
+        DatabaseDataContext db = new DatabaseDataContext();
+        private string HashPassword(string password)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                string hashedPassword = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+
+                if (hashedPassword.Length > 100)
+                {
+
+                    hashedPassword = hashedPassword.Substring(0, 100);
+                }
+
+                return hashedPassword;
+            }
+        }
+        [HttpGet]
+       public ActionResult Register()
         {
             return View();
         }
+
+        [HttpPost]
+        public ActionResult Register(UngVien kh, TaiKhoan ac, FormCollection f)
+        {
+            var hoten = f["HotenKH"];
+            var tendn = f["TenDN"];
+            var matkhau = f["MatKhau"];
+            var rematkhau = f["ReMatkhau"];
+            var email = f["email"];
+
+            // Lưu trữ dữ liệu đã nhập vào ViewBag để hiển thị lại trong input nếu có lỗi
+            ViewBag.HotenKH = hoten;
+            ViewBag.TenDN = tendn;
+            ViewBag.Email = email;
+
+            if (string.IsNullOrEmpty(hoten) ||
+               string.IsNullOrEmpty(tendn) ||
+               string.IsNullOrEmpty(matkhau) ||
+               string.IsNullOrEmpty(rematkhau) ||
+               string.IsNullOrEmpty(email))
+            {
+                ViewData["Loi"] = "Vui lòng điền đầy đủ thông tin!";
+                return View();
+            }
+
+
+            if (matkhau != rematkhau)
+            {
+                ViewData["Loi1"] = "Mật khẩu nhập lại không khớp!";
+                return View();
+            }
+            // Kiểm tra mật khẩu hợp lệ
+            if (string.IsNullOrEmpty(matkhau) || matkhau.Length < 8)
+            {
+                ViewData["Loi4"] = "Mật khẩu không hợp lệ! Mật khẩu phải lớn hơn 8 ký tự.";
+                return View();
+            }
+
+            if (!matkhau.Any(char.IsUpper))
+            {
+                ViewData["Loi4"] = "Mật khẩu không hợp lệ! Mật khẩu phải chứa ít nhất một ký tự in hoa.";
+                return View();
+            }
+
+            if (!matkhau.Any(char.IsLower))
+            {
+                ViewData["Loi4"] = "Mật khẩu không hợp lệ! Mật khẩu phải chứa ít nhất một ký tự thường.";
+                return View();
+            }
+
+            if (!matkhau.Any(char.IsDigit))
+            {
+                ViewData["Loi4"] = "Mật khẩu không hợp lệ! Mật khẩu phải chứa ít nhất một ký tự số.";
+                return View();
+            }
+
+            if (!matkhau.Any(c => !char.IsLetterOrDigit(c)))
+            {
+                ViewData["Loi4"] = "Mật khẩu không hợp lệ! Mật khẩu phải chứa ít nhất một ký tự đặc biệt.";
+                return View();
+            }
+
+            // Kiểm tra sự tồn tại của tên đăng nhập
+            if (db.TaiKhoans.Any(t => t.TenTK == tendn))
+            {
+                ViewData["Loi2"] = "Tên đăng nhập đã tồn tại!";
+                return View();
+            }
+
+            // Kiểm tra sự tồn tại của email
+            if (db.UngViens.Any(t => t.Email_TKUV == email))
+            {
+                ViewData["Loi3"] = "Email đã tồn tại!";
+                return View();
+            }
+
+            ac.TenTK = tendn;
+            ac.MatKhau = HashPassword(matkhau);           
+
+
+            db.TaiKhoans.InsertOnSubmit(ac);
+            db.SubmitChanges();
+
+
+            kh.TenTK = ac.TenTK;
+            kh.HoTen_TKUV = hoten;
+            kh.Email_TKUV = email;
+
+
+            db.UngViens.InsertOnSubmit(kh);
+            db.SubmitChanges();
+
+            ViewBag.TB = "Đăng ký thành công!";
+            return RedirectToAction("Login", "Auth");
+        }
+
+
+
         public ActionResult Login()
         {
             return View();
         }
+
+        [HttpPost]
+        public ActionResult Login(FormCollection f)
+        {
+            // Khai báo các biến nhận giá trị từ form f
+            var tendn = f["TenDN"];
+            var matkhau = f["MatKhau"];
+            ViewBag.TenDN = tendn;
+
+
+            if (string.IsNullOrEmpty(tendn))
+            {
+                ViewData["Loi1"] = "Tên đăng nhập không được bỏ trống!";
+            }
+            if (string.IsNullOrEmpty(matkhau))
+            {
+                ViewData["Loi2"] = "Mật khẩu không được bỏ trống!";
+            }
+
+            if (!string.IsNullOrEmpty(tendn) && !string.IsNullOrEmpty(matkhau))
+            {
+                TaiKhoan ac = db.TaiKhoans.SingleOrDefault(t => t.TenTK == tendn);
+
+                if (ac != null)
+                {
+                    // Mã hóa mật khẩu nhập vào và so sánh với mật khẩu đã lưu trong cơ sở dữ liệu
+                    string hashedPasswordInput = HashPassword(matkhau);
+
+                    if (hashedPasswordInput == ac.MatKhau)
+                    {
+                        UngVien kh = db.UngViens.SingleOrDefault(t => t.TenTK == tendn);
+                        NhanVien nv = db.NhanViens.SingleOrDefault(t => t.TenTK == tendn);
+
+                        if (nv != null && ac.TenTK == nv.TenTK)
+                        {
+                            ViewBag.TB = "Đăng nhập thành công!";
+                            Session["NV"] = nv;
+                            return RedirectToAction("Index", "Admin", "Admin");
+                        }
+
+                        if (kh != null && ac.TenTK == kh.TenTK)
+                        {
+                            ViewBag.TB = "Đăng nhập thành công!";
+                            Session["KH"] = kh;
+                            return RedirectToAction("Index", "Home");
+                        }
+
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ViewData["Loi5"] = "Mật khẩu sai, vui lòng nhập lại!";
+                    }
+                }
+                else
+                {
+                    ViewData["Loi5"] = "Tên đăng nhập hoặc mật khẩu sai, vui lòng nhập lại!";
+                }
+            }
+
+
+            return View();
+        }
+
+
+
+
         public ActionResult Employer_Register()
         {
             return View();
         }
+
+       
     }
 }
