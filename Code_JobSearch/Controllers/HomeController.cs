@@ -16,11 +16,15 @@ namespace Code_JobSearch.Controllers
         {
             return View();
         }
+        public ActionResult ProfileUser()
+        {
+            return View();
+        }
         public ActionResult Logout()
         {
             Session.Clear();
             return RedirectToAction("Index");
         }
-
+        
     }
 }

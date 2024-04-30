@@ -1,5 +1,6 @@
-﻿@{
-    ViewBag.Title = "Đăng nhập";
+﻿
+@{
+    ViewBag.Title = "Đăng nhập dành cho nhà tuyển dụng";
     Layout = "~/Views/Shared/Reg_log_user.cshtml";
 }
 
@@ -18,7 +19,7 @@
             <h2 style="color:green">Chào mừng bạn đến với JobStar</h2>
             <p>Cùng xây dựng một hồ sơ nổi bật và nhận được các cơ hội sự nghiệp lý tưởng</p>
 
-            @using (Html.BeginForm("Login", "Auth", FormMethod.Post, new { id = "loginForm" }))
+            @using (Html.BeginForm("Login_Employer", "Auth", FormMethod.Post, new { id = "loginForm" }))
             {
                 @Html.ValidationSummary(true)
 
@@ -48,7 +49,7 @@
                 </div>
 
                 <div class="mb-3 text-center">
-                    <p>Bạn chưa có tài khoản? <a href="@Url.Action("Register", "Auth")" style="color: green;">Đăng ký ngay</a></p>
+                    <p>Bạn chưa có tài khoản? <a href="@Url.Action("Employer_Register", "Auth")" style="color: green;">Đăng ký ngay</a></p>
                     <p>Quên mật khẩu?</p><a href="@Url.Action("ForgetPassword", "Auth")" style="color: green;">Nhấn vào link sau để lấy lại mật khẩu</a>
                 </div>
             }
@@ -118,3 +119,4 @@
         clearTimeout(timer);
     }
 </script>
+
