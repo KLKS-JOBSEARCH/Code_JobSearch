@@ -401,12 +401,12 @@ namespace Code_JobSearch.Controllers
                     }
                     else
                     {
-                        ViewData["Loi5"] = "Mật khẩu sai, vui lòng nhập lại!";
+                        ViewData["Loipass"] = "Mật khẩu sai, vui lòng nhập lại!";
                     }
                 }
                 else
                 {
-                    ViewData["Loi5"] = "Tên đăng nhập hoặc mật khẩu sai, vui lòng nhập lại!";
+                    ViewData["Loipass"] = "Tên đăng nhập hoặc mật khẩu sai, vui lòng nhập lại!";
                 }
             }
 

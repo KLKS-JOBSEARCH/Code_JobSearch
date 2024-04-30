@@ -43,49 +43,49 @@
 
                 <h7 style="color:red;text-align:left;">@ViewData["Loino"]</h7>
                 <div class="input-group custom-input-group">
-                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                    <span class="input-group-text" style="color: green;"><i class="bi bi-person-fill"></i></span>
                     @Html.TextBox("HotenKH", ViewData["HotenKH"], new { @class = "form-control", type = "text", placeholder = "Họ Tên Khách Hàng" })
                 </div>
 
                 <h7 style="color:red;text-align:left;">@ViewData["Loitendangnhap"]</h7>
                 <div class="input-group custom-input-group">
-                    <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+                    <span class="input-group-text" style="color: green;"><i class="bi bi-person-circle"></i></span>
                     @Html.TextBox("TenDN", ViewData["TenDN"], new { @class = "form-control", type = "text", placeholder = "Tên Đăng Nhập" })
                 </div>
 
                 <h7 style="color:red;text-align:left">@ViewData["Loi2"]</h7>
                 <div class="input-group custom-input-group">
-                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    <span class="input-group-text" style="color: green;"><i class="bi bi-lock-fill"></i></span>
                     @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Mật Khẩu" })
                 </div>
 
                 <h7 style="color:red;text-align:left">@ViewData["Loimatkhaunhaplai"]</h7>
                 <div class="input-group custom-input-group">
-                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    <span class="input-group-text" style="color: green;"><i class="bi bi-lock-fill"></i></span>
                     @Html.Password("ReMatkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Lại Mật Khẩu" })
                 </div>
 
                 <h7 style="color:red;text-align:left">@ViewData["Loisdt"]</h7>
                 <div class="input-group custom-input-group">
-                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                    <span class="input-group-text" style="color: green;"><i class="bi bi-telephone"></i></span>
                     @Html.TextBox("sdt", ViewData["sdt"], new { @class = "form-control", type = "number", placeholder = "Số điện thoại cá nhân" })
                 </div>
 
                 <h7 style="color:red;text-align:left">@ViewData["Loiemail"]</h7>
                 <div class="input-group custom-input-group">
-                    <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                    <span class="input-group-text" style="color: green;"><i class="bi bi-envelope-fill"></i></span>
                     @Html.TextBox("Email", ViewData["Email"], new { @class = "form-control", type = "email", placeholder = "Email cá nhân" })
                 </div>
 
                 <h7 style="color:red;text-align:left">@ViewData["Loi4"]</h7>
                 <div class="input-group custom-input-group">
-                    <span class="input-group-text"><i class="bi bi-building"></i></span>
+                    <span class="input-group-text" style="color: green;"><i class="bi bi-building"></i></span>
                     @Html.TextBox("Congty", ViewData["Congty"], new { @class = "form-control", type = "text", placeholder = "Tên Doanh Nghiệp" })
                 </div>
 
                 <h7 style="color:red;text-align:left">@ViewData["Loithue"]</h7>
                 <div class="input-group custom-input-group">
-                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                    <span class="input-group-text" style="color: green;"><i class="bi bi-file-earmark-spreadsheet"></i></span>
                     @Html.TextBox("SoThue", ViewData["SoThue"], new { @class = "form-control", type = "number", placeholder = "Mã số thuế" })
                 </div>
 
@@ -93,7 +93,7 @@
                 if (danhSachThanhPho != null && danhSachThanhPho.Any())
                 {
                     <div class="input-group custom-input-group">
-                        <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+                        <span class="input-group-text" style="color: green;"><i class="bi bi-geo-alt-fill"></i></span>
                         @Html.DropDownList("tp", new SelectList(danhSachThanhPho), "Chọn thành phố", new { @class = "form-control" })
                     </div>
                 }
@@ -102,12 +102,10 @@
                     <p>Danh sách thành phố không có hoặc bị rỗng.</p>
                 }
 
-
-
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="input-group mb-0">
-                            <input type="submit" value="Submit" class="btn btn-primary" />
+                            <input type="Đăng ký" value="Submit" class="btn btn-primary" />
                         </div>
                     </div>
                 </div>
@@ -124,6 +122,7 @@
                     </div>
                 </div>
             }
+
 
         </div>
 

@@ -1894,6 +1894,7 @@
     <Content Include="Views\Auth\Employer_Register.cshtml" />
     <Content Include="Views\Employer\Index.cshtml" />
     <Content Include="Views\Auth\Login_employer.cshtml" />
+    <Content Include="Views\Shared\EmployerLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
