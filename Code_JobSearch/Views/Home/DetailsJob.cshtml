@@ -1,0 +1,147 @@
+﻿@model Code_JobSearch.Models.TinTuyenDung
+
+@{
+    ViewBag.Title = "DetailsJob";
+    Layout = "~/Views/Shared/Reg_log_user.cshtml";
+}
+
+<h2>DetailsJob</h2>
+
+<div>
+    <h4>Chi tiết thông tin tuyển dụng</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TieuDe_TTD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TieuDe_TTD)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HanTuyenDung)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HanTuyenDung)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MucLuongTD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MucLuongTD)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.YeuCauGioiTinh)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.YeuCauGioiTinh)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CapBacTD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CapBacTD)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SoLuongTuyen)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SoLuongTuyen)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HinhThucLamViec)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HinhThucLamViec)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TrangThaiDang)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TrangThaiDang)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ThoiGianDangTuyen)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ThoiGianDangTuyen)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TinhPhi_TTD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TinhPhi_TTD)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DiaDiem_TTD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DiaDiem_TTD)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Logo_DN_TTD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Logo_DN_TTD)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MoTa_TTD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MoTa_TTD)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.XetDuyet)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.XetDuyet)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Id_NTD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Id_NTD)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Id_PTTD)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Id_PTTD)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id_TTD }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

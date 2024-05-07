@@ -17,17 +17,12 @@
 
 @using (Html.BeginForm("TimKiem", "Home"))
 {
-<div class="input-group mb-3">
-    <input class="form-control" type="search" name="TenViec" placeholder="Tìm kiếm công việc..." aria-label="Search">
+    <div class="input-group mb-3">
+        <input class="form-control" type="search" name="tenTTD" placeholder="Tìm kiếm công việc..." aria-label="Search">
 
-    <div class="form-group">
-        <label for="Province">Tỉnh/Thành Phố</label>
-        <select id="Province" class="form-control"></select>
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-search"></i>
+        </button>
     </div>
-
-    <button type="submit" class="btn btn-success">
-        <i class="bi bi-search"></i>
-    </button>
-</div>
 }
 

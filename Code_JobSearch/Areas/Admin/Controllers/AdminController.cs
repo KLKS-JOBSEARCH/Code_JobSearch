@@ -13,5 +13,12 @@ namespace Code_JobSearch.Areas.Admin.Controllers
         {
             return View();
         }
+        public ActionResult Logout()
+        {
+            Session.Clear();
+            return RedirectToAction("Index", "Home", new { area = "" });
+        }
+
+
     }
 }

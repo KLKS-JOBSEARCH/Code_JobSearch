@@ -1,0 +1,186 @@
+﻿@model IEnumerable<Code_JobSearch.Models.TinTuyenDung>
+@{
+    ViewBag.Title = "TimKiem";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int startPage = Math.Max(1, ViewBag.Page - 2);
+    int endPage = Math.Min(ViewBag.NoOfPage, ViewBag.Page + 2);
+}
+
+<style>
+    .card {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card img {
+            width: 150px;
+            height: 150px;
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 10px;
+        }
+
+    .card-content {
+        padding: 15px;
+    }
+
+    .job-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: white-space 0.3s;
+    }
+
+    .card:hover .job-name {
+        white-space: normal;
+    }
+
+    .remaining-time {
+        font-weight: bold;
+        color: #007bff;
+    }
+</style>
+
+
+
+<section class="shop spad">
+    <div class="container">
+        @using (Html.BeginForm("TimKiem", "Home", FormMethod.Post))
+        {
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    @Html.Label("Tiêu đề:")
+                    @Html.TextBox("tenTTD", null, new { @class = "form-control", placeholder = "Nhập tiêu đề" })
+                </div>
+                <div class="col-sm-4">
+                    @Html.Label("Thành phố:")
+                    @Html.DropDownList("thanhPho", ViewBag.ListOfCities as SelectList, "Chọn thành phố", new { @class = "form-control" })
+                </div>
+                <div class="col-sm-4">
+                    @Html.Label("Cấp Bậc:")
+                    @Html.DropDownList("capBac", ViewBag.CapBac as SelectList, "Chọn Cấp bậc", new { @class = "form-control" })
+                </div>
+                <div class="col-sm-4">
+                    @Html.Label("Hình thức làm việc:")
+                    @Html.DropDownList("hinhThucLamViec", ViewBag.Hinhthuc as SelectList, "Toàn bộ", new { @class = "form-control" })
+                </div>
+                <div class="col-sm-4">
+                    <button type="submit" class="btn btn-primary">Lọc</button>
+                </div>
+            </div>
+        }
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="row">
+                @foreach (var p in Model)
+                {
+                    <div class="col-md-12 mb-4">
+                        <div class="card">
+                            <div class="card-content row">
+                                <div class="col-md-3">
+                                    <a href="@Url.Action("DetailsJob", "Home", new { id = p.Id_TTD })">
+                                        <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(p.Logo_DN_TTD)" alt="Logo">
+                                    </a>
+                                </div>
+                                <div class="col-md-9">
+                                    <h6 class="job-name" title="@p.TieuDe_TTD">@Html.Raw(p.TieuDe_TTD)</h6>
+                                    <p>Mức lương: @p.MucLuongTD</p>
+                                    <p>Số lượng: @p.SoLuongTuyen</p>
+                                    <p>
+                                        @if (p.HanTuyenDung.HasValue && DateTime.Now < p.HanTuyenDung.Value)
+                                        {
+                                            var remainingHours = Math.Floor((p.HanTuyenDung.Value - DateTime.Now).TotalHours);
+
+                                            if (remainingHours > 24 * 7) // Nếu còn nhiều hơn 7 ngày
+                                            {
+                                                var remainingWeeks = Math.Floor(remainingHours / (24 * 7)); // Số tuần còn lại
+                                                <text>Còn @remainingWeeks tuần</text>
+                                            }
+                                            else if (remainingHours > 24) // Nếu còn nhiều hơn 24 giờ
+                                            {
+                                                var remainingDays = Math.Floor(remainingHours / 24); // Số ngày còn lại
+                                                <text>Còn @remainingDays ngày</text>
+                                            }
+                                            else
+                                            {
+                                                <text>Còn @remainingHours giờ</text>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <text>Đã hết hạn</text>
+                                        }
+                                    </p>
+                                    <p><i class="bi bi-geo-alt-fill">@p.DiaDiem_TTD</i></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-center mt-4">Không có kết quả phù hợp với yêu cầu tìm kiếm.</p>
+        }
+    </div>
+
+
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            @if (ViewBag.Page > 1)
+            {
+                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=1">
+                    &lt;&lt;
+                </a>
+            }
+        </li>
+        <li class="page-item">
+            @if (ViewBag.Page > 1)
+            {
+                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page - 1)">
+                    &lt;
+                </a>
+            }
+        </li>
+
+        @for (int i = startPage; i <= endPage; i++)
+        {
+            <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@i">
+                    @i
+                </a>
+            </li>
+        }
+
+        <li class="page-item">
+            @if (ViewBag.Page < ViewBag.NoOfPage)
+            {
+                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page + 1)">
+                    &gt;
+                </a>
+            }
+        </li>
+        <li class="page-item">
+            @if (ViewBag.Page < ViewBag.NoOfPage)
+            {
+                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@ViewBag.NoOfPage">
+                    &gt;&gt;
+                </a>
+            }
+        </li>
+    </ul>
+
+
+
+</section>
+

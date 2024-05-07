@@ -36,9 +36,6 @@ namespace Code_JobSearch.Models
     partial void InsertUV_TTD(UV_TTD instance);
     partial void UpdateUV_TTD(UV_TTD instance);
     partial void DeleteUV_TTD(UV_TTD instance);
-    partial void InsertChiTietTTD(ChiTietTTD instance);
-    partial void UpdateChiTietTTD(ChiTietTTD instance);
-    partial void DeleteChiTietTTD(ChiTietTTD instance);
     partial void InsertDoanhNghiep(DoanhNghiep instance);
     partial void UpdateDoanhNghiep(DoanhNghiep instance);
     partial void DeleteDoanhNghiep(DoanhNghiep instance);
@@ -117,14 +114,6 @@ namespace Code_JobSearch.Models
 			get
 			{
 				return this.GetTable<UV_TTD>();
-			}
-		}
-		
-		public System.Data.Linq.Table<ChiTietTTD> ChiTietTTDs
-		{
-			get
-			{
-				return this.GetTable<ChiTietTTD>();
 			}
 		}
 		
@@ -680,181 +669,6 @@ namespace Code_JobSearch.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ChiTietTTD")]
-	public partial class ChiTietTTD : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id_CTTTD;
-		
-		private string _TieuDe_CTTTD;
-		
-		private string _NoiDung_CTTTD;
-		
-		private System.Nullable<int> _Id_TTD;
-		
-		private EntityRef<TinTuyenDung> _TinTuyenDung;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnId_CTTTDChanging(int value);
-    partial void OnId_CTTTDChanged();
-    partial void OnTieuDe_CTTTDChanging(string value);
-    partial void OnTieuDe_CTTTDChanged();
-    partial void OnNoiDung_CTTTDChanging(string value);
-    partial void OnNoiDung_CTTTDChanged();
-    partial void OnId_TTDChanging(System.Nullable<int> value);
-    partial void OnId_TTDChanged();
-    #endregion
-		
-		public ChiTietTTD()
-		{
-			this._TinTuyenDung = default(EntityRef<TinTuyenDung>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_CTTTD", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id_CTTTD
-		{
-			get
-			{
-				return this._Id_CTTTD;
-			}
-			set
-			{
-				if ((this._Id_CTTTD != value))
-				{
-					this.OnId_CTTTDChanging(value);
-					this.SendPropertyChanging();
-					this._Id_CTTTD = value;
-					this.SendPropertyChanged("Id_CTTTD");
-					this.OnId_CTTTDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TieuDe_CTTTD", DbType="NVarChar(50)")]
-		public string TieuDe_CTTTD
-		{
-			get
-			{
-				return this._TieuDe_CTTTD;
-			}
-			set
-			{
-				if ((this._TieuDe_CTTTD != value))
-				{
-					this.OnTieuDe_CTTTDChanging(value);
-					this.SendPropertyChanging();
-					this._TieuDe_CTTTD = value;
-					this.SendPropertyChanged("TieuDe_CTTTD");
-					this.OnTieuDe_CTTTDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NoiDung_CTTTD", DbType="NVarChar(MAX)")]
-		public string NoiDung_CTTTD
-		{
-			get
-			{
-				return this._NoiDung_CTTTD;
-			}
-			set
-			{
-				if ((this._NoiDung_CTTTD != value))
-				{
-					this.OnNoiDung_CTTTDChanging(value);
-					this.SendPropertyChanging();
-					this._NoiDung_CTTTD = value;
-					this.SendPropertyChanged("NoiDung_CTTTD");
-					this.OnNoiDung_CTTTDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_TTD", DbType="Int")]
-		public System.Nullable<int> Id_TTD
-		{
-			get
-			{
-				return this._Id_TTD;
-			}
-			set
-			{
-				if ((this._Id_TTD != value))
-				{
-					if (this._TinTuyenDung.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnId_TTDChanging(value);
-					this.SendPropertyChanging();
-					this._Id_TTD = value;
-					this.SendPropertyChanged("Id_TTD");
-					this.OnId_TTDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TinTuyenDung_ChiTietTTD", Storage="_TinTuyenDung", ThisKey="Id_TTD", OtherKey="Id_TTD", IsForeignKey=true)]
-		public TinTuyenDung TinTuyenDung
-		{
-			get
-			{
-				return this._TinTuyenDung.Entity;
-			}
-			set
-			{
-				TinTuyenDung previousValue = this._TinTuyenDung.Entity;
-				if (((previousValue != value) 
-							|| (this._TinTuyenDung.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._TinTuyenDung.Entity = null;
-						previousValue.ChiTietTTDs.Remove(this);
-					}
-					this._TinTuyenDung.Entity = value;
-					if ((value != null))
-					{
-						value.ChiTietTTDs.Add(this);
-						this._Id_TTD = value.Id_TTD;
-					}
-					else
-					{
-						this._Id_TTD = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("TinTuyenDung");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DoanhNghiep")]
 	public partial class DoanhNghiep : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -866,8 +680,6 @@ namespace Code_JobSearch.Models
 		private string _Ten_DN;
 		
 		private string _MaSoThue_DN;
-		
-		private string _SoDienThoai_DN;
 		
 		private string _LinkWeb_DN;
 		
@@ -889,8 +701,6 @@ namespace Code_JobSearch.Models
     partial void OnTen_DNChanged();
     partial void OnMaSoThue_DNChanging(string value);
     partial void OnMaSoThue_DNChanged();
-    partial void OnSoDienThoai_DNChanging(string value);
-    partial void OnSoDienThoai_DNChanged();
     partial void OnLinkWeb_DNChanging(string value);
     partial void OnLinkWeb_DNChanged();
     partial void OnLogo_DNChanging(string value);
@@ -926,7 +736,7 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Ten_DN", DbType="NVarChar(50)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Ten_DN", DbType="NVarChar(MAX)")]
 		public string Ten_DN
 		{
 			get
@@ -966,27 +776,7 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SoDienThoai_DN", DbType="VarChar(10)")]
-		public string SoDienThoai_DN
-		{
-			get
-			{
-				return this._SoDienThoai_DN;
-			}
-			set
-			{
-				if ((this._SoDienThoai_DN != value))
-				{
-					this.OnSoDienThoai_DNChanging(value);
-					this.SendPropertyChanging();
-					this._SoDienThoai_DN = value;
-					this.SendPropertyChanged("SoDienThoai_DN");
-					this.OnSoDienThoai_DNChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LinkWeb_DN", DbType="NVarChar(MAX)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LinkWeb_DN", DbType="VarChar(MAX)")]
 		public string LinkWeb_DN
 		{
 			get
@@ -1129,13 +919,17 @@ namespace Code_JobSearch.Models
 		
 		private string _NoiDung_GY;
 		
-		private System.Nullable<int> _MucDoHaiLong;
+		private System.Nullable<short> _MucDoHaiLong;
 		
 		private System.Nullable<bool> _TrangThaiXem_GY;
 		
-		private EntitySet<NhaTuyenDung> _NhaTuyenDungs;
+		private System.Nullable<int> _Id_UV;
 		
-		private EntitySet<UngVien> _UngViens;
+		private System.Nullable<int> _Id_NTD;
+		
+		private EntityRef<NhaTuyenDung> _NhaTuyenDung;
+		
+		private EntityRef<UngVien> _UngVien;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1147,16 +941,20 @@ namespace Code_JobSearch.Models
     partial void OnTieuDe_GYChanged();
     partial void OnNoiDung_GYChanging(string value);
     partial void OnNoiDung_GYChanged();
-    partial void OnMucDoHaiLongChanging(System.Nullable<int> value);
+    partial void OnMucDoHaiLongChanging(System.Nullable<short> value);
     partial void OnMucDoHaiLongChanged();
     partial void OnTrangThaiXem_GYChanging(System.Nullable<bool> value);
     partial void OnTrangThaiXem_GYChanged();
+    partial void OnId_UVChanging(System.Nullable<int> value);
+    partial void OnId_UVChanged();
+    partial void OnId_NTDChanging(System.Nullable<int> value);
+    partial void OnId_NTDChanged();
     #endregion
 		
 		public GopY()
 		{
-			this._NhaTuyenDungs = new EntitySet<NhaTuyenDung>(new Action<NhaTuyenDung>(this.attach_NhaTuyenDungs), new Action<NhaTuyenDung>(this.detach_NhaTuyenDungs));
-			this._UngViens = new EntitySet<UngVien>(new Action<UngVien>(this.attach_UngViens), new Action<UngVien>(this.detach_UngViens));
+			this._NhaTuyenDung = default(EntityRef<NhaTuyenDung>);
+			this._UngVien = default(EntityRef<UngVien>);
 			OnCreated();
 		}
 		
@@ -1220,8 +1018,8 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MucDoHaiLong", DbType="Int")]
-		public System.Nullable<int> MucDoHaiLong
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MucDoHaiLong", DbType="SmallInt")]
+		public System.Nullable<short> MucDoHaiLong
 		{
 			get
 			{
@@ -1260,29 +1058,119 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="GopY_NhaTuyenDung", Storage="_NhaTuyenDungs", ThisKey="Id_GY", OtherKey="Id_GY")]
-		public EntitySet<NhaTuyenDung> NhaTuyenDungs
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_UV", DbType="Int")]
+		public System.Nullable<int> Id_UV
 		{
 			get
 			{
-				return this._NhaTuyenDungs;
+				return this._Id_UV;
 			}
 			set
 			{
-				this._NhaTuyenDungs.Assign(value);
+				if ((this._Id_UV != value))
+				{
+					if (this._UngVien.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnId_UVChanging(value);
+					this.SendPropertyChanging();
+					this._Id_UV = value;
+					this.SendPropertyChanged("Id_UV");
+					this.OnId_UVChanged();
+				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="GopY_UngVien", Storage="_UngViens", ThisKey="Id_GY", OtherKey="Id_GY")]
-		public EntitySet<UngVien> UngViens
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_NTD", DbType="Int")]
+		public System.Nullable<int> Id_NTD
 		{
 			get
 			{
-				return this._UngViens;
+				return this._Id_NTD;
 			}
 			set
 			{
-				this._UngViens.Assign(value);
+				if ((this._Id_NTD != value))
+				{
+					if (this._NhaTuyenDung.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnId_NTDChanging(value);
+					this.SendPropertyChanging();
+					this._Id_NTD = value;
+					this.SendPropertyChanged("Id_NTD");
+					this.OnId_NTDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="NhaTuyenDung_GopY", Storage="_NhaTuyenDung", ThisKey="Id_NTD", OtherKey="Id_NTD", IsForeignKey=true)]
+		public NhaTuyenDung NhaTuyenDung
+		{
+			get
+			{
+				return this._NhaTuyenDung.Entity;
+			}
+			set
+			{
+				NhaTuyenDung previousValue = this._NhaTuyenDung.Entity;
+				if (((previousValue != value) 
+							|| (this._NhaTuyenDung.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._NhaTuyenDung.Entity = null;
+						previousValue.Gopies.Remove(this);
+					}
+					this._NhaTuyenDung.Entity = value;
+					if ((value != null))
+					{
+						value.Gopies.Add(this);
+						this._Id_NTD = value.Id_NTD;
+					}
+					else
+					{
+						this._Id_NTD = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("NhaTuyenDung");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="UngVien_GopY", Storage="_UngVien", ThisKey="Id_UV", OtherKey="Id_UV", IsForeignKey=true)]
+		public UngVien UngVien
+		{
+			get
+			{
+				return this._UngVien.Entity;
+			}
+			set
+			{
+				UngVien previousValue = this._UngVien.Entity;
+				if (((previousValue != value) 
+							|| (this._UngVien.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._UngVien.Entity = null;
+						previousValue.Gopies.Remove(this);
+					}
+					this._UngVien.Entity = value;
+					if ((value != null))
+					{
+						value.Gopies.Add(this);
+						this._Id_UV = value.Id_UV;
+					}
+					else
+					{
+						this._Id_UV = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("UngVien");
+				}
 			}
 		}
 		
@@ -1305,30 +1193,6 @@ namespace Code_JobSearch.Models
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
-		
-		private void attach_NhaTuyenDungs(NhaTuyenDung entity)
-		{
-			this.SendPropertyChanging();
-			entity.GopY = this;
-		}
-		
-		private void detach_NhaTuyenDungs(NhaTuyenDung entity)
-		{
-			this.SendPropertyChanging();
-			entity.GopY = null;
-		}
-		
-		private void attach_UngViens(UngVien entity)
-		{
-			this.SendPropertyChanging();
-			entity.GopY = this;
-		}
-		
-		private void detach_UngViens(UngVien entity)
-		{
-			this.SendPropertyChanging();
-			entity.GopY = null;
-		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.HoSoXinViec")]
@@ -1348,6 +1212,8 @@ namespace Code_JobSearch.Models
 		private string _HoTenUV;
 		
 		private string _EmailUV;
+		
+		private string _SoDienThoaiUV;
 		
 		private string _HinhAnhUV;
 		
@@ -1373,6 +1239,8 @@ namespace Code_JobSearch.Models
     partial void OnHoTenUVChanged();
     partial void OnEmailUVChanging(string value);
     partial void OnEmailUVChanged();
+    partial void OnSoDienThoaiUVChanging(string value);
+    partial void OnSoDienThoaiUVChanged();
     partial void OnHinhAnhUVChanging(string value);
     partial void OnHinhAnhUVChanged();
     partial void OnNoiDung_HSXVChanging(string value);
@@ -1511,6 +1379,26 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SoDienThoaiUV", DbType="VarChar(10)")]
+		public string SoDienThoaiUV
+		{
+			get
+			{
+				return this._SoDienThoaiUV;
+			}
+			set
+			{
+				if ((this._SoDienThoaiUV != value))
+				{
+					this.OnSoDienThoaiUVChanging(value);
+					this.SendPropertyChanging();
+					this._SoDienThoaiUV = value;
+					this.SendPropertyChanged("SoDienThoaiUV");
+					this.OnSoDienThoaiUVChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HinhAnhUV", DbType="NVarChar(MAX)")]
 		public string HinhAnhUV
 		{
@@ -1634,7 +1522,7 @@ namespace Code_JobSearch.Models
 		
 		private int _Id_LTB;
 		
-		private System.Nullable<int> _Ten_LTB;
+		private string _Ten_LTB;
 		
 		private string _HinhAnh_LTB;
 		
@@ -1646,7 +1534,7 @@ namespace Code_JobSearch.Models
     partial void OnCreated();
     partial void OnId_LTBChanging(int value);
     partial void OnId_LTBChanged();
-    partial void OnTen_LTBChanging(System.Nullable<int> value);
+    partial void OnTen_LTBChanging(string value);
     partial void OnTen_LTBChanged();
     partial void OnHinhAnh_LTBChanging(string value);
     partial void OnHinhAnh_LTBChanged();
@@ -1678,8 +1566,8 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Ten_LTB", DbType="Int")]
-		public System.Nullable<int> Ten_LTB
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Ten_LTB", DbType="NVarChar(100)")]
+		public string Ten_LTB
 		{
 			get
 			{
@@ -1786,12 +1674,6 @@ namespace Code_JobSearch.Models
 		
 		private System.Nullable<System.DateTime> _NgaySinh_NV;
 		
-		private string _TinhThanh_NV;
-		
-		private string _QuanHuyen_NV;
-		
-		private string _PhuongXa_NV;
-		
 		private string _TenTK;
 		
 		private EntityRef<TaiKhoan> _TaiKhoan;
@@ -1816,12 +1698,6 @@ namespace Code_JobSearch.Models
     partial void OnHinhAnh_NVChanged();
     partial void OnNgaySinh_NVChanging(System.Nullable<System.DateTime> value);
     partial void OnNgaySinh_NVChanged();
-    partial void OnTinhThanh_NVChanging(string value);
-    partial void OnTinhThanh_NVChanged();
-    partial void OnQuanHuyen_NVChanging(string value);
-    partial void OnQuanHuyen_NVChanged();
-    partial void OnPhuongXa_NVChanging(string value);
-    partial void OnPhuongXa_NVChanged();
     partial void OnTenTKChanging(string value);
     partial void OnTenTKChanged();
     #endregion
@@ -1912,7 +1788,7 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiaChi_NV", DbType="NVarChar(100)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiaChi_NV", DbType="NVarChar(300)")]
 		public string DiaChi_NV
 		{
 			get
@@ -1988,66 +1864,6 @@ namespace Code_JobSearch.Models
 					this._NgaySinh_NV = value;
 					this.SendPropertyChanged("NgaySinh_NV");
 					this.OnNgaySinh_NVChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TinhThanh_NV", DbType="NVarChar(50)")]
-		public string TinhThanh_NV
-		{
-			get
-			{
-				return this._TinhThanh_NV;
-			}
-			set
-			{
-				if ((this._TinhThanh_NV != value))
-				{
-					this.OnTinhThanh_NVChanging(value);
-					this.SendPropertyChanging();
-					this._TinhThanh_NV = value;
-					this.SendPropertyChanged("TinhThanh_NV");
-					this.OnTinhThanh_NVChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QuanHuyen_NV", DbType="NVarChar(50)")]
-		public string QuanHuyen_NV
-		{
-			get
-			{
-				return this._QuanHuyen_NV;
-			}
-			set
-			{
-				if ((this._QuanHuyen_NV != value))
-				{
-					this.OnQuanHuyen_NVChanging(value);
-					this.SendPropertyChanging();
-					this._QuanHuyen_NV = value;
-					this.SendPropertyChanged("QuanHuyen_NV");
-					this.OnQuanHuyen_NVChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhuongXa_NV", DbType="NVarChar(50)")]
-		public string PhuongXa_NV
-		{
-			get
-			{
-				return this._PhuongXa_NV;
-			}
-			set
-			{
-				if ((this._PhuongXa_NV != value))
-				{
-					this.OnPhuongXa_NVChanging(value);
-					this.SendPropertyChanging();
-					this._PhuongXa_NV = value;
-					this.SendPropertyChanged("PhuongXa_NV");
-					this.OnPhuongXa_NVChanged();
 				}
 			}
 		}
@@ -2147,19 +1963,19 @@ namespace Code_JobSearch.Models
 		
 		private string _HinhAnh_NTD;
 		
-		private System.Nullable<int> _Id_GY;
+		private string _ViTriCongTac;
 		
 		private System.Nullable<int> _Id_DN;
 		
 		private string _TenTK;
+		
+		private EntitySet<GopY> _Gopies;
 		
 		private EntitySet<ThongBao> _ThongBaos;
 		
 		private EntitySet<TinTuyenDung> _TinTuyenDungs;
 		
 		private EntityRef<DoanhNghiep> _DoanhNghiep;
-		
-		private EntityRef<GopY> _GopY;
 		
 		private EntityRef<TaiKhoan> _TaiKhoan;
 		
@@ -2177,8 +1993,8 @@ namespace Code_JobSearch.Models
     partial void OnEmail_NTDChanged();
     partial void OnHinhAnh_NTDChanging(string value);
     partial void OnHinhAnh_NTDChanged();
-    partial void OnId_GYChanging(System.Nullable<int> value);
-    partial void OnId_GYChanged();
+    partial void OnViTriCongTacChanging(string value);
+    partial void OnViTriCongTacChanged();
     partial void OnId_DNChanging(System.Nullable<int> value);
     partial void OnId_DNChanged();
     partial void OnTenTKChanging(string value);
@@ -2187,10 +2003,10 @@ namespace Code_JobSearch.Models
 		
 		public NhaTuyenDung()
 		{
+			this._Gopies = new EntitySet<GopY>(new Action<GopY>(this.attach_Gopies), new Action<GopY>(this.detach_Gopies));
 			this._ThongBaos = new EntitySet<ThongBao>(new Action<ThongBao>(this.attach_ThongBaos), new Action<ThongBao>(this.detach_ThongBaos));
 			this._TinTuyenDungs = new EntitySet<TinTuyenDung>(new Action<TinTuyenDung>(this.attach_TinTuyenDungs), new Action<TinTuyenDung>(this.detach_TinTuyenDungs));
 			this._DoanhNghiep = default(EntityRef<DoanhNghiep>);
-			this._GopY = default(EntityRef<GopY>);
 			this._TaiKhoan = default(EntityRef<TaiKhoan>);
 			OnCreated();
 		}
@@ -2295,26 +2111,22 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_GY", DbType="Int")]
-		public System.Nullable<int> Id_GY
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ViTriCongTac", DbType="NVarChar(100)")]
+		public string ViTriCongTac
 		{
 			get
 			{
-				return this._Id_GY;
+				return this._ViTriCongTac;
 			}
 			set
 			{
-				if ((this._Id_GY != value))
+				if ((this._ViTriCongTac != value))
 				{
-					if (this._GopY.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnId_GYChanging(value);
+					this.OnViTriCongTacChanging(value);
 					this.SendPropertyChanging();
-					this._Id_GY = value;
-					this.SendPropertyChanged("Id_GY");
-					this.OnId_GYChanged();
+					this._ViTriCongTac = value;
+					this.SendPropertyChanged("ViTriCongTac");
+					this.OnViTriCongTacChanged();
 				}
 			}
 		}
@@ -2364,6 +2176,19 @@ namespace Code_JobSearch.Models
 					this.SendPropertyChanged("TenTK");
 					this.OnTenTKChanged();
 				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="NhaTuyenDung_GopY", Storage="_Gopies", ThisKey="Id_NTD", OtherKey="Id_NTD")]
+		public EntitySet<GopY> Gopies
+		{
+			get
+			{
+				return this._Gopies;
+			}
+			set
+			{
+				this._Gopies.Assign(value);
 			}
 		}
 		
@@ -2427,40 +2252,6 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="GopY_NhaTuyenDung", Storage="_GopY", ThisKey="Id_GY", OtherKey="Id_GY", IsForeignKey=true)]
-		public GopY GopY
-		{
-			get
-			{
-				return this._GopY.Entity;
-			}
-			set
-			{
-				GopY previousValue = this._GopY.Entity;
-				if (((previousValue != value) 
-							|| (this._GopY.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._GopY.Entity = null;
-						previousValue.NhaTuyenDungs.Remove(this);
-					}
-					this._GopY.Entity = value;
-					if ((value != null))
-					{
-						value.NhaTuyenDungs.Add(this);
-						this._Id_GY = value.Id_GY;
-					}
-					else
-					{
-						this._Id_GY = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("GopY");
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TaiKhoan_NhaTuyenDung", Storage="_TaiKhoan", ThisKey="TenTK", OtherKey="TenTK", IsForeignKey=true)]
 		public TaiKhoan TaiKhoan
 		{
@@ -2513,6 +2304,18 @@ namespace Code_JobSearch.Models
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Gopies(GopY entity)
+		{
+			this.SendPropertyChanging();
+			entity.NhaTuyenDung = this;
+		}
+		
+		private void detach_Gopies(GopY entity)
+		{
+			this.SendPropertyChanging();
+			entity.NhaTuyenDung = null;
 		}
 		
 		private void attach_ThongBaos(ThongBao entity)
@@ -3253,25 +3056,19 @@ namespace Code_JobSearch.Models
 		
 		private System.Nullable<bool> _TinhPhi_TTD;
 		
-		private string _DiaChi_TTD;
+		private string _DiaDiem_TTD;
 		
 		private string _Logo_DN_TTD;
 		
+		private string _MoTa_TTD;
+		
 		private System.Nullable<bool> _XetDuyet;
-		
-		private string _TinhThanh_TTD;
-		
-		private string _QuanHuyen_TTD;
-		
-		private string _PhuongXa_TTD;
 		
 		private System.Nullable<int> _Id_NTD;
 		
 		private System.Nullable<int> _Id_PTTD;
 		
 		private EntitySet<UV_TTD> _UV_TTDs;
-		
-		private EntitySet<ChiTietTTD> _ChiTietTTDs;
 		
 		private EntityRef<NhaTuyenDung> _NhaTuyenDung;
 		
@@ -3303,18 +3100,14 @@ namespace Code_JobSearch.Models
     partial void OnThoiGianDangTuyenChanged();
     partial void OnTinhPhi_TTDChanging(System.Nullable<bool> value);
     partial void OnTinhPhi_TTDChanged();
-    partial void OnDiaChi_TTDChanging(string value);
-    partial void OnDiaChi_TTDChanged();
+    partial void OnDiaDiem_TTDChanging(string value);
+    partial void OnDiaDiem_TTDChanged();
     partial void OnLogo_DN_TTDChanging(string value);
     partial void OnLogo_DN_TTDChanged();
+    partial void OnMoTa_TTDChanging(string value);
+    partial void OnMoTa_TTDChanged();
     partial void OnXetDuyetChanging(System.Nullable<bool> value);
     partial void OnXetDuyetChanged();
-    partial void OnTinhThanh_TTDChanging(string value);
-    partial void OnTinhThanh_TTDChanged();
-    partial void OnQuanHuyen_TTDChanging(string value);
-    partial void OnQuanHuyen_TTDChanged();
-    partial void OnPhuongXa_TTDChanging(string value);
-    partial void OnPhuongXa_TTDChanged();
     partial void OnId_NTDChanging(System.Nullable<int> value);
     partial void OnId_NTDChanged();
     partial void OnId_PTTDChanging(System.Nullable<int> value);
@@ -3324,7 +3117,6 @@ namespace Code_JobSearch.Models
 		public TinTuyenDung()
 		{
 			this._UV_TTDs = new EntitySet<UV_TTD>(new Action<UV_TTD>(this.attach_UV_TTDs), new Action<UV_TTD>(this.detach_UV_TTDs));
-			this._ChiTietTTDs = new EntitySet<ChiTietTTD>(new Action<ChiTietTTD>(this.attach_ChiTietTTDs), new Action<ChiTietTTD>(this.detach_ChiTietTTDs));
 			this._NhaTuyenDung = default(EntityRef<NhaTuyenDung>);
 			this._PhiTinTuyenDung = default(EntityRef<PhiTinTuyenDung>);
 			OnCreated();
@@ -3350,7 +3142,7 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TieuDe_TTD", DbType="NVarChar(100)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TieuDe_TTD", DbType="NVarChar(MAX)")]
 		public string TieuDe_TTD
 		{
 			get
@@ -3410,7 +3202,7 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YeuCauGioiTinh", DbType="NVarChar(10)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YeuCauGioiTinh", DbType="NVarChar(100)")]
 		public string YeuCauGioiTinh
 		{
 			get
@@ -3550,22 +3342,22 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiaChi_TTD", DbType="NVarChar(100)")]
-		public string DiaChi_TTD
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiaDiem_TTD", DbType="NVarChar(300)")]
+		public string DiaDiem_TTD
 		{
 			get
 			{
-				return this._DiaChi_TTD;
+				return this._DiaDiem_TTD;
 			}
 			set
 			{
-				if ((this._DiaChi_TTD != value))
+				if ((this._DiaDiem_TTD != value))
 				{
-					this.OnDiaChi_TTDChanging(value);
+					this.OnDiaDiem_TTDChanging(value);
 					this.SendPropertyChanging();
-					this._DiaChi_TTD = value;
-					this.SendPropertyChanged("DiaChi_TTD");
-					this.OnDiaChi_TTDChanged();
+					this._DiaDiem_TTD = value;
+					this.SendPropertyChanged("DiaDiem_TTD");
+					this.OnDiaDiem_TTDChanged();
 				}
 			}
 		}
@@ -3590,6 +3382,26 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MoTa_TTD", DbType="NVarChar(MAX)")]
+		public string MoTa_TTD
+		{
+			get
+			{
+				return this._MoTa_TTD;
+			}
+			set
+			{
+				if ((this._MoTa_TTD != value))
+				{
+					this.OnMoTa_TTDChanging(value);
+					this.SendPropertyChanging();
+					this._MoTa_TTD = value;
+					this.SendPropertyChanged("MoTa_TTD");
+					this.OnMoTa_TTDChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_XetDuyet", DbType="Bit")]
 		public System.Nullable<bool> XetDuyet
 		{
@@ -3606,66 +3418,6 @@ namespace Code_JobSearch.Models
 					this._XetDuyet = value;
 					this.SendPropertyChanged("XetDuyet");
 					this.OnXetDuyetChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TinhThanh_TTD", DbType="NVarChar(50)")]
-		public string TinhThanh_TTD
-		{
-			get
-			{
-				return this._TinhThanh_TTD;
-			}
-			set
-			{
-				if ((this._TinhThanh_TTD != value))
-				{
-					this.OnTinhThanh_TTDChanging(value);
-					this.SendPropertyChanging();
-					this._TinhThanh_TTD = value;
-					this.SendPropertyChanged("TinhThanh_TTD");
-					this.OnTinhThanh_TTDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QuanHuyen_TTD", DbType="NVarChar(50)")]
-		public string QuanHuyen_TTD
-		{
-			get
-			{
-				return this._QuanHuyen_TTD;
-			}
-			set
-			{
-				if ((this._QuanHuyen_TTD != value))
-				{
-					this.OnQuanHuyen_TTDChanging(value);
-					this.SendPropertyChanging();
-					this._QuanHuyen_TTD = value;
-					this.SendPropertyChanged("QuanHuyen_TTD");
-					this.OnQuanHuyen_TTDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhuongXa_TTD", DbType="NVarChar(50)")]
-		public string PhuongXa_TTD
-		{
-			get
-			{
-				return this._PhuongXa_TTD;
-			}
-			set
-			{
-				if ((this._PhuongXa_TTD != value))
-				{
-					this.OnPhuongXa_TTDChanging(value);
-					this.SendPropertyChanging();
-					this._PhuongXa_TTD = value;
-					this.SendPropertyChanged("PhuongXa_TTD");
-					this.OnPhuongXa_TTDChanged();
 				}
 			}
 		}
@@ -3728,19 +3480,6 @@ namespace Code_JobSearch.Models
 			set
 			{
 				this._UV_TTDs.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TinTuyenDung_ChiTietTTD", Storage="_ChiTietTTDs", ThisKey="Id_TTD", OtherKey="Id_TTD")]
-		public EntitySet<ChiTietTTD> ChiTietTTDs
-		{
-			get
-			{
-				return this._ChiTietTTDs;
-			}
-			set
-			{
-				this._ChiTietTTDs.Assign(value);
 			}
 		}
 		
@@ -3843,18 +3582,6 @@ namespace Code_JobSearch.Models
 			this.SendPropertyChanging();
 			entity.TinTuyenDung = null;
 		}
-		
-		private void attach_ChiTietTTDs(ChiTietTTD entity)
-		{
-			this.SendPropertyChanging();
-			entity.TinTuyenDung = this;
-		}
-		
-		private void detach_ChiTietTTDs(ChiTietTTD entity)
-		{
-			this.SendPropertyChanging();
-			entity.TinTuyenDung = null;
-		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.UngVien")]
@@ -3867,27 +3594,21 @@ namespace Code_JobSearch.Models
 		
 		private string _HoTen_TKUV;
 		
-		private string _KinhNghiem_TKUV;
-		
 		private string _Email_TKUV;
-		
-		private string _NganhNgheMongMuon;
 		
 		private string _HinhAnhTKUV;
 		
-		private string _DiaDiemLamMongMuon;
-		
-		private System.Nullable<int> _Id_GY;
+		private string _SoDienThoai_TKUV;
 		
 		private string _TenTK;
 		
 		private EntitySet<UV_TTD> _UV_TTDs;
 		
+		private EntitySet<GopY> _Gopies;
+		
 		private EntitySet<HoSoXinViec> _HoSoXinViecs;
 		
 		private EntitySet<ThongBao> _ThongBaos;
-		
-		private EntityRef<GopY> _GopY;
 		
 		private EntityRef<TaiKhoan> _TaiKhoan;
 		
@@ -3899,18 +3620,12 @@ namespace Code_JobSearch.Models
     partial void OnId_UVChanged();
     partial void OnHoTen_TKUVChanging(string value);
     partial void OnHoTen_TKUVChanged();
-    partial void OnKinhNghiem_TKUVChanging(string value);
-    partial void OnKinhNghiem_TKUVChanged();
     partial void OnEmail_TKUVChanging(string value);
     partial void OnEmail_TKUVChanged();
-    partial void OnNganhNgheMongMuonChanging(string value);
-    partial void OnNganhNgheMongMuonChanged();
     partial void OnHinhAnhTKUVChanging(string value);
     partial void OnHinhAnhTKUVChanged();
-    partial void OnDiaDiemLamMongMuonChanging(string value);
-    partial void OnDiaDiemLamMongMuonChanged();
-    partial void OnId_GYChanging(System.Nullable<int> value);
-    partial void OnId_GYChanged();
+    partial void OnSoDienThoai_TKUVChanging(string value);
+    partial void OnSoDienThoai_TKUVChanged();
     partial void OnTenTKChanging(string value);
     partial void OnTenTKChanged();
     #endregion
@@ -3918,9 +3633,9 @@ namespace Code_JobSearch.Models
 		public UngVien()
 		{
 			this._UV_TTDs = new EntitySet<UV_TTD>(new Action<UV_TTD>(this.attach_UV_TTDs), new Action<UV_TTD>(this.detach_UV_TTDs));
+			this._Gopies = new EntitySet<GopY>(new Action<GopY>(this.attach_Gopies), new Action<GopY>(this.detach_Gopies));
 			this._HoSoXinViecs = new EntitySet<HoSoXinViec>(new Action<HoSoXinViec>(this.attach_HoSoXinViecs), new Action<HoSoXinViec>(this.detach_HoSoXinViecs));
 			this._ThongBaos = new EntitySet<ThongBao>(new Action<ThongBao>(this.attach_ThongBaos), new Action<ThongBao>(this.detach_ThongBaos));
-			this._GopY = default(EntityRef<GopY>);
 			this._TaiKhoan = default(EntityRef<TaiKhoan>);
 			OnCreated();
 		}
@@ -3965,26 +3680,6 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_KinhNghiem_TKUV", DbType="NVarChar(100)")]
-		public string KinhNghiem_TKUV
-		{
-			get
-			{
-				return this._KinhNghiem_TKUV;
-			}
-			set
-			{
-				if ((this._KinhNghiem_TKUV != value))
-				{
-					this.OnKinhNghiem_TKUVChanging(value);
-					this.SendPropertyChanging();
-					this._KinhNghiem_TKUV = value;
-					this.SendPropertyChanged("KinhNghiem_TKUV");
-					this.OnKinhNghiem_TKUVChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email_TKUV", DbType="VarChar(50)")]
 		public string Email_TKUV
 		{
@@ -4001,26 +3696,6 @@ namespace Code_JobSearch.Models
 					this._Email_TKUV = value;
 					this.SendPropertyChanged("Email_TKUV");
 					this.OnEmail_TKUVChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NganhNgheMongMuon", DbType="NVarChar(50)")]
-		public string NganhNgheMongMuon
-		{
-			get
-			{
-				return this._NganhNgheMongMuon;
-			}
-			set
-			{
-				if ((this._NganhNgheMongMuon != value))
-				{
-					this.OnNganhNgheMongMuonChanging(value);
-					this.SendPropertyChanging();
-					this._NganhNgheMongMuon = value;
-					this.SendPropertyChanged("NganhNgheMongMuon");
-					this.OnNganhNgheMongMuonChanged();
 				}
 			}
 		}
@@ -4045,46 +3720,22 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiaDiemLamMongMuon", DbType="NVarChar(50)")]
-		public string DiaDiemLamMongMuon
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SoDienThoai_TKUV", DbType="VarChar(10)")]
+		public string SoDienThoai_TKUV
 		{
 			get
 			{
-				return this._DiaDiemLamMongMuon;
+				return this._SoDienThoai_TKUV;
 			}
 			set
 			{
-				if ((this._DiaDiemLamMongMuon != value))
+				if ((this._SoDienThoai_TKUV != value))
 				{
-					this.OnDiaDiemLamMongMuonChanging(value);
+					this.OnSoDienThoai_TKUVChanging(value);
 					this.SendPropertyChanging();
-					this._DiaDiemLamMongMuon = value;
-					this.SendPropertyChanged("DiaDiemLamMongMuon");
-					this.OnDiaDiemLamMongMuonChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_GY", DbType="Int")]
-		public System.Nullable<int> Id_GY
-		{
-			get
-			{
-				return this._Id_GY;
-			}
-			set
-			{
-				if ((this._Id_GY != value))
-				{
-					if (this._GopY.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnId_GYChanging(value);
-					this.SendPropertyChanging();
-					this._Id_GY = value;
-					this.SendPropertyChanged("Id_GY");
-					this.OnId_GYChanged();
+					this._SoDienThoai_TKUV = value;
+					this.SendPropertyChanged("SoDienThoai_TKUV");
+					this.OnSoDienThoai_TKUVChanged();
 				}
 			}
 		}
@@ -4126,6 +3777,19 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="UngVien_GopY", Storage="_Gopies", ThisKey="Id_UV", OtherKey="Id_UV")]
+		public EntitySet<GopY> Gopies
+		{
+			get
+			{
+				return this._Gopies;
+			}
+			set
+			{
+				this._Gopies.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="UngVien_HoSoXinViec", Storage="_HoSoXinViecs", ThisKey="Id_UV", OtherKey="Id_UV")]
 		public EntitySet<HoSoXinViec> HoSoXinViecs
 		{
@@ -4149,40 +3813,6 @@ namespace Code_JobSearch.Models
 			set
 			{
 				this._ThongBaos.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="GopY_UngVien", Storage="_GopY", ThisKey="Id_GY", OtherKey="Id_GY", IsForeignKey=true)]
-		public GopY GopY
-		{
-			get
-			{
-				return this._GopY.Entity;
-			}
-			set
-			{
-				GopY previousValue = this._GopY.Entity;
-				if (((previousValue != value) 
-							|| (this._GopY.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._GopY.Entity = null;
-						previousValue.UngViens.Remove(this);
-					}
-					this._GopY.Entity = value;
-					if ((value != null))
-					{
-						value.UngViens.Add(this);
-						this._Id_GY = value.Id_GY;
-					}
-					else
-					{
-						this._Id_GY = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("GopY");
-				}
 			}
 		}
 		
@@ -4247,6 +3877,18 @@ namespace Code_JobSearch.Models
 		}
 		
 		private void detach_UV_TTDs(UV_TTD entity)
+		{
+			this.SendPropertyChanging();
+			entity.UngVien = null;
+		}
+		
+		private void attach_Gopies(GopY entity)
+		{
+			this.SendPropertyChanging();
+			entity.UngVien = this;
+		}
+		
+		private void detach_Gopies(GopY entity)
 		{
 			this.SendPropertyChanging();
 			entity.UngVien = null;

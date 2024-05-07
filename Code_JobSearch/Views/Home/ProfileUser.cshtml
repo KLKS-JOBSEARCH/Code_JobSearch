@@ -1,0 +1,35 @@
+﻿@model Code_JobSearch.Models.UngVien
+
+@{
+    ViewBag.Title = "Thông tin người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="row g-0">
+            <div class="col-md-8 d-flex align-items-center">
+                <div class="card-body">
+                    <h2 class="card-title">Thông tin ứng viên</h2>
+                    <hr>
+                    <dl class="row">
+                        <dt class="col-sm-4">Họ tên ứng viên:</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.HoTen_TKUV)</dd>
+
+                        <dt class="col-sm-4">Email:</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Email_TKUV)</dd>
+
+                        <dt class="col-sm-4">Số điện thoại:</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.SoDienThoai_TKUV)</dd>
+                    </dl>
+                    <p class="edit-link">
+                        @Html.ActionLink("Chỉnh sửa thông tin cá nhân", "Edit", new { id = Model.Id_UV }, new { @class = "btn btn-primary" })
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-center justify-content-center">
+                <img style="max-block-size: 180px;margin-bottom: 10px;border-radius: 50%;margin-top: 10px;" src="/Image/Khachhang/@Html.Raw(Model.HinhAnhTKUV)" alt="Ảnh ứng viên">
+            </div>
+        </div>
+    </div>
+</div>

@@ -60,10 +60,12 @@
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                     @kh.HoTen_TKUV
+                                    <img src="~/Image/Khachhang/@Html.Raw(kh.HinhAnhTKUV)" style="max-width:50px; border-radius: 50%;" />
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="userDropdown">
                                     <li><span class="dropdown-item">Mã ứng viên: #@kh.Id_UV</span></li>
                                     <li><span class="dropdown-item">Email: @kh.Email_TKUV</span></li>
+                                    <li><span class="dropdown-item"><a href="@Url.Action("ProfileUser","Home")" class="nav-link">Chỉnh sửa thông tin</a></span></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="@Url.Action("Logout", "Home")">Đăng Xuất</a></li>
                                 </ul>
