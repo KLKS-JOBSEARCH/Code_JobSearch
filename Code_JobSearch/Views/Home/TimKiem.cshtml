@@ -49,92 +49,70 @@
     }
 </style>
 
-
-
-<section class="shop spad">
-    <div class="container">
-        @using (Html.BeginForm("TimKiem", "Home", FormMethod.Post))
+<div class="container">
+    <h2 style="color:green">Tìm kiếm công việc phù hợp với bạn</h2>
+    <!-- Chức năng tìm kiếm -->
+    <nav class="navbar navbar-light bg-light mb-4">
+        @using (Html.BeginForm("TimKiem", "Home", FormMethod.Post, new { @class = "form-inline w-100", id = "searchForm" }))
         {
-            <div class="form-group row">
-                <div class="col-sm-4">
-                    @Html.Label("Tiêu đề:")
-                    @Html.TextBox("tenTTD", null, new { @class = "form-control", placeholder = "Nhập tiêu đề" })
-                </div>
-                <div class="col-sm-4">
-                    @Html.Label("Thành phố:")
-                    @Html.DropDownList("thanhPho", ViewBag.ListOfCities as SelectList, "Chọn thành phố", new { @class = "form-control" })
-                </div>
-                <div class="col-sm-4">
-                    @Html.Label("Cấp Bậc:")
-                    @Html.DropDownList("capBac", ViewBag.CapBac as SelectList, "Chọn Cấp bậc", new { @class = "form-control" })
-                </div>
-                <div class="col-sm-4">
-                    @Html.Label("Hình thức làm việc:")
-                    @Html.DropDownList("hinhThucLamViec", ViewBag.Hinhthuc as SelectList, "Toàn bộ", new { @class = "form-control" })
-                </div>
-                <div class="col-sm-4">
-                    <button type="submit" class="btn btn-primary">Lọc</button>
-                </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-primary text-white">Tìm kiếm</span>
+                @Html.TextBox("tenTTD", null, new { @class = "form-control", placeholder = "Nhập tiêu đề" })
             </div>
+            <details id="filterSection">
+                <summary class="btn btn-primary" style="margin-bottom:20px">Bộ lọc nâng cao</summary>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-city text-primary"></i></span>
+                    @Html.DropDownList("thanhPho", ViewBag.ListOfCities as SelectList, "Chọn thành phố", new { @class = "form-select" })
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-layer-group text-primary"></i></span>
+                    @Html.DropDownList("capBac", ViewBag.CapBac as SelectList, "Chọn Cấp bậc", new { @class = "form-select" })
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-briefcase text-primary"></i></span>
+                    @Html.DropDownList("hinhThucLamViec", ViewBag.Hinhthuc as SelectList, "Toàn bộ", new { @class = "form-select" })
+                </div>
+            </details>
+            <button type="button" class="btn btn-primary" onclick="submitSearch()">Lọc</button>
         }
+    </nav>
 
+    <!-- Danh sách công việc tìm kiếm -->
+    <div class="row">
         @if (Model != null && Model.Any())
         {
-            <div class="row">
-                @foreach (var p in Model)
-                {
-                    <div class="col-md-12 mb-4">
-                        <div class="card">
-                            <div class="card-content row">
-                                <div class="col-md-3">
+            foreach (var p in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
                                     <a href="@Url.Action("DetailsJob", "Home", new { id = p.Id_TTD })">
-                                        <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(p.Logo_DN_TTD)" alt="Logo">
+                                        <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(p.Logo_DN_TTD)" alt="Logo" class="img-fluid">
                                     </a>
                                 </div>
-                                <div class="col-md-9">
-                                    <h6 class="job-name" title="@p.TieuDe_TTD">@Html.Raw(p.TieuDe_TTD)</h6>
-                                    <p>Mức lương: @p.MucLuongTD</p>
-                                    <p>Số lượng: @p.SoLuongTuyen</p>
-                                    <p>
-                                        @if (p.HanTuyenDung.HasValue && DateTime.Now < p.HanTuyenDung.Value)
-                                        {
-                                            var remainingHours = Math.Floor((p.HanTuyenDung.Value - DateTime.Now).TotalHours);
-
-                                            if (remainingHours > 24 * 7) // Nếu còn nhiều hơn 7 ngày
-                                            {
-                                                var remainingWeeks = Math.Floor(remainingHours / (24 * 7)); // Số tuần còn lại
-                                                <text>Còn @remainingWeeks tuần</text>
-                                            }
-                                            else if (remainingHours > 24) // Nếu còn nhiều hơn 24 giờ
-                                            {
-                                                var remainingDays = Math.Floor(remainingHours / 24); // Số ngày còn lại
-                                                <text>Còn @remainingDays ngày</text>
-                                            }
-                                            else
-                                            {
-                                                <text>Còn @remainingHours giờ</text>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <text>Đã hết hạn</text>
-                                        }
-                                    </p>
-                                    <p><i class="bi bi-geo-alt-fill">@p.DiaDiem_TTD</i></p>
+                                <div class="col-md-8">
+                                    <h6 class="card-title" title="@p.TieuDe_TTD">@Html.Raw(p.TieuDe_TTD)</h6>
+                                    <p class="card-text">Mức lương: @p.MucLuongTD</p>
+                                    <!-- Các thông tin khác về công việc -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                }
-            </div>
+                </div>
+            }
         }
         else
         {
-            <p class="text-center mt-4">Không có kết quả phù hợp với yêu cầu tìm kiếm.</p>
+            <div class="col">
+                <p class="text-center">Không có kết quả phù hợp với yêu cầu tìm kiếm.</p>
+            </div>
         }
     </div>
 
-
+    <!-- Phân trang -->
     <ul class="pagination justify-content-center">
         <li class="page-item">
             @if (ViewBag.Page > 1)
@@ -179,8 +157,20 @@
             }
         </li>
     </ul>
+</div>
 
 
+<script>
+    function submitSearch() {
+        document.getElementById("searchForm").submit();
+    }
 
-</section>
-
+    document.getElementById("filterSection").addEventListener("toggle", function () {
+        var button = document.querySelector("summary.btn");
+        if (this.open) {
+            button.innerHTML = "Ẩn bộ lọc nâng cao";
+        } else {
+            button.innerHTML = "Bộ lọc nâng cao";
+        }
+    });
+</script>

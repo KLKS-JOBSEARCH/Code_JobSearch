@@ -4,42 +4,64 @@
     ViewBag.Title = "Chi tiết tuyển dụng";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .rounded-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative; 
+        box-shadow: 0 0 0 2px #28a745;
+    }
+
+        .rounded-circle img {
+            position: absolute;
+            width: auto;
+            height: 70%;
+            left: 50%;
+            top: 50%; 
+            transform: translate(-50%, -50%); 
+        }
+</style>
 
 <div class="container">
+    <div class="nav-item mb-4">
+        @Html.Partial("_Search")
+    </div>
     <div class="row">
-        <div class="col-md-6">
-            <div class="card card-body">
+        <div class="col-md-8">
+            <div>
+                <!-- Đặt kích thước cố định cho card -->
                 <h3 class="card-title">@Html.DisplayFor(model => model.TinTuyenDung.TieuDe_TTD)</h3>
                 <dl class="row">
-                    <dt class="col-sm-4">Hạn tuyển dụng</dt>
+                    <dt class="col-sm-4"><i class="bi bi-calendar"></i> Hạn nộp hồ sơ</dt>
                     <dd class="col-sm-8">@Model.TinTuyenDung.HanTuyenDung.Value.ToString("dd/MM/yyyy")</dd>
-                    <dt class="col-sm-4">Mức lương</dt>
+                    <dt class="col-sm-4"><i class="bi bi-cash"></i> Mức lương</dt>
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.MucLuongTD)</dd>
-                    <dt class="col-sm-4">Hình thức làm việc</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.HinhThucLamViec)</dd>
-                    <dt class="col-sm-4">Số lượng</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.SoLuongTuyen)</dd>
-                    <dd class="col-sm-8"><i class="bi bi-geo-alt-fill"></i>@Html.DisplayFor(model => model.TinTuyenDung.DiaDiem_TTD)</dd>
+                    <dt class="col-sm-4"><i class="bi bi-geo-alt-fill"></i> Địa điểm</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.DiaDiem_TTD)</dd>
                 </dl>
             </div>
-            <a style="margin-top:20px" href="@Url.Action("Index", "Home")" class="btn btn-primary mb-4">ứng tuyển ngay</a>
+            <a style="margin-top:20px; width:500px" href="@Url.Action("Index", "Home")" class="btn btn-primary mb-4">Ứng tuyển ngay</a>
         </div>
 
-
-        <div class="col-md-6">
-            <div class="card border-primary">
-                <!-- Thêm class border-primary để tạo viền nổi bật -->
+        <div class="col-md-4">
+            <div class="card border-primary" style="min-height: 100px;">
+                <!-- Đặt kích thước cố định cho card -->
                 <div class="card-body">
                     <h3 class="card-title text-right">Thông tin doanh nghiệp</h3>
                     <div class="row">
                         <div class="col-md-4">
-                            <img style="max-width:120px" src="~/Content/Logo_DoanhNghiep/@Html.Raw(Model.DoanhNghiep.Logo_DN)" class="img-fluid mb-3" alt="Logo Doanh Nghiệp" />
+                            <div class="rounded-circle">
+                                <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(Model.DoanhNghiep.Logo_DN)" class="img-fluid" alt="Logo Doanh Nghiệp" />
+                            </div>
                         </div>
                         <div class="col-md-8">
                             <div class="company-info">
-                                <p class="card-text"><strong>@Html.DisplayFor(model => model.DoanhNghiep.Ten_DN)</strong></p>
-                                <p class="card-text"><i class="bi bi-geo-alt-fill"></i> @Html.DisplayFor(model => model.DoanhNghiep.DiaDiem_DN)</p>
+                                <p class="card-text" style="font-size: smaller;"><strong>@Html.DisplayFor(model => model.DoanhNghiep.Ten_DN)</strong></p>
                                 <p class="card-text">Website: <a href="@Html.DisplayFor(model => model.DoanhNghiep.LinkWeb_DN)">@Html.DisplayFor(model => model.DoanhNghiep.LinkWeb_DN)</a></p>
+                                <p class="card-text"><i class="bi bi-geo-alt-fill"></i> @Html.DisplayFor(model => model.DoanhNghiep.DiaDiem_DN)</p>
+                                <a class="card-text" href="@Url.Action("DetailsCompany", "Home", new { @id = Model.DoanhNghiep.Id_DN }, null)"><strong>Đến trang công ty</strong></a>
                             </div>
                         </div>
                     </div>
@@ -48,10 +70,11 @@
         </div>
     </div>
 
+
     <hr />
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8">
             <h3>Mô tả công việc</h3>
             <ul>
                 @{
@@ -79,7 +102,26 @@
                 }
             </ul>
         </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: green;">Thông tin công việc</h5>
+                    <dl>
+                        <dt><i class="fas fa-user-tie"></i> Cấp bậc</dt>
+                        <dd>@Html.DisplayFor(model => model.TinTuyenDung.CapBacTD)</dd>
+                        <dt><i class="fas fa-briefcase"></i> Hình thức làm việc</dt>
+                        <dd>@Html.DisplayFor(model => model.TinTuyenDung.HinhThucLamViec)</dd>
+                        <dt><i class="fas fa-venus-mars"></i> Giới tính</dt>
+                        <dd>@Html.DisplayFor(model => model.TinTuyenDung.YeuCauGioiTinh)</dd>
+                        <dt><i class="fas fa-users"></i> Số lượng</dt>
+                        <dd>@Html.DisplayFor(model => model.TinTuyenDung.SoLuongTuyen)</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
     </div>
+
+
     <a href="@Url.Action("Index", "Home")" class="btn btn-secondary mt-4">Quay lại</a> <!-- Di chuyển nút "Quay lại" lên trên cùng -->
 </div>
 

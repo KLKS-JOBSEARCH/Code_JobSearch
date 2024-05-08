@@ -179,15 +179,21 @@ namespace Code_JobSearch.Controllers
                                 var fileName = Path.GetFileName(uploadFile.FileName);
                                 var filePath = Path.Combine(Server.MapPath("~/Image/Khachhang"), fileName);
 
-                                // Kiểm tra xem tập tin đã tồn tại trong thư mục chưa
-                                if (!System.IO.File.Exists(filePath))
+                                // Xóa hình ảnh cũ nếu tồn tại
+                                if (nvs.HinhAnhTKUV != null)
                                 {
-                                    // Nếu tập tin chưa tồn tại, lưu nó vào thư mục
-                                    uploadFile.SaveAs(filePath);
-
-                                    // Cập nhật đường dẫn của ảnh trong cơ sở dữ liệu
-                                    nvs.HinhAnhTKUV = fileName;
+                                    var oldFilePath = Path.Combine(Server.MapPath("~/Image/Khachhang"), nvs.HinhAnhTKUV);
+                                    if (System.IO.File.Exists(oldFilePath))
+                                    {
+                                        System.IO.File.Delete(oldFilePath);
+                                    }
                                 }
+
+                                // Lưu hình ảnh mới vào thư mục
+                                uploadFile.SaveAs(filePath);
+
+                                // Cập nhật đường dẫn của ảnh trong cơ sở dữ liệu
+                                nvs.HinhAnhTKUV = fileName;
                             }
                             else
                             {
@@ -214,6 +220,7 @@ namespace Code_JobSearch.Controllers
             }
             return View(emp);
         }
+
 
 
 
