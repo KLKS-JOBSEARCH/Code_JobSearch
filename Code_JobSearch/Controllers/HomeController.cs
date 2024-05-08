@@ -53,17 +53,28 @@ namespace Code_JobSearch.Controllers
 
         public ActionResult DetailsJob(int id)
         {
-            var Vaccine = db.TinTuyenDungs.SingleOrDefault(t => t.Id_TTD == id);
-            if (Vaccine == null)
+            var viewModel = (from ttd in db.TinTuyenDungs
+                             join ntd in db.NhaTuyenDungs on ttd.Id_NTD equals ntd.Id_NTD
+                             join dn in db.DoanhNghieps on ntd.Id_DN equals dn.Id_DN
+                             where ttd.Id_TTD == id
+                             select new JobDetailsViewModel
+                             {
+                                 TinTuyenDung = ttd,
+                                 DoanhNghiep = dn,
+                                 NhaTuyenDung = ntd
+                             }).SingleOrDefault();
+
+            if (viewModel == null)
             {
                 return HttpNotFound();
             }
 
             ViewBag.Title = "Thông tin tuyển dụng";
-            ViewBag.ProductName = Vaccine.TieuDe_TTD;
+            ViewBag.ProductName = viewModel.TinTuyenDung.TieuDe_TTD;
 
-            return View(Vaccine);
+            return View(viewModel);
         }
+
         #endregion
 
 

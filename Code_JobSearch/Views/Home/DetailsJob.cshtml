@@ -1,147 +1,85 @@
-﻿@model Code_JobSearch.Models.TinTuyenDung
+﻿@model Code_JobSearch.Models.JobDetailsViewModel
 
 @{
-    ViewBag.Title = "DetailsJob";
-    Layout = "~/Views/Shared/Reg_log_user.cshtml";
+    ViewBag.Title = "Chi tiết tuyển dụng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>DetailsJob</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-body">
+                <h3 class="card-title">@Html.DisplayFor(model => model.TinTuyenDung.TieuDe_TTD)</h3>
+                <dl class="row">
+                    <dt class="col-sm-4">Hạn tuyển dụng</dt>
+                    <dd class="col-sm-8">@Model.TinTuyenDung.HanTuyenDung.Value.ToString("dd/MM/yyyy")</dd>
+                    <dt class="col-sm-4">Mức lương</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.MucLuongTD)</dd>
+                    <dt class="col-sm-4">Hình thức làm việc</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.HinhThucLamViec)</dd>
+                    <dt class="col-sm-4">Số lượng</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.SoLuongTuyen)</dd>
+                    <dd class="col-sm-8"><i class="bi bi-geo-alt-fill"></i>@Html.DisplayFor(model => model.TinTuyenDung.DiaDiem_TTD)</dd>
+                </dl>
+            </div>
+            <a style="margin-top:20px" href="@Url.Action("Index", "Home")" class="btn btn-primary mb-4">ứng tuyển ngay</a>
+        </div>
 
-<div>
-    <h4>Chi tiết thông tin tuyển dụng</h4>
+
+        <div class="col-md-6">
+            <div class="card border-primary">
+                <!-- Thêm class border-primary để tạo viền nổi bật -->
+                <div class="card-body">
+                    <h3 class="card-title text-right">Thông tin doanh nghiệp</h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img style="max-width:120px" src="~/Content/Logo_DoanhNghiep/@Html.Raw(Model.DoanhNghiep.Logo_DN)" class="img-fluid mb-3" alt="Logo Doanh Nghiệp" />
+                        </div>
+                        <div class="col-md-8">
+                            <div class="company-info">
+                                <p class="card-text"><strong>@Html.DisplayFor(model => model.DoanhNghiep.Ten_DN)</strong></p>
+                                <p class="card-text"><i class="bi bi-geo-alt-fill"></i> @Html.DisplayFor(model => model.DoanhNghiep.DiaDiem_DN)</p>
+                                <p class="card-text">Website: <a href="@Html.DisplayFor(model => model.DoanhNghiep.LinkWeb_DN)">@Html.DisplayFor(model => model.DoanhNghiep.LinkWeb_DN)</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.TieuDe_TTD)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.TieuDe_TTD)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.HanTuyenDung)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.HanTuyenDung)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MucLuongTD)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MucLuongTD)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.YeuCauGioiTinh)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.YeuCauGioiTinh)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CapBacTD)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CapBacTD)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.SoLuongTuyen)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SoLuongTuyen)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.HinhThucLamViec)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.HinhThucLamViec)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TrangThaiDang)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TrangThaiDang)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ThoiGianDangTuyen)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ThoiGianDangTuyen)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TinhPhi_TTD)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TinhPhi_TTD)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DiaDiem_TTD)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DiaDiem_TTD)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Logo_DN_TTD)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Logo_DN_TTD)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MoTa_TTD)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MoTa_TTD)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.XetDuyet)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.XetDuyet)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Id_NTD)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Id_NTD)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Id_PTTD)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Id_PTTD)
-        </dd>
-
-    </dl>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Mô tả công việc</h3>
+            <ul>
+                @{
+                    var lines = Model.TinTuyenDung.MoTa_TTD.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var line in lines)
+                    {
+                        string[] words = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        for (int i = 0; i < words.Length; i++)
+                        {
+                            if (words[i].Contains("Vị Trí:") || words[i].Contains("Liên hệ:") || words[i].Contains("Mô Tả Công Việc:") || words[i].Contains("Yêu Cầu:") || words[i].Contains("Quyền Lợi:"))
+                            {
+                                <strong>@words[i]</strong>
+                            }
+                            else
+                            {
+                                @words[i]
+                            }
+                            if (i < words.Length - 1)
+                            {
+                                <text> </text> <!-- Thêm khoảng trắng giữa các từ -->
+                            }
+                        }
+                        <br />
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary mt-4">Quay lại</a> <!-- Di chuyển nút "Quay lại" lên trên cùng -->
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id_TTD }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
