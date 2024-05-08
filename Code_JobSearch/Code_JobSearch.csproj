@@ -1932,6 +1932,7 @@
     <Content Include="Views\Home\ProfileUser.cshtml" />
     <Content Include="Views\Home\Edit.cshtml" />
     <Content Include="Views\User\CvUser.cshtml" />
+    <Content Include="Views\User\GopY.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
