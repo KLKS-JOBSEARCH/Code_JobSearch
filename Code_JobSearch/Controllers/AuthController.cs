@@ -42,6 +42,9 @@ namespace Code_JobSearch.Controllers
             "Bà Rịa - Vũng Tàu", "Long An", "Tiền Giang", "Bến Tre", "Trà Vinh", "Vĩnh Long", "Đồng Tháp", "An Giang",
             "Kiên Giang", "Cần Thơ", "Hậu Giang", "Sóc Trăng", "Bạc Liêu", "Cà Mau"
         };
+
+
+        #region Auth User
         [HttpGet]
         public ActionResult Register()
         {
@@ -212,8 +215,11 @@ namespace Code_JobSearch.Controllers
 
             return View();
         }
+        #endregion
 
 
+
+        #region Auth Employer
         [HttpGet]
         public ActionResult Employer_Register()
         {
@@ -350,7 +356,7 @@ namespace Code_JobSearch.Controllers
             db.SubmitChanges();
 
             ViewBag.TB = "Đăng ký thành công!";
-            return RedirectToAction("Login", "Auth");
+            return RedirectToAction("Login_employer", "Auth");
         }
 
 
@@ -413,6 +419,9 @@ namespace Code_JobSearch.Controllers
 
             return View();
         }
+        #endregion
+
+
 
         public ActionResult ForgetPassword()
         {
