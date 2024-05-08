@@ -1497,6 +1497,8 @@
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\img\backgroud.png" />
+    <Content Include="Content\img\banner1.png" />
+    <Content Include="Content\img\banner2.jpg" />
     <Content Include="Content\img\Job.svg" />
     <Content Include="Content\lib\jquery\jquery-3.6.0.min.js" />
     <Content Include="Content\js\app.js" />
