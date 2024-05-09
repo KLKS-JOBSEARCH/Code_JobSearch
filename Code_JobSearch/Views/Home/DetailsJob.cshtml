@@ -40,6 +40,8 @@
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.MucLuongTD)</dd>
                     <dt class="col-sm-4"><i class="bi bi-geo-alt-fill"></i> Địa điểm</dt>
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.DiaDiem_TTD)</dd>
+                    <dt class="col-sm-4"><i class="bi bi-calendar3-event-fill"></i> Yêu cầu kinh nghiệm</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.KinhNghiemLam)</dd>
                 </dl>
             </div>
             <a style="margin-top:20px; width:500px" href="@Url.Action("Index", "Home")" class="btn btn-primary mb-4">Ứng tuyển ngay</a>
@@ -106,15 +108,17 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title" style="color: green;">Thông tin công việc</h5>
-                    <dl>
-                        <dt><i class="fas fa-user-tie"></i> Cấp bậc</dt>
-                        <dd>@Html.DisplayFor(model => model.TinTuyenDung.CapBacTD)</dd>
-                        <dt><i class="fas fa-briefcase"></i> Hình thức làm việc</dt>
-                        <dd>@Html.DisplayFor(model => model.TinTuyenDung.HinhThucLamViec)</dd>
-                        <dt><i class="fas fa-venus-mars"></i> Giới tính</dt>
-                        <dd>@Html.DisplayFor(model => model.TinTuyenDung.YeuCauGioiTinh)</dd>
-                        <dt><i class="fas fa-users"></i> Số lượng</dt>
-                        <dd>@Html.DisplayFor(model => model.TinTuyenDung.SoLuongTuyen)</dd>
+                    <dl class="row">
+                        <dt class="col-7"><i class="bi bi-person-badge-fill"></i> Cấp bậc</dt>
+                        <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.CapBacTD)</dd>
+                        <dt class="col-7"><i class="bi bi-briefcase-fill"></i> Hình thức làm việc</dt>
+                        <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.HinhThucLamViec)</dd>
+                        <dt class="col-7"><i class="bi bi-gender-fill"></i> Giới tính</dt>
+                        <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.YeuCauGioiTinh)</dd>
+                        <dt class="col-7"><i class="bi bi-people-fill"></i> Số lượng</dt>
+                        <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.SoLuongTuyen)</dd>
+                        <dt class="col-7"><i class="bi bi-calendar3-event-fill"></i> Kinh nghiệm</dt>
+                        <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.KinhNghiemLam)</dd>
                     </dl>
                 </div>
             </div>
@@ -122,6 +126,6 @@
     </div>
 
 
-    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary mt-4">Quay lại</a> <!-- Di chuyển nút "Quay lại" lên trên cùng -->
+    <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-4">Quay lại</a> <!-- Di chuyển nút "Quay lại" lên trên cùng -->
 </div>
 

@@ -921,7 +921,7 @@ namespace Code_JobSearch.Models
 		
 		private System.Nullable<short> _MucDoHaiLong;
 		
-		private System.Nullable<bool> _TrangThaiXem_GY;
+		private System.Nullable<System.DateTime> _NgayGui_GY;
 		
 		private System.Nullable<int> _Id_UV;
 		
@@ -943,8 +943,8 @@ namespace Code_JobSearch.Models
     partial void OnNoiDung_GYChanged();
     partial void OnMucDoHaiLongChanging(System.Nullable<short> value);
     partial void OnMucDoHaiLongChanged();
-    partial void OnTrangThaiXem_GYChanging(System.Nullable<bool> value);
-    partial void OnTrangThaiXem_GYChanged();
+    partial void OnNgayGui_GYChanging(System.Nullable<System.DateTime> value);
+    partial void OnNgayGui_GYChanged();
     partial void OnId_UVChanging(System.Nullable<int> value);
     partial void OnId_UVChanged();
     partial void OnId_NTDChanging(System.Nullable<int> value);
@@ -978,7 +978,7 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TieuDe_GY", DbType="VarChar(100)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TieuDe_GY", DbType="NVarChar(100)")]
 		public string TieuDe_GY
 		{
 			get
@@ -1038,22 +1038,22 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TrangThaiXem_GY", DbType="Bit")]
-		public System.Nullable<bool> TrangThaiXem_GY
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NgayGui_GY", DbType="Date")]
+		public System.Nullable<System.DateTime> NgayGui_GY
 		{
 			get
 			{
-				return this._TrangThaiXem_GY;
+				return this._NgayGui_GY;
 			}
 			set
 			{
-				if ((this._TrangThaiXem_GY != value))
+				if ((this._NgayGui_GY != value))
 				{
-					this.OnTrangThaiXem_GYChanging(value);
+					this.OnNgayGui_GYChanging(value);
 					this.SendPropertyChanging();
-					this._TrangThaiXem_GY = value;
-					this.SendPropertyChanged("TrangThaiXem_GY");
-					this.OnTrangThaiXem_GYChanged();
+					this._NgayGui_GY = value;
+					this.SendPropertyChanged("NgayGui_GY");
+					this.OnNgayGui_GYChanged();
 				}
 			}
 		}
@@ -3064,6 +3064,8 @@ namespace Code_JobSearch.Models
 		
 		private System.Nullable<bool> _XetDuyet;
 		
+		private string _KinhNghiemLam;
+		
 		private System.Nullable<int> _Id_NTD;
 		
 		private System.Nullable<int> _Id_PTTD;
@@ -3108,6 +3110,8 @@ namespace Code_JobSearch.Models
     partial void OnMoTa_TTDChanged();
     partial void OnXetDuyetChanging(System.Nullable<bool> value);
     partial void OnXetDuyetChanged();
+    partial void OnKinhNghiemLamChanging(string value);
+    partial void OnKinhNghiemLamChanged();
     partial void OnId_NTDChanging(System.Nullable<int> value);
     partial void OnId_NTDChanged();
     partial void OnId_PTTDChanging(System.Nullable<int> value);
@@ -3418,6 +3422,26 @@ namespace Code_JobSearch.Models
 					this._XetDuyet = value;
 					this.SendPropertyChanged("XetDuyet");
 					this.OnXetDuyetChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_KinhNghiemLam", DbType="NVarChar(100)")]
+		public string KinhNghiemLam
+		{
+			get
+			{
+				return this._KinhNghiemLam;
+			}
+			set
+			{
+				if ((this._KinhNghiemLam != value))
+				{
+					this.OnKinhNghiemLamChanging(value);
+					this.SendPropertyChanging();
+					this._KinhNghiemLam = value;
+					this.SendPropertyChanged("KinhNghiemLam");
+					this.OnKinhNghiemLamChanged();
 				}
 			}
 		}

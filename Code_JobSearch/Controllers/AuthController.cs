@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -59,17 +61,21 @@ namespace Code_JobSearch.Controllers
             var matkhau = f["MatKhau"];
             var rematkhau = f["ReMatkhau"];
             var email = f["email"];
+            var sdt = f["sdt"];
 
             // Lưu trữ dữ liệu đã nhập vào ViewBag để hiển thị lại trong input nếu có lỗi
             ViewBag.HotenKH = hoten;
             ViewBag.TenDN = tendn;
             ViewBag.Email = email;
+            ViewBag.SDT = sdt;
+
 
             if (string.IsNullOrEmpty(hoten) ||
                string.IsNullOrEmpty(tendn) ||
                string.IsNullOrEmpty(matkhau) ||
                string.IsNullOrEmpty(rematkhau) ||
-               string.IsNullOrEmpty(email))
+               string.IsNullOrEmpty(email) ||
+               string.IsNullOrEmpty(sdt))
             {
                 ViewData["Loi"] = "Vui lòng điền đầy đủ thông tin!";
                 return View();
@@ -126,6 +132,20 @@ namespace Code_JobSearch.Controllers
                 return View();
             }
 
+            // Kiểm tra sự tồn tại của số điện thoại
+            if (db.UngViens.Any(t => t.SoDienThoai_TKUV == sdt))
+            {
+                ViewData["Loi5"] = "Số điện thoại đã tồn tại!";
+                return View();
+            }
+
+            // Kiểm tra số điện thoại có đúng 10 chữ số
+            if (sdt.Length != 10)
+            {
+                ViewData["Loi5"] = "Số điện thoại phải có đúng 10 chữ số!";
+                return View();
+            }
+
             ac.TenTK = tendn;
             ac.MatKhau = HashPassword(matkhau);
 
@@ -137,6 +157,8 @@ namespace Code_JobSearch.Controllers
             kh.TenTK = ac.TenTK;
             kh.HoTen_TKUV = hoten;
             kh.Email_TKUV = email;
+            kh.HinhAnhTKUV = null;
+            kh.SoDienThoai_TKUV = sdt;
 
 
             db.UngViens.InsertOnSubmit(kh);
@@ -423,9 +445,156 @@ namespace Code_JobSearch.Controllers
 
 
 
-        public ActionResult ForgetPassword()
+        public static bool SendResetPasswordEmail(string email, string tentk)
+        {
+
+            try
+            {
+                var client = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587,
+                    Credentials = new NetworkCredential("jobstarvn@gmail.com", "jxtt juxf gbqy nbdp"),
+                    EnableSsl = true,
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress("jobstarvn@gmail.com"),
+                    Subject = "Cập nhật lại mật khẩu",
+                    Body = $@"<html>
+                        <head>
+                            <!-- Bootstrap CSS -->
+                            <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css' rel='stylesheet'>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <div class='content'>
+                                    <p class='title'><strong>Kính gửi! {tentk},</strong></p>
+                                    <p>Vui lòng nhấn vào nút bên dưới để cập nhật lại mật khẩu của bạn:</p>
+                                    <!-- Sử dụng thẻ <a> với các thuộc tính href và style để tạo nút màu xanh lá cây -->
+                                    <a href='https://localhost:44354/Auth/UpdatePassword' style='display: inline-block; background-color: #28a745; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Cập nhật mật khẩu</a>
+                                </div>
+                            </div>
+                        </body>
+                    </html>",
+                    IsBodyHtml = true,
+                };
+
+
+
+                mailMessage.To.Add(email);
+
+                client.Send(mailMessage);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
+        [HttpGet]
+        public ActionResult ForgetPassword(string tentk)
+        {
+            // Kiểm tra xem tên tài khoản có tồn tại trong cơ sở dữ liệu không
+            var user = db.TaiKhoans.FirstOrDefault(u => u.TenTK == tentk);
+            if (user != null)
+            {
+                string email = db.NhanViens.Where(t => t.TenTK == tentk).Select(o => o.Email_NV).FirstOrDefault();
+                if (email == null)
+                {
+                    email = db.UngViens.Where(t => t.TenTK == tentk).Select(o => o.Email_TKUV).FirstOrDefault();
+                    if (email == null)
+                    {
+                        email = db.NhaTuyenDungs.Where(t => t.TenTK == tentk).Select(o => o.Email_NTD).FirstOrDefault();
+                    }
+                }
+                // Gửi email reset mật khẩu
+
+                if (!SendResetPasswordEmail(email, tentk))
+                {
+                    TempData["ErrorEmailMessage"] = "Gửi email thất bại";
+                    return RedirectToAction("Login", "Auth");
+                }
+                SendResetPasswordEmail(email, tentk);
+                TempData["SuccessMessage"] = "Một email đặt lại mật khẩu đã được gửi đến địa chỉ email của bạn.";
+
+            }
+            else
+            {
+                // Nếu không tìm thấy tên tài khoản trong cơ sở dữ liệu, bạn có thể hiển thị thông báo lỗi cho người dùng
+                TempData["ErrorMessage"] = "Tên tài khoản không tồn tại trong hệ thống.";
+            }
+            return RedirectToAction("Login", "Auth");
+        }
+
+        public ActionResult UpdatePassword()
         {
             return View();
+        }
+        [HttpPost]
+        public ActionResult UpdatePassword(FormCollection f)
+        {
+            var tendn = f["TenDN"];
+            var matkhau = f["MatKhau"];
+            var rematkhau = f["ReMatkhau"];
+            ViewBag.TenDN = tendn;
+
+            var user = db.TaiKhoans.FirstOrDefault(u => u.TenTK == tendn);
+
+
+            if (user != null)
+            {
+
+                if (string.IsNullOrEmpty(matkhau) || matkhau.Length < 8)
+                {
+                    ViewData["Loi2"] = "Mật khẩu không hợp lệ! Mật khẩu phải lớn hơn 8 ký tự.";
+                    return View();
+                }
+
+                if (!matkhau.Any(char.IsUpper))
+                {
+                    ViewData["Loi2"] = "Mật khẩu không hợp lệ! Mật khẩu phải chứa ít nhất một ký tự in hoa.";
+                    return View();
+                }
+
+                if (!matkhau.Any(char.IsLower))
+                {
+                    ViewData["Loi2"] = "Mật khẩu không hợp lệ! Mật khẩu phải chứa ít nhất một ký tự thường.";
+                    return View();
+                }
+
+                if (!matkhau.Any(char.IsDigit))
+                {
+                    ViewData["Loi2"] = "Mật khẩu không hợp lệ! Mật khẩu phải chứa ít nhất một ký tự số.";
+                    return View();
+                }
+
+                if (!matkhau.Any(c => !char.IsLetterOrDigit(c)))
+                {
+                    ViewData["Loi2"] = "Mật khẩu không hợp lệ! Mật khẩu phải chứa ít nhất một ký tự đặc biệt.";
+                    return View();
+                }
+                if (matkhau != rematkhau)
+                {
+                    ViewData["Loi3"] = "Mật khẩu nhập lại không khớp!";
+                    return View();
+                }
+                user.MatKhau = HashPassword(matkhau);
+                db.SubmitChanges();
+
+                ViewBag.SuccessUpdatePass = "Succces !";
+                return View();
+
+            }
+            else
+            {
+                ViewData["Loi1"] = "Tên tài khoản không có trong hệ thống";
+                return View();
+
+            }
+
         }
     }
 }

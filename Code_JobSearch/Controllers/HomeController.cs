@@ -94,10 +94,31 @@ namespace Code_JobSearch.Controllers
             return View(doanhNghieps);
         }
 
-        public ActionResult DetailsCompany()
+        public ActionResult DetailsCompany(int id)
         {
-            return View();
+            using (var context = new DatabaseDataContext())
+            {
+                var viewModel = new CompanyDetailsViewModel();
+
+                // Lấy thông tin của doanh nghiệp
+                viewModel.NhaTuyenDung = context.NhaTuyenDungs.SingleOrDefault(ntd => ntd.Id_NTD == id);
+                if (viewModel.NhaTuyenDung != null)
+                {
+                    // Lấy thông tin của doanh nghiệp từ Id_DN
+                    viewModel.DoanhNghiep = context.DoanhNghieps.SingleOrDefault(dn => dn.Id_DN == viewModel.NhaTuyenDung.Id_DN);
+                    // Lấy danh sách các đối tượng ChiTietDoanhNghiep từ Id_DN
+                    viewModel.ChiTietDoanhNghiep = context.ChiTietDoanhNghieps.Where(ctdn => ctdn.Id_DN == viewModel.DoanhNghiep.Id_DN).ToList();
+                    // Lấy danh sách tin tuyển dụng từ Id_NTD
+                    viewModel.TinTuyenDung = context.TinTuyenDungs.Where(ttd => ttd.Id_NTD == id).ToList();
+                }
+
+                return View(viewModel);
+            }
         }
+
+
+
+
         #endregion
         //chưa xử lý
 
@@ -111,7 +132,7 @@ namespace Code_JobSearch.Controllers
             {
                 UngVien kh = Session["KH"] as UngVien;
 
-               
+
 
                 // Truy vấn để lấy thông tin tài khoản của người dùng từ khóa ngoại
                 var taiKhoan = (from tk in db.TaiKhoans
@@ -273,7 +294,7 @@ namespace Code_JobSearch.Controllers
             return View("TimKiem", dsTTDPaged);
         }
 
-        
+
         //Xử lý chức năng lọc tìm kiếm nâng cao
         private List<string> GetListOfCities()
         {
@@ -291,7 +312,7 @@ namespace Code_JobSearch.Controllers
             };
             return cities;
         }
-        private List<string> GetHinhthuc() 
+        private List<string> GetHinhthuc()
         {
             List<string> hinhthuc = new List<string>
             {
@@ -310,7 +331,7 @@ namespace Code_JobSearch.Controllers
         #endregion
 
 
-        
+
         public ActionResult Logout()
         {
             Session.Clear();

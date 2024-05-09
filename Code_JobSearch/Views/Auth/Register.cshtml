@@ -56,6 +56,11 @@
                     @Html.TextBox("TenDN", ViewData["TenDN"], new { @class = "form-control", type = "text", placeholder = "Tên Đăng Nhập" })
                 </div>
 
+                <h7 class="error-message">@ViewData["Loi5"]</h7>
+                <div class="input-group custom-input-group">
+                    @Html.TextBox("SDT", ViewData["SDT"], new { @class = "form-control", type = "tel", placeholder = "Nhập số điện thoại" })
+                </div>
+
                 <h7 class="error-message">@ViewData["Loi4"]</h7>
                 <div class="input-group custom-input-group">
                     @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Mật Khẩu" })

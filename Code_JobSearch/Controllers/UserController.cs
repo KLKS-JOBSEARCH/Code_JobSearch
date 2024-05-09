@@ -62,6 +62,7 @@ namespace Code_JobSearch.Controllers
                 gy.TieuDe_GY = tieude;
                 gy.NoiDung_GY = noidung;
                 gy.MucDoHaiLong = Convert.ToInt16(mucdohailong); // Chuyển đổi giá trị string thành smallint
+                gy.NgayGui_GY = DateTime.Now;
 
                 db.Gopies.InsertOnSubmit(gy);
                 db.SubmitChanges();

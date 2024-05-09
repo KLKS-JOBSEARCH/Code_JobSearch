@@ -1,0 +1,34 @@
+﻿@model Code_JobSearch.Models.CompanyDetailsViewModel
+
+@{
+    ViewBag.Title = "DetailsCompany";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Hiển thị thông tin doanh nghiệp -->
+<h2>@Model.DoanhNghiep.Ten_DN</h2>
+
+
+@if (Model.ChiTietDoanhNghiep != null && Model.ChiTietDoanhNghiep.Any())
+{
+    <ul>
+        @foreach (var chiTiet in Model.ChiTietDoanhNghiep)
+        {
+            <li>
+                <p>@chiTiet.TieuDe_CTDN</p>
+                <p>@chiTiet.NoiDung_CTDN</p>
+            </li>
+        }
+    </ul>
+}
+
+<!-- Hiển thị danh sách tin tuyển dụng -->
+@foreach (var tinTuyenDung in Model.TinTuyenDung)
+{
+    <h3>@tinTuyenDung.TieuDe_TTD</h3>
+    <!-- Hiển thị thông tin tin tuyển dụng -->
+    <p>Ngày hết hạn: @tinTuyenDung.HanTuyenDung</p>
+    <p>Mức lương: @tinTuyenDung.MucLuongTD</p>
+    <!-- Thêm các thông tin tin tuyển dụng khác tùy theo yêu cầu -->
+}
+

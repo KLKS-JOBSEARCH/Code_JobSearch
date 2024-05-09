@@ -45,46 +45,52 @@
         }
 </style>
 
+<script>
+    function showAlert() {
+        alert("Gửi góp ý thành công!");
+    }
+</script>
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title" style="color: green;">Đóng góp gợi ý của bạn tại đây</h2>
-                    @using (Html.BeginForm("GopY", "User", FormMethod.Post, new { id = "myForm", @class = "needs-validation", novalidate = "true" }))
+                    @using (Html.BeginForm("GopY", "User", FormMethod.Post, new { id = "myForm", @class = "needs-validation", novalidate = "true", onsubmit = "showAlert()" }))
                     {
-                <div class="mb-3">
-                    @Html.ValidationSummary(true)
-                    <h7 class="error-message"style="color: red;">@ViewData["Loi"]</h7>
-                    <br />
-                    <span>Tiêu đề:</span>
-                    <div class="input-group mb-3">
-                        @Html.TextBox("TieuDeGY", ViewData["TieuDeGY"], new { @class = "form-control", type = "text", placeholder = "Góp ý A B C....", required = "required" })
-                    </div>
-                    <span>Nội dung:</span>
-                    <div class="input-group mb-3">
-                        @Html.TextBox("NoiDungGY", ViewData["NoiDungGY"], new { @class = "form-control", type = "text", placeholder = "Nội dung góp ý...", required = "required" })
-                    </div>
+                        <div class="mb-3">
+                            @Html.ValidationSummary(true)
+                            <h7 class="error-message" style="color: red;">@ViewData["Loi"]</h7>
+                            <br />
+                            <span>Tiêu đề:</span>
+                            <div class="input-group mb-3">
+                                @Html.TextBox("TieuDeGY", ViewData["TieuDeGY"], new { @class = "form-control", type = "text", placeholder = "Góp ý A B C....", required = "required" })
+                            </div>
+                            <span>Nội dung:</span>
+                            <div class="input-group mb-3">
+                                @Html.TextBox("NoiDungGY", ViewData["NoiDungGY"], new { @class = "form-control", type = "text", placeholder = "Nội dung góp ý...", required = "required" })
+                            </div>
 
-                    <h7 class="error-message" style="color: red;">@ViewData["Loi2"]</h7>
-                    <div class="input-group mb-3">
-                        <label class="form-label">Mức độ hài lòng:</label>
-                        <br />
-                        <div class="rating" style="margin-top:20px">
-                            <input type="radio" id="star1" name="MucDoHaiLong" value="5" /><label for="star1"></label>
-                            <input type="radio" id="star2" name="MucDoHaiLong" value="4" /><label for="star2"></label>
-                            <input type="radio" id="star3" name="MucDoHaiLong" value="3" /><label for="star3"></label>
-                            <input type="radio" id="star4" name="MucDoHaiLong" value="2" /><label for="star4"></label>
-                            <input type="radio" id="star5" name="MucDoHaiLong" value="1" /><label for="star5"></label>
-                        </div>
-                    </div>
+                            <h7 class="error-message" style="color: red;">@ViewData["Loi2"]</h7>
+                            <div class="input-group mb-3">
+                                <label class="form-label">Mức độ hài lòng:</label>
+                                <br />
+                                <div class="rating" style="margin-top:20px">
+                                    <input type="radio" id="star1" name="MucDoHaiLong" value="5" /><label for="star1"></label>
+                                    <input type="radio" id="star2" name="MucDoHaiLong" value="4" /><label for="star2"></label>
+                                    <input type="radio" id="star3" name="MucDoHaiLong" value="3" /><label for="star3"></label>
+                                    <input type="radio" id="star4" name="MucDoHaiLong" value="2" /><label for="star4"></label>
+                                    <input type="radio" id="star5" name="MucDoHaiLong" value="1" /><label for="star5"></label>
+                                </div>
+                            </div>
 
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <button type="submit" class="btn btn-primary">Gửi</button>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <input type="submit" value="Gửi" class="btn btn-primary" />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
                     }
                 </div>
             </div>

@@ -37,10 +37,10 @@
   <Table Name="dbo.GopY" Member="Gopies">
     <Type Name="GopY">
       <Column Name="Id_GY" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="TieuDe_GY" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="TieuDe_GY" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="NoiDung_GY" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="MucDoHaiLong" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
-      <Column Name="TrangThaiXem_GY" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="NgayGui_GY" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Column Name="Id_UV" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Id_NTD" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="NhaTuyenDung_GopY" Member="NhaTuyenDung" ThisKey="Id_NTD" OtherKey="Id_NTD" Type="NhaTuyenDung" IsForeignKey="true" />
@@ -151,6 +151,7 @@
       <Column Name="Logo_DN_TTD" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="MoTa_TTD" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="XetDuyet" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="KinhNghiemLam" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Id_NTD" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Id_PTTD" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="TinTuyenDung_UV_TTD" Member="UV_TTDs" ThisKey="Id_TTD" OtherKey="Id_TTD" Type="UV_TTD" />

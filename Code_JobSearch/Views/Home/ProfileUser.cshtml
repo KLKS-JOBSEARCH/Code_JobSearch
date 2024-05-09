@@ -28,8 +28,16 @@
                 </div>
             </div>
             <div class="col-md-4 d-flex align-items-center justify-content-center">
-                <img style="max-block-size: 180px;margin-bottom: 10px;border-radius: 50%;margin-top: 10px;" src="/Image/Khachhang/@Html.Raw(Model.HinhAnhTKUV)" alt="Ảnh ứng viên">
+                @if (string.IsNullOrEmpty(Model.HinhAnhTKUV))
+                {
+                    <img style="max-block-size: 180px;margin-bottom: 10px;border-radius: 50%;margin-top: 10px;" src="~/Image/basic.png" alt="Ảnh ứng viên">
+                }
+                else
+                {
+                    <img style="max-block-size: 180px;margin-bottom: 10px;border-radius: 50%;margin-top: 10px;" src="/Image/Khachhang/@Html.Raw(Model.HinhAnhTKUV)" alt="Ảnh ứng viên">
+                }
             </div>
+
         </div>
     </div>
 </div>
