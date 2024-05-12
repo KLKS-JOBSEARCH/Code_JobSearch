@@ -48,31 +48,30 @@
                 </div>
                 <div class="mb-3 text-center">
                     <p>Bạn chưa có tài khoản? <a href="@Url.Action("Register", "Auth")" style="color: green;">Đăng ký ngay</a></p>
-                    <p>Quên mật khẩu?</p><a href="javascript:void(0)" onclick="redirectToForgetPassword()" style="color: green;">Nhấn vào link sau để lấy lại mật khẩu</a>
+                    <p>Quên mật khẩu?</p><a href="javascript:void(0)" onclick="redirectToForgetPassword()" style="color: green;">Điền tên tài khoản và Nhấn vào link sau để lấy lại mật khẩu</a>
 
                 </div>
 
             }
 
-            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+            @if (TempData["ErrorMessage"] != null)
             {
                 <div class="alert alert-danger" role="alert">
-                    @ViewBag.ErrorMessage
+                    @TempData["ErrorMessage"]
                 </div>
             }
-            @if (!string.IsNullOrEmpty(ViewBag.ErrorEmailMessage))
+            @if (TempData["ErrorEmailMessage"] != null)
             {
                 <div class="alert alert-danger" role="alert">
-                    @ViewBag.ErrorEmailMessage
+                    @TempData["ErrorEmailMessage"]
                 </div>
             }
-            @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+            @if (TempData["SuccessMessage"] != null)
             {
                 <div class="alert alert-success" role="alert">
-                    @ViewBag.SuccessMessage
+                    @TempData["SuccessMessage"]
                 </div>
             }
-
 
         </div>
     </div>

@@ -510,16 +510,16 @@ namespace Code_JobSearch.Controllers
                         email = db.NhaTuyenDungs.Where(t => t.TenTK == tentk).Select(o => o.Email_NTD).FirstOrDefault();
                     }
                 }
-                // Gửi email reset mật khẩu
 
-                if (!SendResetPasswordEmail(email, tentk))
+                // Gửi email reset mật khẩu
+                bool isEmailSent = SendResetPasswordEmail(email, tentk);
+                if (!isEmailSent)
                 {
                     TempData["ErrorEmailMessage"] = "Gửi email thất bại";
                     return RedirectToAction("Login", "Auth");
                 }
-                SendResetPasswordEmail(email, tentk);
-                TempData["SuccessMessage"] = "Một email đặt lại mật khẩu đã được gửi đến địa chỉ email của bạn.";
 
+                TempData["SuccessMessage"] = "Một email đặt lại mật khẩu đã được gửi đến địa chỉ email của bạn. Vui lòng kiểm tra kỹ hòm thư cũng như hòm thư rác";
             }
             else
             {
@@ -528,6 +528,9 @@ namespace Code_JobSearch.Controllers
             }
             return RedirectToAction("Login", "Auth");
         }
+
+
+
 
         public ActionResult UpdatePassword()
         {

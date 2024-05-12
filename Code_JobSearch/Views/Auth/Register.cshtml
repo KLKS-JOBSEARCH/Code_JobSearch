@@ -41,35 +41,43 @@
             {
                 @Html.ValidationSummary(true)
 
-                <h7 class="error-message">@ViewData["Loi"]</h7>
-                <div class="input-group custom-input-group">
-                    @Html.TextBox("HotenKH", ViewData["HotenKH"], new { @class = "form-control", type = "text", placeholder = "Họ Tên Khách Hàng" })
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="HotenKH" class="form-label"><i class="fa fa-user"></i> Họ Tên Khách Hàng</label>
+                        @Html.TextBox("HotenKH", ViewData["HotenKH"], new { @class = "form-control", type = "text", placeholder = "Nguyễn Văn A" })
+                        <h7 class="error-message">@ViewData["Loi"]</h7>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="Email" class="form-label"><i class="fa fa-envelope"></i> Email</label>
+                        @Html.TextBox("Email", ViewData["Email"], new { @class = "form-control", type = "email", placeholder = "example@gmail.com" })
+                        <h7 class="error-message">@ViewData["Loi3"]</h7>
+                    </div>
                 </div>
 
-                <h7 class="error-message">@ViewData["Loi3"]</h7>
-                <div class="input-group custom-input-group">
-                    @Html.TextBox("Email", ViewData["Email"], new { @class = "form-control", type = "email", placeholder = "Email" })
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="TenDN" class="form-label"><i class="fa fa-user"></i> Tên Đăng Nhập</label>
+                        @Html.TextBox("TenDN", ViewData["TenDN"], new { @class = "form-control", type = "text", placeholder = "Nhập tên đăng nhập của bạn" })
+                        <h7 class="error-message">@ViewData["Loi2"]</h7>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="SDT" class="form-label"><i class="fa fa-phone"></i> Số Điện Thoại</label>
+                        @Html.TextBox("SDT", ViewData["SDT"], new { @class = "form-control", type = "tel", placeholder = "Nhập số điện thoại của bạn", oninput = "this.value = this.value.replace(/[^0-9]/g, '')" })
+                        <h7 class="error-message">@ViewData["Loi5"]</h7>
+                    </div>
                 </div>
 
-                <h7 class="error-message">@ViewData["Loi2"]</h7>
-                <div class="input-group custom-input-group">
-                    @Html.TextBox("TenDN", ViewData["TenDN"], new { @class = "form-control", type = "text", placeholder = "Tên Đăng Nhập" })
-                </div>
-
-                <h7 class="error-message">@ViewData["Loi5"]</h7>
-                <div class="input-group custom-input-group">
-                    @Html.TextBox("SDT", ViewData["SDT"], new { @class = "form-control", type = "tel", placeholder = "Nhập số điện thoại" })
-                </div>
-
-                <h7 class="error-message">@ViewData["Loi4"]</h7>
-                <div class="input-group custom-input-group">
-                    @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Mật Khẩu" })
-                </div>
-
-
-                <h7 class="error-message">@ViewData["Loi1"]</h7>
-                <div class="input-group custom-input-group">
-                    @Html.Password("ReMatkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Lại Mật Khẩu" })
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="Matkhau" class="form-label"><i class="fa fa-lock"></i> Mật Khẩu</label>
+                        @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Mật Khẩu" })
+                        <h7 class="error-message">@ViewData["Loi4"]</h7>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="ReMatkhau" class="form-label"><i class="fa fa-lock"></i> Nhập Lại Mật Khẩu</label>
+                        @Html.Password("ReMatkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Lại Mật Khẩu" })
+                        <h7 class="error-message">@ViewData["Loi1"]</h7>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -92,9 +100,17 @@
                     </div>
                 </div>
             }
+
+
             </br>
             <p>Yêu cầu tạo một mật khẩu mạnh</p>
-            <div id="password-conditions"></div>
+            <div id="password-conditions">
+                <p id="min-length" style="color: red;">Mật khẩu tối thiểu 8 ký tự</p>
+                <p id="lowercase" style="color: red;">Ít nhất một ký tự thường (a-z)</p>
+                <p id="uppercase" style="color: red;">Ít nhất một ký tự hoa (A-Z)</p>
+                <p id="number" style="color: red;">Ít nhất một số (0-9)</p>
+                <p id="special-char" style="color: red;">Ít nhất một ký tự đặc biệt</p>
+            </div>
         </div>
 
 
@@ -116,37 +132,61 @@
     window.addEventListener('load', hideOnMobile);
     window.addEventListener('resize', hideOnMobile);
     // Function to show password conditions
-function showPasswordConditions() {
-    var passwordInput = document.getElementById("Matkhau");
-    var conditionsDiv = document.getElementById("password-conditions");
+    function showPasswordConditions() {
+        var passwordInput = document.getElementById("Matkhau");
+        var conditionsDiv = document.getElementById("password-conditions");
 
-    // Clear previous conditions
-    conditionsDiv.innerHTML = "";
+        // Get password value
+        var password = passwordInput.value;
 
-    // Get password value
-    var password = passwordInput.value;
+        // Check conditions
+        var isPasswordValid = true;
 
-    // Check conditions and display messages
-    if (password.length < 8) {
-        conditionsDiv.innerHTML += "<p>Mật khẩu phải có ít nhất 8 ký tự</p>";
+        // Check each condition and update color accordingly
+        var minLengthCondition = document.getElementById("min-length");
+        if (password.length >= 8) {
+            minLengthCondition.style.color = "green";
+        } else {
+            minLengthCondition.style.color = "red";
+            isPasswordValid = false;
+        }
+
+        var lowercaseCondition = document.getElementById("lowercase");
+        if (/[a-z]/.test(password)) {
+            lowercaseCondition.style.color = "green";
+        } else {
+            lowercaseCondition.style.color = "red";
+            isPasswordValid = false;
+        }
+
+        var uppercaseCondition = document.getElementById("uppercase");
+        if (/[A-Z]/.test(password)) {
+            uppercaseCondition.style.color = "green";
+        } else {
+            uppercaseCondition.style.color = "red";
+            isPasswordValid = false;
+        }
+
+        var numberCondition = document.getElementById("number");
+        if (/\d/.test(password)) {
+            numberCondition.style.color = "green";
+        } else {
+            numberCondition.style.color = "red";
+            isPasswordValid = false;
+        }
+
+        var specialCharCondition = document.getElementById("special-char");
+        if (/[!@@#$%^&*(),.?":{}|<>]/.test(password)) {
+            specialCharCondition.style.color = "green";
+        } else {
+            specialCharCondition.style.color = "red";
+            isPasswordValid = false;
+        }
+
+        // Return overall password validity
+        return isPasswordValid;
     }
 
-    if (!/[a-z]/.test(password)) {
-        conditionsDiv.innerHTML += "<p>Mật khẩu phải chứa ít nhất một ký tự thường (a-z)</p>";
-    }
-
-    if (!/[A-Z]/.test(password)) {
-        conditionsDiv.innerHTML += "<p>Mật khẩu phải chứa ít nhất một ký tự hoa (A-Z)</p>";
-    }
-
-    if (!/\d/.test(password)) {
-        conditionsDiv.innerHTML += "<p>Mật khẩu phải chứa ít nhất một số (0-9)</p>";
-    }
-
-    if (!/[!@@#$%^&*(),.?":{}|<>]/.test(password)) {
-        conditionsDiv.innerHTML += "<p>Mật khẩu phải chứa ít nhất một ký tự đặc biệt</p>";
-    }
-}
 
 // Add event listener to password input
 document.addEventListener("DOMContentLoaded", function () {
