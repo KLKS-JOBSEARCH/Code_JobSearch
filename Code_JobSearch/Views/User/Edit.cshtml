@@ -1,0 +1,71 @@
+﻿@model Code_JobSearch.Models.HoSoXinViec
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Chỉnh sửa hồ sơ của bạn</h2>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <h4><i class="fas fa-file-alt"></i> Hồ sơ xin việc</h4>
+        </div>
+        <div class="card-body">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id_HSXV)
+
+            <div class="mb-3 row">
+                <label for="Ten_HSXV" class="form-label col-md-2">
+                    <i class="fas fa-id-card"></i> Tên hồ sơ
+                </label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Ten_HSXV, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Ten_HSXV, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="NoiDung_HSXV" class="form-label col-md-2">
+                    <i class="fas fa-envelope"></i> Thư giới thiệu
+                </label>
+                <div class="col-md-10">
+                    <p class="small text-muted">Một thư giới thiệu ngắn gọn, chỉn chu sẽ giúp bạn trở nên chuyên nghiệp và gây ấn tượng hơn với nhà tuyển dụng.</p>
+                    @Html.TextAreaFor(model => model.NoiDung_HSXV, new { @class = "form-control", placeholder = "Viết 1 lá thư ngắn gọn về bản thân (Điểm mạnh, điểm yếu) và nêu rõ mong muốn, lý do bạn muốn ứng tuyển cho vị trí này", rows = 5 })
+                    @Html.ValidationMessageFor(model => model.NoiDung_HSXV, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="inputFile" class="form-label col-md-2">
+                    <i class="fas fa-file-pdf"></i> Chọn file CV của bạn
+                </label>
+                <div class="col-md-10">
+                    <input type="file" name="uploadFile" id="inputFile" accept=".pdf" class="form-control" />
+                </div>
+            </div>
+
+            <div class="alert alert-warning mt-4">
+                <i class="fas fa-exclamation-triangle"></i> Lưu ý:
+                <p class="small">
+                    JobStar khuyên tất cả các bạn hãy luôn cẩn trọng trong quá trình tìm việc và chủ động nghiên cứu về thông tin công ty, vị trí việc làm trước khi ứng tuyển.<br />
+                    Ứng viên cần có trách nhiệm với hành vi ứng tuyển của mình. Nếu bạn gặp phải tin tuyển dụng hoặc nhận được liên lạc đáng ngờ của nhà tuyển dụng,
+                    hãy báo cáo ngay cho JobStar qua email <a href="mailto:jobstarvn@gmail.com?subject=Báo cáo tin tuyển dụng đáng ngờ"><strong>jobstarvn@gmail.com</strong></a> để được hỗ trợ kịp thời.
+                </p>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary" onclick="return confirm('Cập nhật thành công!');"><i class="fas fa-save"></i> Save</button>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="mt-3">
+    @Html.ActionLink("Quay lại", "CvUser", null, new { @class = "btn btn-primary" })
+</div>
+

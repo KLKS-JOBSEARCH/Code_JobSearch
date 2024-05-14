@@ -444,7 +444,7 @@ namespace Code_JobSearch.Controllers
         #endregion
 
 
-
+        #region forget password
         public static bool SendResetPasswordEmail(string email, string tentk)
         {
 
@@ -600,4 +600,5 @@ namespace Code_JobSearch.Controllers
 
         }
     }
+    #endregion
 }

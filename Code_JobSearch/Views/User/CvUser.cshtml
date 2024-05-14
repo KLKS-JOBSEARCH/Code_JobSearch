@@ -1,8 +1,54 @@
-﻿
+﻿@model Code_JobSearch.Models.CvUserModel
+
 @{
-    ViewBag.Title = "CvUser";
+    ViewBag.Title = "Hồ sơ xin việc";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>CvUser</h2>
+<div class="container mt-5">
+    <h2 class="mb-4">Thông tin hồ sơ của bạn</h2>
+
+    <div class="mb-3">
+        <a href="@Url.Action("Create", "User")" class="btn btn-success">
+            <i class="fas fa-plus"></i> Thêm Hồ sơ
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Hồ sơ xin việc</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @foreach (var hs in Model.HoSoXinViec)
+                {
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <p><strong>Họ tên:</strong> @Model.UngVien.HoTen_TKUV</p>
+                                <p><strong>Email:</strong> @Model.UngVien.Email_TKUV</p>
+                                <p><strong>Số điện thoại:</strong> @Model.UngVien.SoDienThoai_TKUV</p>
+                                <h5 class="card-title"><strong>Tên hồ sơ:</strong> @hs.Ten_HSXV</h5>
+                                <p class="card-text"><strong>Thời gian cập nhật:</strong> @hs.TGCN_HSXV</p>
+                                <p class="card-text"><strong>Nội dung hồ sơ:</strong> @hs.NoiDung_HSXV</p>
+                                <a href="@Url.Action("DownloadFile", new { fileName = hs.File_HSXV })" class="btn btn-primary">
+                                    <i class="fas fa-download"></i> Tải xuống
+                                </a>
+                                <a href="@Url.Action("Edit", "User", new { id = hs.Id_HSXV })" class="btn btn-warning">
+                                    <i class="fas fa-edit"></i> Chỉnh sửa
+                                </a>
+                                <a href="@Url.Action("Delete", "User", new { id = hs.Id_HSXV })" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa hồ sơ này?');">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bao gồm Font Awesome để sử dụng các biểu tượng -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
