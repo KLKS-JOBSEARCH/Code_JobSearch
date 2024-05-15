@@ -30,7 +30,6 @@
                                 <p><strong>Số điện thoại:</strong> @Model.UngVien.SoDienThoai_TKUV</p>
                                 <h5 class="card-title"><strong>Tên hồ sơ:</strong> @hs.Ten_HSXV</h5>
                                 <p class="card-text"><strong>Thời gian cập nhật:</strong> @hs.TGCN_HSXV.Value.ToString("dd/MM/yyyy h:mm tt")</p>
-                                <p class="card-text"><strong>Nội dung hồ sơ:</strong> @hs.NoiDung_HSXV</p>
                                 <a href="@Url.Action("DownloadFile", new { fileName = hs.File_HSXV })" class="btn btn-primary">
                                     <i class="fas fa-download"></i> Tải xuống
                                 </a>

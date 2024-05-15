@@ -21,14 +21,13 @@
             @using (Html.BeginForm("Login", "Auth", FormMethod.Post, new { id = "loginForm" }))
             {
                 @Html.ValidationSummary(true)
-
+                <p class="text-danger">@ViewData["Loidangnhap"]</p>
                 <div class="mb-3">
                     <label for="TenDN" class="form-label"><i class="fa fa-user"></i> Tài khoản</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fa fa-user"></i></span>
                         @Html.TextBox("TenDN", ViewData["TenDN"], new { @class = "form-control", type = "text", placeholder = "Tên Đăng Nhập" })
                     </div>
-                    <p class="text-danger">@ViewData["Loi1"]</p>
                 </div>
 
                 <div class="mb-3">
@@ -40,7 +39,7 @@
                             <i id="eyeIcon" class="bi bi-eye-slash"></i>
                         </button>
                     </div>
-                    <p class="text-danger">@ViewData["Loi2"]</p>
+                    <p class="text-danger">@ViewData["Loisaimatkhau"]</p>
                 </div>
 
                 <div class="mb-3">

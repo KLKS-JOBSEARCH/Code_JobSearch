@@ -224,6 +224,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Database.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Models\HoSoXinViecViewModel.cs" />
     <Compile Include="Models\JobDetailsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -2039,6 +2040,7 @@
     <Content Include="Views\Shared\Update_Pass.cshtml" />
     <Content Include="Views\Auth\UpdatePassword.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\User\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

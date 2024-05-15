@@ -186,11 +186,11 @@ namespace Code_JobSearch.Controllers
 
             if (string.IsNullOrEmpty(tendn))
             {
-                ViewData["Loi1"] = "Tên đăng nhập không được bỏ trống!";
+                ViewData["Loidangnhap"] = "Tên đăng nhập không được bỏ trống!";
             }
             if (string.IsNullOrEmpty(matkhau))
             {
-                ViewData["Loi2"] = "Mật khẩu không được bỏ trống!";
+                ViewData["Loidangnhap"] = "Mật khẩu không được bỏ trống!";
             }
 
             if (!string.IsNullOrEmpty(tendn) && !string.IsNullOrEmpty(matkhau))
@@ -225,12 +225,12 @@ namespace Code_JobSearch.Controllers
                     }
                     else
                     {
-                        ViewData["Loi5"] = "Mật khẩu sai, vui lòng nhập lại!";
+                        ViewData["Loisaimatkhau"] = "Mật khẩu sai, vui lòng nhập lại!";
                     }
                 }
                 else
                 {
-                    ViewData["Loi5"] = "Tên đăng nhập hoặc mật khẩu sai, vui lòng nhập lại!";
+                    ViewData["Loisaimatkhau"] = "Tên đăng nhập hoặc mật khẩu sai, vui lòng nhập lại!";
                 }
             }
 
