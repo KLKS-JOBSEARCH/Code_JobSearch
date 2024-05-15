@@ -49,7 +49,7 @@ namespace Code_JobSearch.Controllers
         }
         #endregion
 
-
+        #region CREATE, EDIT, DELETE CV
         public ActionResult Create()
         {
             if (Session["KH"] != null)
@@ -217,7 +217,7 @@ namespace Code_JobSearch.Controllers
             db.SubmitChanges();
             return RedirectToAction("CvUser", "User");
         }
-
+        #endregion
 
         #region Góp ý
         [HttpGet]
