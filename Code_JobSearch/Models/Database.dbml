@@ -1,12 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="JobStar" Class="DatabaseDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="WebSettings" ConnectionString="Data Source=.;Initial Catalog=JobStar;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="JobStarConnectionString" Provider="System.Data.SqlClient" />
-  <Table Name="dbo.ChiTietDoanhNghiep" Member="ChiTietDoanhNghieps">
-    <Type Name="ChiTietDoanhNghiep">
-      <Column Name="Id_CTDN" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="TieuDe_CTDN" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="NoiDung_CTDN" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Column Name="Id_DN" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Association Name="DoanhNghiep_ChiTietDoanhNghiep" Member="DoanhNghiep" ThisKey="Id_DN" OtherKey="Id_DN" Type="DoanhNghiep" IsForeignKey="true" />
+  <Table Name="dbo.DoanhNghiep" Member="DoanhNghieps">
+    <Type Name="DoanhNghiep">
+      <Column Name="Id_DN" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Ten_DN" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="MaSoThue_DN" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="LinkWeb_DN" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Logo_DN" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="DiaDiem_DN" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="MoTa_DN" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="DoanhNghiep_NhaTuyenDung" Member="NhaTuyenDungs" ThisKey="Id_DN" OtherKey="Id_DN" Type="NhaTuyenDung" />
     </Type>
   </Table>
   <Table Name="dbo.UV_TTD" Member="UV_TTDs">
@@ -16,22 +19,9 @@
       <Column Name="ThoiGianUngTuyen" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="TinhTrangUngTuyen" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="File_CV" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Column Name="Id_ThuGioiThieu" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="NoiDung_ThuGioiThieu" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Association Name="TinTuyenDung_UV_TTD" Member="TinTuyenDung" ThisKey="Id_TTD" OtherKey="Id_TTD" Type="TinTuyenDung" IsForeignKey="true" />
       <Association Name="UngVien_UV_TTD" Member="UngVien" ThisKey="Id_UV" OtherKey="Id_UV" Type="UngVien" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.DoanhNghiep" Member="DoanhNghieps">
-    <Type Name="DoanhNghiep">
-      <Column Name="Id_DN" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Ten_DN" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Column Name="MaSoThue_DN" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
-      <Column Name="LinkWeb_DN" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="Logo_DN" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Column Name="DiaDiem_DN" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
-      <Association Name="DoanhNghiep_ChiTietDoanhNghiep" Member="ChiTietDoanhNghieps" ThisKey="Id_DN" OtherKey="Id_DN" Type="ChiTietDoanhNghiep" />
-      <Association Name="DoanhNghiep_NhaTuyenDung" Member="NhaTuyenDungs" ThisKey="Id_DN" OtherKey="Id_DN" Type="NhaTuyenDung" />
     </Type>
   </Table>
   <Table Name="dbo.GopY" Member="Gopies">
@@ -56,18 +46,8 @@
       <Column Name="HoTenUV" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="EmailUV" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="SoDienThoaiUV" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
-      <Column Name="HinhAnhUV" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Column Name="NoiDung_HSXV" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="File_HSXV" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Association Name="UngVien_HoSoXinViec" Member="UngVien" ThisKey="Id_UV" OtherKey="Id_UV" Type="UngVien" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.LoaiThongBao" Member="LoaiThongBaos">
-    <Type Name="LoaiThongBao">
-      <Column Name="Id_LTB" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Ten_LTB" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="HinhAnh_LTB" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Association Name="LoaiThongBao_ThongBao" Member="ThongBaos" ThisKey="Id_LTB" OtherKey="Id_LTB" Type="ThongBao" />
     </Type>
   </Table>
   <Table Name="dbo.NhanVien" Member="NhanViens">
@@ -95,7 +75,6 @@
       <Column Name="Id_DN" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="TenTK" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Association Name="NhaTuyenDung_GopY" Member="Gopies" ThisKey="Id_NTD" OtherKey="Id_NTD" Type="GopY" />
-      <Association Name="NhaTuyenDung_ThongBao" Member="ThongBaos" ThisKey="Id_NTD" OtherKey="Id_NTD" Type="ThongBao" />
       <Association Name="NhaTuyenDung_TinTuyenDung" Member="TinTuyenDungs" ThisKey="Id_NTD" OtherKey="Id_NTD" Type="TinTuyenDung" />
       <Association Name="DoanhNghiep_NhaTuyenDung" Member="DoanhNghiep" ThisKey="Id_DN" OtherKey="Id_DN" Type="DoanhNghiep" IsForeignKey="true" />
       <Association Name="TaiKhoan_NhaTuyenDung" Member="TaiKhoan" ThisKey="TenTK" OtherKey="TenTK" Type="TaiKhoan" IsForeignKey="true" />
@@ -116,22 +95,6 @@
       <Association Name="TaiKhoan_NhanVien" Member="NhanViens" ThisKey="TenTK" OtherKey="TenTK" Type="NhanVien" />
       <Association Name="TaiKhoan_NhaTuyenDung" Member="NhaTuyenDungs" ThisKey="TenTK" OtherKey="TenTK" Type="NhaTuyenDung" />
       <Association Name="TaiKhoan_UngVien" Member="UngViens" ThisKey="TenTK" OtherKey="TenTK" Type="UngVien" />
-    </Type>
-  </Table>
-  <Table Name="dbo.ThongBao" Member="ThongBaos">
-    <Type Name="ThongBao">
-      <Column Name="Id_TB" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="TieuDe_TB" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="NoiDung_TB" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
-      <Column Name="TrangThaiGui_TB" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="ThoiGianGui_TB" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="TrangThaiXem_TB" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="Id_UV" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Id_NTD" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Id_LTB" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Association Name="LoaiThongBao_ThongBao" Member="LoaiThongBao" ThisKey="Id_LTB" OtherKey="Id_LTB" Type="LoaiThongBao" IsForeignKey="true" />
-      <Association Name="NhaTuyenDung_ThongBao" Member="NhaTuyenDung" ThisKey="Id_NTD" OtherKey="Id_NTD" Type="NhaTuyenDung" IsForeignKey="true" />
-      <Association Name="UngVien_ThongBao" Member="UngVien" ThisKey="Id_UV" OtherKey="Id_UV" Type="UngVien" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.TinTuyenDung" Member="TinTuyenDungs">
@@ -170,7 +133,6 @@
       <Association Name="UngVien_UV_TTD" Member="UV_TTDs" ThisKey="Id_UV" OtherKey="Id_UV" Type="UV_TTD" />
       <Association Name="UngVien_GopY" Member="Gopies" ThisKey="Id_UV" OtherKey="Id_UV" Type="GopY" />
       <Association Name="UngVien_HoSoXinViec" Member="HoSoXinViecs" ThisKey="Id_UV" OtherKey="Id_UV" Type="HoSoXinViec" />
-      <Association Name="UngVien_ThongBao" Member="ThongBaos" ThisKey="Id_UV" OtherKey="Id_UV" Type="ThongBao" />
       <Association Name="TaiKhoan_UngVien" Member="TaiKhoan" ThisKey="TenTK" OtherKey="TenTK" Type="TaiKhoan" IsForeignKey="true" />
     </Type>
   </Table>

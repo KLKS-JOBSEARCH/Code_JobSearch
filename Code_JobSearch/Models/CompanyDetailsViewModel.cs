@@ -9,7 +9,6 @@ namespace Code_JobSearch.Models
     {
         public NhaTuyenDung NhaTuyenDung { get; set; }
         public DoanhNghiep DoanhNghiep { get; set; }
-        public List<ChiTietDoanhNghiep> ChiTietDoanhNghiep { get; set; }
         public List<TinTuyenDung> TinTuyenDung { get; set; }
     }
 }

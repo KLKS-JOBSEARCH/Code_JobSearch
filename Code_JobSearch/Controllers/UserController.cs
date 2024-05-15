@@ -70,7 +70,6 @@ namespace Code_JobSearch.Controllers
                     HoTen_TKUV = ungVien.HoTen_TKUV,
                     Email_TKUV = ungVien.Email_TKUV,
                     SoDienThoai_TKUV = ungVien.SoDienThoai_TKUV,
-                    HinhAnhTKUV = ungVien.HinhAnhTKUV
                 };
 
                 return View(viewModel);
@@ -90,15 +89,14 @@ namespace Code_JobSearch.Controllers
 
                     var hoSoXinViec = new HoSoXinViec
                     {
-                        Ten_HSXV = model.Ten_HSXV,
-                        NoiDung_HSXV = model.NoiDung_HSXV,
+                        Ten_HSXV = string.IsNullOrEmpty(model.Ten_HSXV) ? "Chưa đặt tiêu đề" : model.Ten_HSXV,
                         TGCN_HSXV = DateTime.Now,
                         Id_UV = ungVien.Id_UV,
                         HoTenUV = ungVien.HoTen_TKUV,
                         EmailUV = ungVien.Email_TKUV,
                         SoDienThoaiUV = ungVien.SoDienThoai_TKUV,
-                        HinhAnhUV = ungVien.HinhAnhTKUV
                     };
+
 
                     if (uploadFile != null && uploadFile.ContentLength > 0)
                     {
@@ -115,6 +113,11 @@ namespace Code_JobSearch.Controllers
                             return View(model);
                         }
                     }
+                    else // Nếu không có tệp được chọn
+                    {
+                        ModelState.AddModelError("", "Vui lòng chọn một tệp để tải lên.");
+                        return View(model);
+                    }
 
                     db.HoSoXinViecs.InsertOnSubmit(hoSoXinViec);
                     db.SubmitChanges();
@@ -126,6 +129,7 @@ namespace Code_JobSearch.Controllers
 
             return RedirectToAction("Login", "Auth"); // Chuyển hướng đến trang đăng nhập nếu session không tồn tại
         }
+
 
         public ActionResult Edit(int id)
         {
@@ -148,7 +152,6 @@ namespace Code_JobSearch.Controllers
                 {
                     // Chỉ cập nhật các trường quan trọng
                     existingHoSo.Ten_HSXV = model.Ten_HSXV;
-                    existingHoSo.NoiDung_HSXV = model.NoiDung_HSXV;
                     existingHoSo.TGCN_HSXV = now;
 
                     // Xử lý upload file nếu có
@@ -157,8 +160,8 @@ namespace Code_JobSearch.Controllers
                         // Kiểm tra loại file
                         if (Path.GetExtension(uploadFile.FileName).ToLower() == ".pdf")
                         {
-                            // Kiểm tra kích thước của file (giới hạn dưới 1MB)
-                            if (uploadFile.ContentLength <= 5 * 1024 * 1024) // 1MB = 1024 * 1024 bytes
+                            // Kiểm tra kích thước của file (giới hạn dưới 30MB)
+                            if (uploadFile.ContentLength <= 5 * 1024 * 1024) // 5MB = 30 * 1024 * 1024 bytes
                             {
                                 var fileName = Path.GetFileName(uploadFile.FileName);
                                 var filePath = Path.Combine(Server.MapPath("~/Content/CvUser"), fileName);
@@ -173,15 +176,12 @@ namespace Code_JobSearch.Controllers
                                     }
                                 }
 
-                                // Lưu file mới vào thư mục
                                 uploadFile.SaveAs(filePath);
-
-                                // Cập nhật tên file vào cơ sở dữ liệu
                                 existingHoSo.File_HSXV = fileName;
                             }
                             else
                             {
-                                ModelState.AddModelError("", "Kích thước tệp PDF phải nhỏ hơn hoặc bằng 1MB.");
+                                ModelState.AddModelError("", "Kích thước tệp PDF phải nhỏ hơn hoặc bằng 5MB.");
                                 return View(model);
                             }
                         }
@@ -192,7 +192,6 @@ namespace Code_JobSearch.Controllers
                         }
                     }
                     db.SubmitChanges();
-
                     return RedirectToAction("CvUser", "User");
                 }
                 else
@@ -202,6 +201,8 @@ namespace Code_JobSearch.Controllers
             }
             return View(model);
         }
+
+
 
 
 

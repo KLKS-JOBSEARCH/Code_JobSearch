@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Tạo Hồ Sơ Mới</h2>
+<h2 style="color:green;">Tạo Hồ Sơ Mới</h2>
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
 {
@@ -13,37 +13,38 @@
 
     <div class="card mt-4">
         <div class="card-header bg-primary text-white">
-            <h4>Hồ sơ xin việc</h4>
+            <h4 style="color:white;"><i class="fas fa-file-alt"></i> Hồ sơ xin việc</h4>
         </div>
         <div class="card-body">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             @Html.HiddenFor(model => model.Id_UV)
 
-            <div class="mb-3">
-                <label for="HoTen_TKUV" class="form-label">Họ tên</label>
-                <input type="text" class="form-control" value="@Model.HoTen_TKUV" readonly />
-            </div>
-            <div class="mb-3">
-                <label for="Email_TKUV" class="form-label">Email</label>
-                <input type="email" class="form-control" value="@Model.Email_TKUV" readonly />
-            </div>
-            <div class="mb-3">
-                <label for="SoDienThoai_TKUV" class="form-label">Số điện thoại</label>
-                <input type="text" class="form-control" value="@Model.SoDienThoai_TKUV" readonly />
-            </div>
-            <div class="mb-3">
-                <label for="Ten_HSXV" class="form-label">Tên hồ sơ</label>
-                @Html.EditorFor(model => model.Ten_HSXV, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Ten_HSXV, "", new { @class = "text-danger" })
+            <div class="row mb-3">
+                <span style="color:red;">* Các thông tin bắt buộc</span>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="HoTen_TKUV" class="form-label">Họ tên</label>
+                        <input type="text" class="form-control" value="@Model.HoTen_TKUV" readonly />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="Email_TKUV" class="form-label">Email</label>
+                        <input type="email" class="form-control" value="@Model.Email_TKUV" readonly />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="SoDienThoai_TKUV" class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control" value="@Model.SoDienThoai_TKUV" readonly />
+                    </div>
+                </div>
             </div>
 
             <div class="mb-3">
-                <label for="NoiDung_HSXV" class="form-label">
-                    <i class="fas fa-envelope"></i> Thư giới thiệu
-                    <p class="small text-muted">Một thư giới thiệu ngắn gọn, chỉn chu sẽ giúp bạn trở nên chuyên nghiệp và gây ấn tượng hơn với nhà tuyển dụng.</p>
-                </label>
-                @Html.TextAreaFor(model => model.NoiDung_HSXV, new { @class = "form-control", placeholder = "Viết 1 lá thư ngắn gọn về bản thân (Điểm mạnh, điểm yếu) và nêu rõ mong muốn, lý do bạn muốn ứng tuyển cho vị trí này", rows = 5 })
-                @Html.ValidationMessageFor(model => model.NoiDung_HSXV, "", new { @class = "text-danger" })
+                <label for="Ten_HSXV" class="form-label">Tên hồ sơ</label>
+                @Html.EditorFor(model => model.Ten_HSXV, new { htmlAttributes = new { @class = "form-control", placeholder = "VD: CV_Nhân Viên Kinh Doanh....." } })
+                @Html.ValidationMessageFor(model => model.Ten_HSXV, "", new { @class = "text-danger" })
             </div>
 
             <div class="mb-3">
@@ -56,6 +57,7 @@
             </div>
         </div>
     </div>
+
 }
 
 <div class="mt-3">

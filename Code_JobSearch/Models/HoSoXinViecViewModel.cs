@@ -16,7 +16,6 @@ namespace Code_JobSearch.Models
         public string HoTen_TKUV { get; set; }
         public string Email_TKUV { get; set; }
         public string SoDienThoai_TKUV { get; set; }
-        public string HinhAnhTKUV { get; set; }
     }
 
 }

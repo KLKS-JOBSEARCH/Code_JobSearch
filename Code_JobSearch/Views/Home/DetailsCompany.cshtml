@@ -8,27 +8,43 @@
 <!-- Hiển thị thông tin doanh nghiệp -->
 <h2>@Model.DoanhNghiep.Ten_DN</h2>
 
+<div class="row">
+    <div class="col-md-8">
+        <h3>Mô tả Doanh nghiệp</h3>
+        <ul>
+            @{
+                var lines = Model.DoanhNghiep.MoTa_DN.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var line in lines)
+                {
+                    string[] words = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    for (int i = 0; i < words.Length; i++)
+                    {
+                        if (words[i].Contains("Vị Trí:") || words[i].Contains("Liên hệ:") || words[i].Contains("Mô Tả Công Việc:") || words[i].Contains("Yêu Cầu:") || words[i].Contains("Quyền Lợi:"))
+                        {
+                            <strong>@words[i]</strong>
+                        }
+                        else
+                        {
+                            @words[i]
+                        }
+                        if (i < words.Length - 1)
+                        {
+                            <text> </text> <!-- Thêm khoảng trắng giữa các từ -->
+                        }
+                    }
+                    <br />
+                }
+            }
+        </ul>
+    </div>
 
-@if (Model.ChiTietDoanhNghiep != null && Model.ChiTietDoanhNghiep.Any())
-{
-    <ul>
-        @foreach (var chiTiet in Model.ChiTietDoanhNghiep)
-        {
-            <li>
-                <p>@chiTiet.TieuDe_CTDN</p>
-                <p>@chiTiet.NoiDung_CTDN</p>
-            </li>
-        }
-    </ul>
-}
-
-<!-- Hiển thị danh sách tin tuyển dụng -->
-@foreach (var tinTuyenDung in Model.TinTuyenDung)
-{
-    <h3>@tinTuyenDung.TieuDe_TTD</h3>
-    <!-- Hiển thị thông tin tin tuyển dụng -->
-    <p>Ngày hết hạn: @tinTuyenDung.HanTuyenDung</p>
-    <p>Mức lương: @tinTuyenDung.MucLuongTD</p>
-    <!-- Thêm các thông tin tin tuyển dụng khác tùy theo yêu cầu -->
-}
+    <!-- Hiển thị danh sách tin tuyển dụng -->
+    @foreach (var tinTuyenDung in Model.TinTuyenDung)
+    {
+        <h3>@tinTuyenDung.TieuDe_TTD</h3>
+        <!-- Hiển thị thông tin tin tuyển dụng -->
+        <p>Ngày hết hạn: @tinTuyenDung.HanTuyenDung</p>
+        <p>Mức lương: @tinTuyenDung.MucLuongTD</p>
+        <!-- Thêm các thông tin tin tuyển dụng khác tùy theo yêu cầu -->
+    }
 

@@ -106,8 +106,6 @@ namespace Code_JobSearch.Controllers
                 {
                     // Lấy thông tin của doanh nghiệp từ Id_DN
                     viewModel.DoanhNghiep = context.DoanhNghieps.SingleOrDefault(dn => dn.Id_DN == viewModel.NhaTuyenDung.Id_DN);
-                    // Lấy danh sách các đối tượng ChiTietDoanhNghiep từ Id_DN
-                    viewModel.ChiTietDoanhNghiep = context.ChiTietDoanhNghieps.Where(ctdn => ctdn.Id_DN == viewModel.DoanhNghiep.Id_DN).ToList();
                     // Lấy danh sách tin tuyển dụng từ Id_NTD
                     viewModel.TinTuyenDung = context.TinTuyenDungs.Where(ttd => ttd.Id_NTD == id).ToList();
                 }
