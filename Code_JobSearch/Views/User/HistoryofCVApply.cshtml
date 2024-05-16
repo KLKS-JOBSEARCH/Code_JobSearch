@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Code_JobSearch.Models.HistoryOfCVApplyViewModel>
+@{
+    ViewBag.Title = "Lịch sử ứng tuyển";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Lịch sử ứng tuyển</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Tiêu đề công việc</th>
+                <th scope="col">Thời gian ứng tuyển</th>
+                <th scope="col">Tình trạng ứng tuyển</th>
+                <th scope="col">File CV</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                foreach (var uv_ttd in item.UV_TTD)
+                {
+                    <tr>
+                        <td>
+                            @Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailsJob", "Home", new { id = item.TinTuyenDung.Id_TTD })
+                        </td>
+                        <td>@uv_ttd.ThoiGianUngTuyen.Value.ToString("dd/MM/yyyy")</td>
+                        <td>@uv_ttd.TinhTrangUngTuyen</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="File actions">
+                                <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" download style="margin-right:20px" title="Tải xuống">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                                <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" target="_blank" title="Xem">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>

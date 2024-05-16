@@ -14,12 +14,18 @@
   </Table>
   <Table Name="dbo.UV_TTD" Member="UV_TTDs">
     <Type Name="UV_TTD">
-      <Column Name="Id_UV" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Id_TTD" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id_UT" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Id_UV" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Id_TTD" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Id_HSXV" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="HoTenUV_TD" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="EmailUV_TD" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="SoDienThoaiUV_TD" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
       <Column Name="ThoiGianUngTuyen" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="TinhTrangUngTuyen" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="File_CV" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="NoiDung_ThuGioiThieu" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Association Name="HoSoXinViec_UV_TTD" Member="HoSoXinViec" ThisKey="Id_HSXV" OtherKey="Id_HSXV" Type="HoSoXinViec" IsForeignKey="true" />
       <Association Name="TinTuyenDung_UV_TTD" Member="TinTuyenDung" ThisKey="Id_TTD" OtherKey="Id_TTD" Type="TinTuyenDung" IsForeignKey="true" />
       <Association Name="UngVien_UV_TTD" Member="UngVien" ThisKey="Id_UV" OtherKey="Id_UV" Type="UngVien" IsForeignKey="true" />
     </Type>
@@ -47,6 +53,7 @@
       <Column Name="EmailUV" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="SoDienThoaiUV" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
       <Column Name="File_HSXV" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="HoSoXinViec_UV_TTD" Member="UV_TTDs" ThisKey="Id_HSXV" OtherKey="Id_HSXV" Type="UV_TTD" />
       <Association Name="UngVien_HoSoXinViec" Member="UngVien" ThisKey="Id_UV" OtherKey="Id_UV" Type="UngVien" IsForeignKey="true" />
     </Type>
   </Table>

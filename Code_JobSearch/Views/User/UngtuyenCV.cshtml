@@ -1,0 +1,87 @@
+﻿@model Code_JobSearch.Models.UngtuyenViewmodel
+@{
+    ViewBag.Title = "Ứng tuyển CV";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+
+<div class="col-md-8">
+    <div>
+        <!-- Đặt kích thước cố định cho card -->
+        <h3 class="card-title">@Html.DisplayFor(model => model.TinTuyenDung.TieuDe_TTD)</h3>
+        <dl class="row">
+            <dt class="col-sm-4"><i class="bi bi-calendar"></i> Hạn nộp hồ sơ</dt>
+            <dd class="col-sm-8">@Model.TinTuyenDung.HanTuyenDung.Value.ToString("dd/MM/yyyy")</dd>
+            <dt class="col-sm-4"><i class="bi bi-cash"></i> Mức lương</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.MucLuongTD)</dd>
+            <dt class="col-sm-4"><i class="bi bi-geo-alt-fill"></i> Địa điểm</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.DiaDiem_TTD)</dd>
+            <dt class="col-sm-4"><i class="bi bi-calendar3-event-fill"></i> Yêu cầu kinh nghiệm</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.KinhNghiemLam)</dd>
+        </dl>
+    </div>
+</div>
+@using (Html.BeginForm("UngtuyenCV", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(model => model.TinTuyenDung.Id_TTD)
+
+    <div class="container mt-4">
+        <!-- Vùng Tải lên CV mới -->
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5>Tải lên CV mới</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="File_CV">Tải lên CV mới:</label>
+                    <input type="file" name="File_CV" class="form-control" id="File_CV" />
+                </div>
+                <div class="form-group mt-2">
+                    <button type="button" class="btn btn-secondary" id="showHoSoBtn">Chọn hồ sơ xin việc</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vùng Chọn hồ sơ xin việc (mặc định ẩn) -->
+        <div class="card mb-3" id="hoSoSection" style="display:none;">
+            <div class="card-header bg-success text-white">
+                <h5>Chọn hồ sơ xin việc</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="SelectedHoSoId">Chọn hồ sơ xin việc:</label>
+                    @Html.DropDownListFor(model => model.SelectedHoSoId, new SelectList(Model.HoSoXinViecList, "Id_HSXV", "Ten_HSXV"), "Chọn hồ sơ", new { @class = "form-control", id = "SelectedHoSoId" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Vùng Nội dung thư giới thiệu -->
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h5>Nội dung thư giới thiệu</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="NoiDung_ThuGioiThieu">Nội dung thư giới thiệu:</label>
+                    @Html.TextAreaFor(model => model.NoiDung_ThuGioiThieu, new { @class = "form-control", rows = 5, id = "NoiDung_ThuGioiThieu" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Nút gửi -->
+        <div class="form-group">
+            <input type="submit" value="Ứng tuyển" class="btn btn-primary" />
+        </div>
+    </div>
+}
+
+<script>
+    document.getElementById("showHoSoBtn").addEventListener("click", function () {
+        var hoSoSection = document.getElementById("hoSoSection");
+        if (hoSoSection.style.display === "none") {
+            hoSoSection.style.display = "block";
+        } else {
+            hoSoSection.style.display = "none";
+        }
+    });
+</script>

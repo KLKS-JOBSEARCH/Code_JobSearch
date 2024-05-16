@@ -224,8 +224,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Database.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Models\HistoryOfCVApplyViewModel.cs" />
     <Compile Include="Models\HoSoXinViecViewModel.cs" />
     <Compile Include="Models\JobDetailsViewModel.cs" />
+    <Compile Include="Models\UngtuyenViewmodel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2041,6 +2043,8 @@
     <Content Include="Views\Auth\UpdatePassword.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />
     <Content Include="Views\User\Create.cshtml" />
+    <Content Include="Views\User\UngtuyenCV.cshtml" />
+    <Content Include="Views\User\HistoryofCVApply.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

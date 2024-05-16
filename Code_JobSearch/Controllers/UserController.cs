@@ -30,8 +30,8 @@ namespace Code_JobSearch.Controllers
                                  {
                                      UngVien = uv,
                                      HoSoXinViec = (from hs in db.HoSoXinViecs
-                                                     where hs.Id_UV == uv.Id_UV
-                                                     select hs).ToList()
+                                                    where hs.Id_UV == uv.Id_UV
+                                                    select hs).ToList()
                                  }).SingleOrDefault();
 
                 if (viewModel == null)
@@ -49,7 +49,7 @@ namespace Code_JobSearch.Controllers
         }
         #endregion
 
-        #region CREATE, EDIT, DELETE CV
+        #region CREATE, EDIT, DELETE, DOWNLOAD CV
         public ActionResult Create()
         {
             if (Session["KH"] != null)
@@ -109,7 +109,7 @@ namespace Code_JobSearch.Controllers
                         }
                         else
                         {
-                            ModelState.AddModelError("", "Vui lòng chọn một tệp PDF có kích thước nhỏ hơn hoặc bằng 1MB.");
+                            ModelState.AddModelError("", "Vui lòng chọn một tệp PDF có kích thước nhỏ hơn hoặc bằng 5MB.");
                             return View(model);
                         }
                     }
@@ -218,6 +218,26 @@ namespace Code_JobSearch.Controllers
             db.SubmitChanges();
             return RedirectToAction("CvUser", "User");
         }
+
+        public ActionResult DownloadFile(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            string filePath = Server.MapPath("~/Content/CvUser/") + fileName;
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return HttpNotFound();
+            }
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+            string fileType = MimeMapping.GetMimeMapping(filePath);
+            return File(fileBytes, fileType, fileName);
+        }
+
         #endregion
 
         #region Góp ý
@@ -281,24 +301,129 @@ namespace Code_JobSearch.Controllers
         }
         #endregion
 
-        public ActionResult DownloadFile(string fileName)
+        #region Ứng tuyển công việc
+        public ActionResult UngtuyenCV(int? idTTD)
         {
-            if (string.IsNullOrEmpty(fileName))
+            if (Session["KH"] == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Login", "Auth"); // Chuyển hướng nếu người dùng chưa đăng nhập
             }
 
-            string filePath = Server.MapPath("~/Content/CvUser/") + fileName;
-
-            if (!System.IO.File.Exists(filePath))
+            if (!idTTD.HasValue)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error"); // Chuyển hướng nếu idTTD không có giá trị
             }
 
-            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-            string fileType = MimeMapping.GetMimeMapping(filePath);
-            return File(fileBytes, fileType, fileName);
+            UngVien kh = Session["KH"] as UngVien;
+            TinTuyenDung tinTuyenDung = db.TinTuyenDungs.SingleOrDefault(t => t.Id_TTD == idTTD.Value);
+            List<HoSoXinViec> hoSoXinViecs = db.HoSoXinViecs.Where(h => h.Id_UV == kh.Id_UV).ToList();
+
+            UngtuyenViewmodel model = new UngtuyenViewmodel
+            {
+                UngVien = kh,
+                TinTuyenDung = tinTuyenDung,
+                HoSoXinViecList = hoSoXinViecs
+            };
+
+            return View(model);
         }
+
+        // POST: UngtuyenCV
+        [HttpPost]
+        public ActionResult UngtuyenCV(UngtuyenViewmodel model, HttpPostedFileBase File_CV)
+        {
+            if (Session["KH"] == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            UngVien kh = Session["KH"] as UngVien;
+
+            // Tạo đối tượng UV_TTD để lưu vào database
+            UV_TTD uv_ttd = new UV_TTD
+            {
+                Id_UV = kh.Id_UV,
+                Id_TTD = model.TinTuyenDung.Id_TTD,
+                HoTenUV_TD = kh.HoTen_TKUV,
+                EmailUV_TD = kh.Email_TKUV,
+                SoDienThoaiUV_TD = kh.SoDienThoai_TKUV,
+                ThoiGianUngTuyen = DateTime.Now,
+                TinhTrangUngTuyen = "Đã ứng tuyển",
+                NoiDung_ThuGioiThieu = string.IsNullOrEmpty(model.NoiDung_ThuGioiThieu) ? "Chưa có nội dung thư!" : model.NoiDung_ThuGioiThieu,
+                Id_HSXV = model.SelectedHoSoId // Gán Id_HSXV từ lựa chọn của người dùng
+            };
+
+            if (model.SelectedHoSoId.HasValue && model.SelectedHoSoId > 0)
+            {
+                // Người dùng chọn một hồ sơ xin việc từ danh sách
+                HoSoXinViec hoSo = db.HoSoXinViecs.FirstOrDefault(h => h.Id_HSXV == model.SelectedHoSoId);
+                if (hoSo != null)
+                {
+                    uv_ttd.File_CV = hoSo.File_HSXV;
+                }
+            }
+            else
+            {
+                if (File_CV != null && File_CV.ContentLength > 0)
+                {
+                    // Giới hạn kích thước tệp là 5MB
+                    if (File_CV.ContentLength > 5 * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("", "Kích thước tệp phải nhỏ hơn hoặc bằng 5MB.");
+                        return View(model);
+                    }
+
+                    // Kiểm tra phần mở rộng của tệp có phải là .pdf không
+                    if (Path.GetExtension(File_CV.FileName).ToLower() != ".pdf")
+                    {
+                        ModelState.AddModelError("", "Vui lòng chọn một tệp PDF.");
+                        return View(model);
+                    }
+
+                    // Lưu tệp và gán tên vào đối tượng UV_TTD
+                    string fileName = Path.GetFileName(File_CV.FileName);
+                    string filePath = Path.Combine(Server.MapPath("~/Content/CvUser"), fileName);
+                    File_CV.SaveAs(filePath);
+                    uv_ttd.File_CV = fileName;
+                }
+                else // Nếu không có tệp được chọn
+                {
+                    ModelState.AddModelError("", "Vui lòng chọn một tệp để tải lên.");
+                    return View(model);
+                }
+            }
+
+            db.UV_TTDs.InsertOnSubmit(uv_ttd);
+            db.SubmitChanges();
+
+            return RedirectToAction("Index", "Home"); // Chuyển hướng đến trang thành công hoặc trang khác
+        }
+        #endregion
+
+        #region Xem lịch sử công việc đã ứng tuyển
+        public ActionResult HistoryofCVApply()
+        {
+            if (Session["KH"] == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            UngVien kh = Session["KH"] as UngVien;
+
+            var history = from uv_ttd in db.UV_TTDs
+                          join ttd in db.TinTuyenDungs on uv_ttd.Id_TTD equals ttd.Id_TTD
+                          where uv_ttd.Id_UV == kh.Id_UV
+                          select new HistoryOfCVApplyViewModel
+                          {
+                              TinTuyenDung = ttd,
+                              UV_TTD = db.UV_TTDs.Where(u => u.Id_TTD == uv_ttd.Id_TTD).ToList()
+                          };
+
+            return View(history.ToList());
+        }
+
+
+        #endregion
 
     }
 }

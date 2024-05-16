@@ -413,9 +413,19 @@ namespace Code_JobSearch.Models
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private int _Id_UV;
+		private int _Id_UT;
 		
-		private int _Id_TTD;
+		private System.Nullable<int> _Id_UV;
+		
+		private System.Nullable<int> _Id_TTD;
+		
+		private System.Nullable<int> _Id_HSXV;
+		
+		private string _HoTenUV_TD;
+		
+		private string _EmailUV_TD;
+		
+		private string _SoDienThoaiUV_TD;
 		
 		private System.Nullable<System.DateTime> _ThoiGianUngTuyen;
 		
@@ -425,6 +435,8 @@ namespace Code_JobSearch.Models
 		
 		private string _NoiDung_ThuGioiThieu;
 		
+		private EntityRef<HoSoXinViec> _HoSoXinViec;
+		
 		private EntityRef<TinTuyenDung> _TinTuyenDung;
 		
 		private EntityRef<UngVien> _UngVien;
@@ -433,10 +445,20 @@ namespace Code_JobSearch.Models
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnId_UVChanging(int value);
+    partial void OnId_UTChanging(int value);
+    partial void OnId_UTChanged();
+    partial void OnId_UVChanging(System.Nullable<int> value);
     partial void OnId_UVChanged();
-    partial void OnId_TTDChanging(int value);
+    partial void OnId_TTDChanging(System.Nullable<int> value);
     partial void OnId_TTDChanged();
+    partial void OnId_HSXVChanging(System.Nullable<int> value);
+    partial void OnId_HSXVChanged();
+    partial void OnHoTenUV_TDChanging(string value);
+    partial void OnHoTenUV_TDChanged();
+    partial void OnEmailUV_TDChanging(string value);
+    partial void OnEmailUV_TDChanged();
+    partial void OnSoDienThoaiUV_TDChanging(string value);
+    partial void OnSoDienThoaiUV_TDChanged();
     partial void OnThoiGianUngTuyenChanging(System.Nullable<System.DateTime> value);
     partial void OnThoiGianUngTuyenChanged();
     partial void OnTinhTrangUngTuyenChanging(string value);
@@ -449,13 +471,34 @@ namespace Code_JobSearch.Models
 		
 		public UV_TTD()
 		{
+			this._HoSoXinViec = default(EntityRef<HoSoXinViec>);
 			this._TinTuyenDung = default(EntityRef<TinTuyenDung>);
 			this._UngVien = default(EntityRef<UngVien>);
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_UV", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int Id_UV
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_UT", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id_UT
+		{
+			get
+			{
+				return this._Id_UT;
+			}
+			set
+			{
+				if ((this._Id_UT != value))
+				{
+					this.OnId_UTChanging(value);
+					this.SendPropertyChanging();
+					this._Id_UT = value;
+					this.SendPropertyChanged("Id_UT");
+					this.OnId_UTChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_UV", DbType="Int")]
+		public System.Nullable<int> Id_UV
 		{
 			get
 			{
@@ -478,8 +521,8 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_TTD", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int Id_TTD
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_TTD", DbType="Int")]
+		public System.Nullable<int> Id_TTD
 		{
 			get
 			{
@@ -498,6 +541,90 @@ namespace Code_JobSearch.Models
 					this._Id_TTD = value;
 					this.SendPropertyChanged("Id_TTD");
 					this.OnId_TTDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_HSXV", DbType="Int")]
+		public System.Nullable<int> Id_HSXV
+		{
+			get
+			{
+				return this._Id_HSXV;
+			}
+			set
+			{
+				if ((this._Id_HSXV != value))
+				{
+					if (this._HoSoXinViec.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnId_HSXVChanging(value);
+					this.SendPropertyChanging();
+					this._Id_HSXV = value;
+					this.SendPropertyChanged("Id_HSXV");
+					this.OnId_HSXVChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HoTenUV_TD", DbType="NVarChar(100)")]
+		public string HoTenUV_TD
+		{
+			get
+			{
+				return this._HoTenUV_TD;
+			}
+			set
+			{
+				if ((this._HoTenUV_TD != value))
+				{
+					this.OnHoTenUV_TDChanging(value);
+					this.SendPropertyChanging();
+					this._HoTenUV_TD = value;
+					this.SendPropertyChanged("HoTenUV_TD");
+					this.OnHoTenUV_TDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmailUV_TD", DbType="NVarChar(50)")]
+		public string EmailUV_TD
+		{
+			get
+			{
+				return this._EmailUV_TD;
+			}
+			set
+			{
+				if ((this._EmailUV_TD != value))
+				{
+					this.OnEmailUV_TDChanging(value);
+					this.SendPropertyChanging();
+					this._EmailUV_TD = value;
+					this.SendPropertyChanged("EmailUV_TD");
+					this.OnEmailUV_TDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SoDienThoaiUV_TD", DbType="VarChar(10)")]
+		public string SoDienThoaiUV_TD
+		{
+			get
+			{
+				return this._SoDienThoaiUV_TD;
+			}
+			set
+			{
+				if ((this._SoDienThoaiUV_TD != value))
+				{
+					this.OnSoDienThoaiUV_TDChanging(value);
+					this.SendPropertyChanging();
+					this._SoDienThoaiUV_TD = value;
+					this.SendPropertyChanged("SoDienThoaiUV_TD");
+					this.OnSoDienThoaiUV_TDChanged();
 				}
 			}
 		}
@@ -582,6 +709,40 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="HoSoXinViec_UV_TTD", Storage="_HoSoXinViec", ThisKey="Id_HSXV", OtherKey="Id_HSXV", IsForeignKey=true)]
+		public HoSoXinViec HoSoXinViec
+		{
+			get
+			{
+				return this._HoSoXinViec.Entity;
+			}
+			set
+			{
+				HoSoXinViec previousValue = this._HoSoXinViec.Entity;
+				if (((previousValue != value) 
+							|| (this._HoSoXinViec.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._HoSoXinViec.Entity = null;
+						previousValue.UV_TTDs.Remove(this);
+					}
+					this._HoSoXinViec.Entity = value;
+					if ((value != null))
+					{
+						value.UV_TTDs.Add(this);
+						this._Id_HSXV = value.Id_HSXV;
+					}
+					else
+					{
+						this._Id_HSXV = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("HoSoXinViec");
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TinTuyenDung_UV_TTD", Storage="_TinTuyenDung", ThisKey="Id_TTD", OtherKey="Id_TTD", IsForeignKey=true)]
 		public TinTuyenDung TinTuyenDung
 		{
@@ -609,7 +770,7 @@ namespace Code_JobSearch.Models
 					}
 					else
 					{
-						this._Id_TTD = default(int);
+						this._Id_TTD = default(Nullable<int>);
 					}
 					this.SendPropertyChanged("TinTuyenDung");
 				}
@@ -643,7 +804,7 @@ namespace Code_JobSearch.Models
 					}
 					else
 					{
-						this._Id_UV = default(int);
+						this._Id_UV = default(Nullable<int>);
 					}
 					this.SendPropertyChanged("UngVien");
 				}
@@ -981,6 +1142,8 @@ namespace Code_JobSearch.Models
 		
 		private string _File_HSXV;
 		
+		private EntitySet<UV_TTD> _UV_TTDs;
+		
 		private EntityRef<UngVien> _UngVien;
 		
     #region Extensibility Method Definitions
@@ -1007,6 +1170,7 @@ namespace Code_JobSearch.Models
 		
 		public HoSoXinViec()
 		{
+			this._UV_TTDs = new EntitySet<UV_TTD>(new Action<UV_TTD>(this.attach_UV_TTDs), new Action<UV_TTD>(this.detach_UV_TTDs));
 			this._UngVien = default(EntityRef<UngVien>);
 			OnCreated();
 		}
@@ -1175,6 +1339,19 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="HoSoXinViec_UV_TTD", Storage="_UV_TTDs", ThisKey="Id_HSXV", OtherKey="Id_HSXV")]
+		public EntitySet<UV_TTD> UV_TTDs
+		{
+			get
+			{
+				return this._UV_TTDs;
+			}
+			set
+			{
+				this._UV_TTDs.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="UngVien_HoSoXinViec", Storage="_UngVien", ThisKey="Id_UV", OtherKey="Id_UV", IsForeignKey=true)]
 		public UngVien UngVien
 		{
@@ -1227,6 +1404,18 @@ namespace Code_JobSearch.Models
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_UV_TTDs(UV_TTD entity)
+		{
+			this.SendPropertyChanging();
+			entity.HoSoXinViec = this;
+		}
+		
+		private void detach_UV_TTDs(UV_TTD entity)
+		{
+			this.SendPropertyChanging();
+			entity.HoSoXinViec = null;
 		}
 	}
 	

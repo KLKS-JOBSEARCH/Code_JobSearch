@@ -44,7 +44,10 @@
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.KinhNghiemLam)</dd>
                 </dl>
             </div>
-            <a style="margin-top:20px; width:500px" href="@Url.Action("Index", "Home")" class="btn btn-primary mb-4">Ứng tuyển ngay</a>
+            <a href="@Url.Action("UngtuyenCV", "User", new { idTTD = Model.TinTuyenDung.Id_TTD })" class="btn btn-primary mb-4">Ứng tuyển ngay</a>
+
+
+
         </div>
 
         <div class="col-md-4">
