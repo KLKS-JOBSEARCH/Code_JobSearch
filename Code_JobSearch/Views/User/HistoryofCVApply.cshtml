@@ -22,16 +22,17 @@
                 {
                     <tr>
                         <td>
-                            @Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailsJob", "Home", new { id = item.TinTuyenDung.Id_TTD })
+                            @Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailsJob", "Home", new { id = item.TinTuyenDung.Id_TTD }, null)
+
                         </td>
                         <td>@uv_ttd.ThoiGianUngTuyen.Value.ToString("dd/MM/yyyy")</td>
                         <td>@uv_ttd.TinhTrangUngTuyen</td>
                         <td>
                             <div class="btn-group" role="group" aria-label="File actions">
                                 <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" download style="margin-right:20px" title="Tải xuống">
-                                    <i class="bi bi-download"></i>
+                                    <i class="bi bi-download"></i>Tải xuống
                                 </a>
-                                <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" target="_blank" title="Xem">
+                                <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" target="_blank" title="Xem">Xem CV
                                     <i class="bi bi-eye"></i>
                                 </a>
                             </div>

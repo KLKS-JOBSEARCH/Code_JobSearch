@@ -35,14 +35,14 @@ namespace Code_JobSearch.Controllers
         #region Job
         public ActionResult Index(int page = 1)
         {
-            List<TinTuyenDung> tinTuyenDungs = db.TinTuyenDungs.ToList();
-            //List<TinTuyenDung> tinTuyenDungs = db.TinTuyenDungs
-            //                                .Where(t => t.HanTuyenDung.HasValue && t.HanTuyenDung > DateTime.Now)
-            //                                .OrderByDescending(t => t.HanTuyenDung)
-            //                                .ToList();
+            //List<TinTuyenDung> tinTuyenDungs = db.TinTuyenDungs.ToList();
+            List<TinTuyenDung> tinTuyenDungs = db.TinTuyenDungs
+                                            .Where(t => t.HanTuyenDung.HasValue && t.HanTuyenDung > DateTime.Now)
+                                            .OrderByDescending(t => t.HanTuyenDung)
+                                            .ToList();
 
             //paging
-            int NoOfRecordPerPage = 9;
+            int NoOfRecordPerPage = 6;
             int NoOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(tinTuyenDungs.Count) / Convert.ToDouble(NoOfRecordPerPage)));
             int NoOfRecordSkip = (page - 1) * NoOfRecordPerPage;
             ViewBag.Page = page;
@@ -106,8 +106,12 @@ namespace Code_JobSearch.Controllers
                 {
                     // Lấy thông tin của doanh nghiệp từ Id_DN
                     viewModel.DoanhNghiep = context.DoanhNghieps.SingleOrDefault(dn => dn.Id_DN == viewModel.NhaTuyenDung.Id_DN);
-                    // Lấy danh sách tin tuyển dụng từ Id_NTD
-                    viewModel.TinTuyenDung = context.TinTuyenDungs.Where(ttd => ttd.Id_NTD == id).ToList();
+
+                    // Lấy danh sách tin tuyển dụng từ Id_NTD và sắp xếp theo ngày hạn tuyển dụng mới nhất đến cũ nhất
+                    viewModel.TinTuyenDung = context.TinTuyenDungs
+                                                .Where(ttd => ttd.Id_NTD == id && ttd.HanTuyenDung.HasValue && ttd.HanTuyenDung > DateTime.Now)
+                                                .OrderByDescending(ttd => ttd.HanTuyenDung)
+                                                .ToList();
                 }
 
                 return View(viewModel);
@@ -115,10 +119,7 @@ namespace Code_JobSearch.Controllers
         }
 
 
-
-
         #endregion
-        //chưa xử lý
 
 
 

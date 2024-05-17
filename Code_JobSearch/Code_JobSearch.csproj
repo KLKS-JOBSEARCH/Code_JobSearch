@@ -1649,6 +1649,10 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Image\basic.png" />
+    <Content Include="Image\imgBao\baibao1.jpg" />
+    <Content Include="Image\imgBao\baibao2.jpg" />
+    <Content Include="Image\imgBao\baibao3.jpg" />
+    <Content Include="Image\imgBao\baibao4.png" />
     <Content Include="Image\Khachhang\adventure.jpg" />
     <Content Include="Image\Khachhang\basic.png" />
     <Content Include="Image\Khachhang\cat.jpg" />

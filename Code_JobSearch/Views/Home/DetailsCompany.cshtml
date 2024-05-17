@@ -4,47 +4,140 @@
     ViewBag.Title = "DetailsCompany";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<h3 class="card-title text-right" style="color:green">Thông tin doanh nghiệp</h3>
 <!-- Hiển thị thông tin doanh nghiệp -->
-<h2>@Model.DoanhNghiep.Ten_DN</h2>
+<div class="col-md-4">
+    <div class="card border-primary" style="min-height: 100px; width:500px">
+        <!-- Đặt kích thước cố định cho card -->
+        <div class="card-body">
 
-<div class="row">
-    <div class="col-md-8">
-        <h3>Mô tả Doanh nghiệp</h3>
-        <ul>
-            @{
-                var lines = Model.DoanhNghiep.MoTa_DN.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var line in lines)
-                {
-                    string[] words = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    for (int i = 0; i < words.Length; i++)
-                    {
-                        if (words[i].Contains("Vị Trí:") || words[i].Contains("Liên hệ:") || words[i].Contains("Mô Tả Công Việc:") || words[i].Contains("Yêu Cầu:") || words[i].Contains("Quyền Lợi:"))
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="rounded-circle">
+                        <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(Model.DoanhNghiep.Logo_DN)" class="img-fluid" alt="Logo Doanh Nghiệp" />
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="company-info">
+                        <p class="card-text"><strong>@Html.DisplayFor(model => model.DoanhNghiep.Ten_DN)</strong></p>
+                        <p class="card-text">Website: <a href="@Html.DisplayFor(model => model.DoanhNghiep.LinkWeb_DN)">@Html.DisplayFor(model => model.DoanhNghiep.LinkWeb_DN)</a></p>
+                        <p class="card-text"><i class="bi bi-geo-alt-fill"></i> @Html.DisplayFor(model => model.DoanhNghiep.DiaDiem_DN)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" id="info-tab" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Thông tin mô tả</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="jobs-tab" data-bs-toggle="tab" href="#jobs" role="tab" aria-controls="jobs" aria-selected="false">Tin tuyển dụng</a>
+    </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+        <br />
+        <!-- Hiển thị mô tả doanh nghiệp -->
+        <div class="row">
+            <div class="col-md-8">
+                <h3 style="color:green">Mô tả Doanh nghiệp</h3>
+                <ul>
+                    @{
+                        var lines = Model.DoanhNghiep.MoTa_DN.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var line in lines)
                         {
-                            <strong>@words[i]</strong>
-                        }
-                        else
-                        {
-                            @words[i]
-                        }
-                        if (i < words.Length - 1)
-                        {
-                            <text> </text> <!-- Thêm khoảng trắng giữa các từ -->
+                            string[] words = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            for (int i = 0; i < words.Length; i++)
+                            {
+                                if (words[i].Contains("Vị Trí:") || words[i].Contains("Liên hệ:") || words[i].Contains("Mô Tả Công Việc:") || words[i].Contains("Yêu Cầu:") || words[i].Contains("Quyền Lợi:"))
+                                {
+                                    <strong>@words[i]</strong>
+                                }
+                                else
+                                {
+                                    @words[i]
+                                }
+                                if (i < words.Length - 1)
+                                {
+                                    <text> </text> <!-- Thêm khoảng trắng giữa các từ -->
+                                }
+                            }
+                            <br />
                         }
                     }
-                    <br />
+                </ul>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="tab-pane fade" id="jobs" role="tabpanel" aria-labelledby="jobs-tab">
+        <div class="row">
+            @if (Model.TinTuyenDung.Any())
+            {
+                foreach (var tinTuyenDung in Model.TinTuyenDung)
+                {
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow rounded">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <a href="@Url.Action("DetailsJob", "Home", new { id = tinTuyenDung.Id_TTD })">
+                                        <img src="~/Content/Logo_DoanhNghiep/@tinTuyenDung.Logo_DN_TTD" alt="Logo" class="card-img rounded-start" style="border-radius: 10px 0 0 10px;">
+                                    </a>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title"> @Html.ActionLink(@tinTuyenDung.TieuDe_TTD, "DetailsJob", "Home", new { id = tinTuyenDung.Id_TTD }, null)</h5>
+                                        <p class="card-text"><i class="bi bi-cash-stack"></i> Mức lương: @tinTuyenDung.MucLuongTD</p>
+                                        <p class="card-text"><i class="bi bi-person"></i> Số lượng: @tinTuyenDung.SoLuongTuyen</p>
+                                        <p class="card-text"><i class="bi bi-clock"></i> 
+                                            @if (tinTuyenDung.HanTuyenDung.HasValue && DateTime.Now < tinTuyenDung.HanTuyenDung.Value)
+                                            {
+                                                var remainingHours = Math.Floor((tinTuyenDung.HanTuyenDung.Value - DateTime.Now).TotalHours);
+
+                                                if (remainingHours > 24 * 7) // Nếu còn nhiều hơn 7 ngày
+                                                {
+                                                    var remainingWeeks = Math.Floor(remainingHours / (24 * 7)); // Số tuần còn lại
+                                                    <text>Còn @remainingWeeks tuần</text>
+                                                }
+                                                else if (remainingHours > 24) // Nếu còn nhiều hơn 24 giờ
+                                                {
+                                                    var remainingDays = Math.Floor(remainingHours / 24); // Số ngày còn lại
+                                                    <text>Còn @remainingDays ngày</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>Còn @remainingHours giờ</text>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <text>Đã hết hạn</text>
+                                            }
+                                        </p>
+                                        <p class="card-text"><i class="bi bi-geo-alt-fill">@tinTuyenDung.DiaDiem_TTD</i></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 }
             }
-        </ul>
+            else
+            {
+                <div class="col">
+                    <div class="card text-center h-100 shadow rounded">
+                        <div class="card-body">
+                            <p class="card-text">Không có tin tuyển dụng lúc này.</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 
-    <!-- Hiển thị danh sách tin tuyển dụng -->
-    @foreach (var tinTuyenDung in Model.TinTuyenDung)
-    {
-        <h3>@tinTuyenDung.TieuDe_TTD</h3>
-        <!-- Hiển thị thông tin tin tuyển dụng -->
-        <p>Ngày hết hạn: @tinTuyenDung.HanTuyenDung</p>
-        <p>Mức lương: @tinTuyenDung.MucLuongTD</p>
-        <!-- Thêm các thông tin tin tuyển dụng khác tùy theo yêu cầu -->
-    }
 
+</div>

@@ -1,6 +1,5 @@
 ﻿@model IEnumerable<Code_JobSearch.Models.TinTuyenDung>
 
-
 @{
     ViewBag.Title = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,11 +9,9 @@
 
 <style>
     .card {
-        position: relative;
-        overflow: hidden;
         border: 1px solid #ddd;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        transition: transform 0.2s;
         margin-bottom: 20px;
     }
 
@@ -22,16 +19,40 @@
             transform: scale(1.05);
         }
 
-        .card img {
-            width: 120px;
-            height: 100px;
-            display: block;
-            margin: 0 auto;
-            margin-bottom: 10px;
+    .card-img-top {
+        width: 50%; /* Kích thước của hình ảnh là 50% của card */
+        height: auto;
+        overflow: hidden;
+        display: flex;
+        justify-content: flex-start; /* Đặt hình ảnh ở giữa bên trái */
+    }
+
+        .card-img-top img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
         }
 
-    .card-content {
+    .card-body {
         padding: 15px;
+    }
+
+    .card-title.job-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        .card-title.job-name:hover {
+            white-space: normal;
+        }
+
+    .card-text {
+        margin-bottom: 10px;
+    }
+
+    .bi-geo-alt-fill {
+        margin-right: 5px;
     }
 
     .job-name {
@@ -49,77 +70,97 @@
         font-weight: bold;
         color: #007bff;
     }
+
+    .carousel img {
+        height: 300px;
+        object-fit: cover;
+    }
+
+    .card-text i {
+        margin-right: 5px;
+    }
+
+    .news-item img {
+        width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+    }
 </style>
 
-<div class="container">
+
+<div class="container mt-4">
     <h1 class="text-center text-success mb-4">Tìm việc làm nhanh 24h, việc làm mới nhất trên toàn quốc.</h1>
-    <div class="row">
-        <div class="col-md-12">
-            <!-- Slider -->
-            <div id="carouselExampleIndicators" class="carousel slide mb-4" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="~/Content/img/banner1.png" class="d-block w-100" style="height: 300px;" alt="...">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="~/Content/img/banner2.jpg" class="d-block w-100" style="height: 300px;" alt="...">
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+
+    <!-- Slider -->
+    <div id="carouselExampleIndicators" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="~/Content/img/banner1.png" class="d-block w-100" alt="Banner 1">
             </div>
-            <!-- End of Slider -->
+            <div class="carousel-item">
+                <img src="~/Content/img/banner2.jpg" class="d-block w-100" alt="Banner 2">
+            </div>
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
+    <!-- End of Slider -->
+    <h1 class="text-center text-success mb-4">Các công việc đang được tuyển dụng tại JOBSTAR</h1>
+    <br />
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-lg-8">
             <!-- Job Listings -->
-            <section class="shop spad">
+            <section>
                 <div class="row">
-                    <!-- Job listing cards go here -->
                     @foreach (var p in Model)
                     {
-                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                            <div class="card h-100 shadow">
-                                <a href="@Url.Action("DetailsJob", "Home", new { id = p.Id_TTD })">
-                                    <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(p.Logo_DN_TTD)" alt="Logo" class="card-img-top">
-                                </a>
-                                <div class="card-body">
-                                    <h5 class="card-title">@Html.Raw(p.TieuDe_TTD)</h5>
-                                    <p class="card-text">Mức lương: @p.MucLuongTD</p>
-                                    <p class="card-text">Số lượng: @p.SoLuongTuyen</p>
-                                    <p class="card-text">
-                                        @if (p.HanTuyenDung.HasValue && DateTime.Now < p.HanTuyenDung.Value)
-                                        {
-                                            var remainingHours = Math.Floor((p.HanTuyenDung.Value - DateTime.Now).TotalHours);
+                        <div class="col-lg-12 mb-4">
+                            <div class="card">
+                                <div class="row no-gutters">
+                                    <div class="col-md-4">
+                                        <a href="@Url.Action("DetailsJob", "Home", new { id = p.Id_TTD })">
+                                            <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(p.Logo_DN_TTD)" alt="Logo" class="card-img">
+                                        </a>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title job-name">@Html.ActionLink(p.TieuDe_TTD, "DetailsJob", "Home", new { id = p.Id_TTD }, null)</h5>
+                                            <p class="card-text"><i class="bi bi-cash-stack"></i>Mức lương: @p.MucLuongTD</p>
+                                            <p class="card-text"><i class="bi bi-person"></i>Số lượng: @p.SoLuongTuyen</p>
+                                            <p class="card-text"><i class="bi bi-clock"></i>
+                                                @if (p.HanTuyenDung.HasValue && DateTime.Now < p.HanTuyenDung.Value)
+                                                {
+                                                    var remainingHours = Math.Floor((p.HanTuyenDung.Value - DateTime.Now).TotalHours);
 
-                                            if (remainingHours > 24 * 7) // Nếu còn nhiều hơn 7 ngày
-                                            {
-                                                var remainingWeeks = Math.Floor(remainingHours / (24 * 7)); // Số tuần còn lại
-                                                <text>Còn @remainingWeeks tuần</text>
-                                            }
-                                            else if (remainingHours > 24) // Nếu còn nhiều hơn 24 giờ
-                                            {
-                                                var remainingDays = Math.Floor(remainingHours / 24); // Số ngày còn lại
-                                                <text>Còn @remainingDays ngày</text>
-                                            }
-                                            else
-                                            {
-                                                <text>Còn @remainingHours giờ</text>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <text>Đã hết hạn</text>
-                                        }
-                                    </p>
-                                    <p class="card-text"><i class="bi bi-geo-alt-fill">@p.DiaDiem_TTD</i></p>
+                                                    if (remainingHours > 24 * 7) // If more than 7 days
+                                                    {
+                                                        var remainingWeeks = Math.Floor(remainingHours / (24 * 7)); // Remaining weeks
+                                                        <text>Còn @remainingWeeks tuần</text>
+                                                    }
+                                                    else if (remainingHours > 24) // If more than 24 hours
+                                                    {
+                                                        var remainingDays = Math.Floor(remainingHours / 24); // Remaining days
+                                                        <text>Còn @remainingDays ngày</text>
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>Còn @remainingHours giờ</text>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <text>Đã hết hạn</text>
+                                                }
+                                            </p>
+                                            <p class="card-text"><i class="bi bi-geo-alt-fill"></i>@p.DiaDiem_TTD</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -128,87 +169,109 @@
             </section>
             <!-- End of Job Listings -->
         </div>
+
+
+
+
         <!-- Sidebar -->
-        <div class="col-md-4">
-            <!-- Company News -->
-            <div class="nav-item mb-4">
+        <div class="col-lg-4">
+            <div class="mb-4">
                 @Html.Partial("_Search")
             </div>
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Tin tức mới</h5>
+                    <h5 class="card-title" style="color:green;">Tin tức mới</h5>
                     <ul class="list-group list-group-flush">
-                        <!-- Your news items go here -->
-                        <li class="list-group-item">News item 1</li>
-                        <li class="list-group-item">News item 2</li>
-                        <!-- More news items -->
+                        <li class="list-group-item news-item">
+                            <a href="https://vnexpress.net/song-trong-so-hai-khi-dung-ai-lam-viec-4745212.html" target="_blank">
+                                <img src="~/Image/imgBao/baibao1.jpg" style="max-height:150px" />
+                                <p><strong>'Sống trong sợ hãi' khi dùng AI làm việc</strong></p>
+                                <p style="color:gray">Ngày càng nhiều người lao động dùng AI hỗ trợ công việc, tuy nhiên họ lo sợ bị sếp biết và sẽ sa thải....</p>
+                            </a>
+                        </li>
+                        <li class="list-group-item news-item">
+                            <a href="https://vnexpress.net/gen-z-do-bo-len-threads-tim-viec-4742101.html" target="_blank">
+                                <img src="~/Image/imgBao/baibao2.jpg" style="max-height:150px" />
+                                <p><strong>Gen Z 'đổ bộ' lên Threads tìm việc</strong></p>
+                                <p style="color:gray">Thay vì khoe kinh nghiệm, nhiều Gen Z đang đổ lên mạng xã hội Threads than thở, dùng ngôn ngữ teen, đăng ảnh đẹp, lập tức nhận về hàng trăm lời mời việc làm....</p>
+                            </a>
+                        </li>
+                        <li class="list-group-item news-item">
+                            <a href="https://vnexpress.net/chuong-doanh-nghiep-lon-nguoi-tre-han-quoc-chat-vat-tim-viec-4739625.html" target="_blank">
+                                <img src="~/Image/imgBao/baibao3.jpg" style="max-height:150px" />
+                                <p><strong>Chuộng doanh nghiệp lớn, người trẻ Hàn Quốc chật vật tìm việc</strong></p>
+                                <p style="color:gray">HÀN QUỐC - Han Sung Ju, 28 tuổi, mong tìm được việc với lương 36.300 USD mỗi năm nhưng sau hai năm vẫn thất nghiệp....</p>
+                            </a>
+                        </li>
+                        <li class="list-group-item news-item">
+                            <a href="https://vnexpress.net/chuong-doanh-nghiep-lon-nguoi-tre-han-quoc-chat-vat-tim-viec-4739625.html" target="_blank">
+                                <img src="~/Image/imgBao/baibao4.png" style="max-height:150px" />
+                                <p><strong>Thế hệ không cố bám trụ thành phố lớn</strong></p>
+                                <p style="color:gray">TRUNG QUỐC - Mong tăng thu nhập, không áp lực và gần gia đình, nhiều người trẻ về quê lập nghiệp....</p>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
-            <!-- End of Company News -->
         </div>
+
         <!-- End of Sidebar -->
     </div>
 
     <!-- Pagination -->
-    <ul class="pagination justify-content-center">
-        <li class="page-item">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center mt-4">
             @if (ViewBag.Page > 1)
             {
-                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=1">
-                    &lt;&lt;
-                </a>
+                <li class="page-item">
+                    <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=1" aria-label="First">
+                        &laquo;&laquo;
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page - 1)" aria-label="Previous">
+                        &laquo;
+                    </a>
+                </li>
             }
-        </li>
-        <li class="page-item">
-            @if (ViewBag.Page > 1)
+            @for (int i = startPage; i <= endPage; i++)
             {
-                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page - 1)">
-                    &lt;
-                </a>
+                <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                    <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@i">@i</a>
+                </li>
             }
-        </li>
-
-        @for (int i = startPage; i <= endPage; i++)
-        {
-            <li class="page-item @(i == ViewBag.Page ? "active" : "")">
-                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@i">
-                    @i
-                </a>
-            </li>
-        }
-
-        <li class="page-item">
             @if (ViewBag.Page < ViewBag.NoOfPage)
             {
-                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page + 1)">
-                    &gt;
-                </a>
+                <li class="page-item">
+                    <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page + 1)" aria-label="Next">
+                        &raquo;
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@ViewBag.NoOfPage" aria-label="Last">
+                        &raquo;&raquo;
+                    </a>
+                </li>
             }
-        </li>
-        <li class="page-item">
-            @if (ViewBag.Page < ViewBag.NoOfPage)
-            {
-                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@ViewBag.NoOfPage">
-                    &gt;&gt;
-                </a>
-            }
-        </li>
-    </ul>
+        </ul>
+    </nav>
     <!-- End of Pagination -->
     <!-- Job Opportunities Section -->
-    <div class="row mt-4">
-        <div class="col-md-12">
+    <div class="row mt-5">
+        <div class="col-12">
             <h2 class="text-center mb-4">Cơ hội ứng tuyển việc làm với đãi ngộ hấp dẫn tại các công ty hàng đầu</h2>
-            <p>Trước sự phát triển vượt bậc của nền kinh tế, rất nhiều ngành nghề trở nên khan hiếm nhân lực hoặc thiếu nhân lực giỏi. Vì vậy, hầu hết các trường Đại học đều liên kết với các công ty, doanh nghiệp, cơ quan để tạo cơ hội cho các bạn sinh viên được học tập, rèn luyện bản thân và làm quen với môi trường làm việc từ sớm. Trong danh sách việc làm trên đây, TopCV mang đến cho bạn những cơ hội việc làm tại những môi trường làm việc năng động, chuyên nghiệp.</p>
+            <p class="text-justify">
+                Trước sự phát triển vượt bậc của nền kinh tế, rất nhiều ngành nghề trở nên khan hiếm nhân lực hoặc thiếu nhân lực giỏi. Vì vậy, hầu hết các trường Đại học đều liên kết với các công ty, doanh nghiệp, cơ quan để tạo cơ hội cho các bạn sinh viên được học tập, rèn luyện bản thân và làm quen với môi trường làm việc từ sớm. Trong danh sách việc làm trên đây, TopCV mang đến cho bạn những cơ hội việc làm tại những môi trường làm việc năng động, chuyên nghiệp.
+            </p>
             <h4 class="text-center mb-3">Vì sao nên tìm việc làm tại JOBSTAR?</h4>
-            <ul>
-                <li>Việc làm Chất lượng</li>
-                <li>Hỗ trợ Người tìm việc</li>
+            <ul class="list-unstyled">
+                <li class="mb-2">Việc làm Chất lượng</li>
+                <li class="mb-2">Hỗ trợ Người tìm việc</li>
             </ul>
-            <p>Tại JOBSTAR, bạn có thể tìm thấy những tin tuyển dụng việc làm với mức lương vô cùng hấp dẫn. Những nhà tuyển dụng kết nối với JOBSTAR đều là những công ty lớn tại Việt Nam, nơi bạn có thể làm việc trong một môi trường chuyên nghiệp, năng động, trẻ trung. JOBSTAR là nền tảng tuyển dụng công nghệ cao giúp các nhà tuyển dụng và ứng viên kết nối với nhau. Nhanh tay tạo CV để ứng tuyển vào các vị trí việc làm mới nhất hấp dẫn tại Hà Nội, việc làm mới nhất tại TP.HCM ở JOBSTAR, bạn sẽ tìm thấy những việc làm mới nhất với mức lương tốt nhất!</p>
+            <p class="text-justify">
+                Tại JOBSTAR, bạn có thể tìm thấy những tin tuyển dụng việc làm với mức lương vô cùng hấp dẫn. Những nhà tuyển dụng kết nối với JOBSTAR đều là những công ty lớn tại Việt Nam, nơi bạn có thể làm việc trong một môi trường chuyên nghiệp, năng động, trẻ trung. JOBSTAR là nền tảng tuyển dụng công nghệ cao giúp các nhà tuyển dụng và ứng viên kết nối với nhau. Nhanh tay tạo CV để ứng tuyển vào các vị trí việc làm mới nhất hấp dẫn tại Hà Nội, việc làm mới nhất
+            </p>
+
         </div>
     </div>
-    <!-- End of Job Opportunities Section -->
 </div>
-
