@@ -31,7 +31,6 @@ namespace Code_JobSearch.Controllers
         }
 
 
-
         #region Job
         public ActionResult Index(int page = 1)
         {
@@ -77,8 +76,6 @@ namespace Code_JobSearch.Controllers
 
         #endregion
 
-
-
         #region Trang doanh nghiệp
         //trang doanh nghiệp
         public ActionResult Company(int page = 1)
@@ -121,7 +118,129 @@ namespace Code_JobSearch.Controllers
 
         #endregion
 
+        #region NhaTuyenDung profile
+        public ActionResult ProfileNhaTuyenDung()
+        {
 
+            if (Session["NTD"] != null)
+            {
+                NhaTuyenDung ntd = Session["NTD"] as NhaTuyenDung;
+
+
+
+                // Truy vấn để lấy thông tin tài khoản của người dùng từ khóa ngoại
+                var taiKhoan = (from tk in db.TaiKhoans
+                                where tk.TenTK == ntd.TenTK
+                                select tk).FirstOrDefault();
+
+                if (taiKhoan != null)
+                {
+                    // Hiển thị thông tin tài khoản
+                    ViewBag.TenTaiKhoan = taiKhoan.TenTK;
+                    ViewBag.MatKhau = taiKhoan.MatKhau;
+                }
+                else
+                {
+                    // Xử lý trường hợp không tìm thấy thông tin tài khoản
+                    ViewBag.TenTaiKhoan = "Không có thông tin";
+                    ViewBag.MatKhau = "Không có thông tin";
+                }
+
+                return View(ntd);
+            }
+            else
+            {
+                return RedirectToAction("Login_Employer", "Auth");
+            }
+        }
+        private List<string> danhSachViTriCongTac = new List<string>
+        {
+            "Nhân viên", "Quản lý", "Phó giám đốc", "Giám đốc", "Tổng giám đốc"
+        };
+        [HttpGet]
+        public ActionResult EditNTD(int id)
+        {
+            ViewBag.DanhSachViTriCT = danhSachViTriCongTac;
+            NhaTuyenDung emp = db.NhaTuyenDungs.SingleOrDefault(x => x.Id_NTD == id);
+            // Kiểm tra xem người dùng có tồn tại không
+            if (emp == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(emp);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditNTD(int id, NhaTuyenDung emp, HttpPostedFileBase uploadFile)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    using (DatabaseDataContext db = new DatabaseDataContext())
+                    {
+                        // Lấy thông tin người dùng cần chỉnh sửa từ cơ sở dữ liệu
+                        NhaTuyenDung ntds = db.NhaTuyenDungs.Single(x => x.Id_NTD == id);
+
+                        // Cập nhật thông tin từ form chỉnh sửa
+                        ntds.HoTen_NTD = emp.HoTen_NTD;
+                        ntds.Email_NTD = emp.Email_NTD;
+                        ntds.SoDienThoai_NTD = emp.SoDienThoai_NTD;
+                        ntds.ViTriCongTac = emp.ViTriCongTac;
+                        ntds.TenTK = emp.TenTK;
+
+                        // Xử lý upload hình ảnh nếu có
+                        if (uploadFile != null && uploadFile.ContentLength > 0)
+                        {
+                            // Kiểm tra kích thước của file (giới hạn dưới 1MB)
+                            if (uploadFile.ContentLength <= 1024 * 1024) // 1MB = 1024 * 1024 bytes
+                            {
+                                var fileName = Path.GetFileName(uploadFile.FileName);
+                                var filePath = Path.Combine(Server.MapPath("~/Image/Khachhang"), fileName);
+
+                                // Xóa hình ảnh cũ nếu tồn tại
+                                if (ntds.HinhAnh_NTD != null)
+                                {
+                                    var oldFilePath = Path.Combine(Server.MapPath("~/Image/Khachhang"), ntds.HinhAnh_NTD);
+                                    if (System.IO.File.Exists(oldFilePath))
+                                    {
+                                        System.IO.File.Delete(oldFilePath);
+                                    }
+                                }
+
+                                // Lưu hình ảnh mới vào thư mục
+                                uploadFile.SaveAs(filePath);
+
+                                // Cập nhật đường dẫn của ảnh trong cơ sở dữ liệu
+                                ntds.HinhAnh_NTD = fileName;
+                            }
+                            else
+                            {
+                                // Nếu kích thước vượt quá 1MB, xử lý lỗi
+                                ModelState.AddModelError("", "Kích thước tệp ảnh phải nhỏ hơn hoặc bằng 1MB.");
+                                return View(emp);
+                            }
+                        }
+
+                        // Lưu thay đổi vào cơ sở dữ liệu
+                        db.SubmitChanges();
+
+                        // Cập nhật thông tin người dùng trong session
+                        Session["NTD"] = ntds;
+
+                        return RedirectToAction("ProfileNhaTuyenDung");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Xử lý lỗi nếu có
+                    ViewBag.Message = "Có lỗi xảy ra: " + ex.Message;
+                }
+            }
+            return View(emp);
+        }
+        #endregion
 
         #region User profile
         public ActionResult ProfileUser()
@@ -158,6 +277,7 @@ namespace Code_JobSearch.Controllers
                 return RedirectToAction("Login", "Auth");
             }
         }
+
 
         [HttpGet]
         public ActionResult Edit(int id)
@@ -245,8 +365,6 @@ namespace Code_JobSearch.Controllers
 
 
         #endregion
-
-
 
         #region lọc nâng cao
         [HttpPost]

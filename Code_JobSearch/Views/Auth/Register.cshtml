@@ -5,16 +5,16 @@
 }
 <style>
     .custom-input-group {
-    margin-bottom: 15px;
+        margin-bottom: 15px;
     }
 
     .error-message {
-    color: red;
-    text-align: left;
+        color: red;
+        text-align: left;
     }
 
     .btn-register {
-    width: 100%;
+        width: 100%;
     }
 </style>
 <div class="container centered-form">
@@ -40,12 +40,12 @@
             @using (Html.BeginForm("Register", "Auth", FormMethod.Post, new { id = "myForm" }))
             {
                 @Html.ValidationSummary(true)
-
+                <h7 class="error-message">@ViewData["Loi"]</h7>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="HotenKH" class="form-label"><i class="fa fa-user"></i> Họ Tên Khách Hàng</label>
                         @Html.TextBox("HotenKH", ViewData["HotenKH"], new { @class = "form-control", type = "text", placeholder = "Nguyễn Văn A" })
-                        <h7 class="error-message">@ViewData["Loi"]</h7>
+
                     </div>
                     <div class="col-md-6">
                         <label for="Email" class="form-label"><i class="fa fa-envelope"></i> Email</label>
@@ -68,16 +68,26 @@
                 </div>
 
                 <div class="row mb-3">
+                    @*code update*@
                     <div class="col-md-6">
                         <label for="Matkhau" class="form-label"><i class="fa fa-lock"></i> Mật Khẩu</label>
                         @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Mật Khẩu" })
+                        <button class="btn btn-outline-success" type="button" id="togglePasswordVisibility" onmouseover="showPasswordIcon()" onmouseout="hidePasswordIcon()">
+                            <i id="eyeIcon" class="bi bi-eye-slash"></i>
+                        </button>
                         <h7 class="error-message">@ViewData["Loi4"]</h7>
                     </div>
+
                     <div class="col-md-6">
                         <label for="ReMatkhau" class="form-label"><i class="fa fa-lock"></i> Nhập Lại Mật Khẩu</label>
                         @Html.Password("ReMatkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Lại Mật Khẩu" })
+                        <button class="btn btn-outline-success" type="button" id="togglePasswordVisibility" onmouseover="showPasswordIconRe()" onmouseout="hidePasswordIconRe()">
+                            <i id="eyeIcon" class="bi bi-eye-slash"></i>
+                        </button>
                         <h7 class="error-message">@ViewData["Loi1"]</h7>
                     </div>
+
+                    @*--------------------*@
                 </div>
 
                 <div class="row">
@@ -186,16 +196,64 @@
         // Return overall password validity
         return isPasswordValid;
     }
+    // code update
+    function showPassword() {
+        var passwordInput = document.getElementById('Matkhau');
+        passwordInput.setAttribute('type', 'text');
+    }
 
+    function hidePassword() {
+        var passwordInput = document.getElementById('Matkhau');
+        passwordInput.setAttribute('type', 'password');
+    }
 
-// Add event listener to password input
-document.addEventListener("DOMContentLoaded", function () {
-    var passwordInput = document.getElementById("Matkhau");
-    passwordInput.addEventListener("input", showPasswordConditions);
-});
+    function showRePassword() {
+        var passwordInput = document.getElementById('ReMatkhau');
+        passwordInput.setAttribute('type', 'text');
+    }
 
-// Call showPasswordConditions on page load
-showPasswordConditions();
+    function hideRePassword() {
+        var passwordInput = document.getElementById('ReMatkhau');
+        passwordInput.setAttribute('type', 'password');
+    }
+
+    function showPasswordIcon() {
+        var eyeIcon = document.getElementById('eyeIcon');
+        eyeIcon.classList.remove('bi-eye-slash');
+        eyeIcon.classList.add('bi-eye');
+        showPassword();
+    }
+
+    function hidePasswordIcon() {
+        var eyeIcon = document.getElementById('eyeIcon');
+        eyeIcon.classList.remove('bi-eye');
+        eyeIcon.classList.add('bi-eye-slash');
+        hidePassword();
+    }
+
+    function showPasswordIconRe() {
+        var eyeIcon = document.getElementById('eyeIcon');
+        eyeIcon.classList.remove('bi-eye-slash');
+        eyeIcon.classList.add('bi-eye');
+        showRePassword();
+    }
+
+    function hidePasswordIconRe() {
+        var eyeIcon = document.getElementById('eyeIcon');
+        eyeIcon.classList.remove('bi-eye');
+        eyeIcon.classList.add('bi-eye-slash');
+        hideRePassword();
+    }
+    //-----
+
+    // Add event listener to password input
+    document.addEventListener("DOMContentLoaded", function () {
+        var passwordInput = document.getElementById("Matkhau");
+        passwordInput.addEventListener("input", showPasswordConditions);
+    });
+
+    // Call showPasswordConditions on page load
+    showPasswordConditions();
 
 </script>
 

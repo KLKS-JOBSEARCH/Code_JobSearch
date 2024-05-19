@@ -5,6 +5,7 @@
 }
 @{
     var danhSachThanhPho = ViewBag.DanhSachThanhPho as List<string>;
+    var danhSachVTCT = ViewBag.DanhSachViTriCT as List<string>;
 }
 <style>
     .custom-input-group {
@@ -54,18 +55,25 @@
                             <span class="input-group-text" style="color: green;"><i class="bi bi-person-circle"></i></span>
                             @Html.TextBox("TenDN", ViewData["TenDN"], new { @class = "form-control", type = "text", placeholder = "Tên Đăng Nhập" })
                         </div>
-
+                        @*code update*@
                         <h7 style="color:red;">@ViewData["Loi2"]</h7>
                         <div class="input-group custom-input-group">
                             <span class="input-group-text" style="color: green;"><i class="bi bi-lock-fill"></i></span>
                             @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Mật Khẩu", oninput = "showPasswordConditions()" })
+                            <button class="btn btn-outline-success" type="button" id="togglePasswordVisibility" onmouseover="showPasswordIcon()" onmouseout="hidePasswordIcon()">
+                                <i id="eyeIcon" class="bi bi-eye-slash"></i>
+                            </button>
                         </div>
 
                         <h7 style="color:red;">@ViewData["Loimatkhaunhaplai"]</h7>
                         <div class="input-group custom-input-group">
                             <span class="input-group-text" style="color: green;"><i class="bi bi-lock-fill"></i></span>
                             @Html.Password("ReMatkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Lại Mật Khẩu" })
+                            <button class="btn btn-outline-success" type="button" id="togglePasswordVisibility" onmouseover="showPasswordIconRe()" onmouseout="hidePasswordIconRe()">
+                                <i id="eyeIcon" class="bi bi-eye-slash"></i>
+                            </button>
                         </div>
+                        @*----------*@
                     </div>
 
                     <div class="col-md-6">
@@ -108,6 +116,23 @@
                         else
                         {
                             <p>Danh sách thành phố không có hoặc bị rỗng.</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h7 style="color:red;">@ViewData["Loivitricongtac"]</h7>
+                        @if (danhSachVTCT != null && danhSachVTCT.Any())
+                        {
+                            <div class="input-group custom-input-group">
+                                <span class="input-group-text" style="color: green;"><i class="bi bi-briefcase-fill"></i></span>
+                                @Html.DropDownList("vtct", new SelectList(danhSachVTCT), "Chọn vị trí công tác", new { @class = "form-control" })
+                            </div>
+                        }
+                        else
+                        {
+                            <p>Danh sách vị trí công tác không có hoặc bị rỗng.</p>
                         }
                     </div>
                 </div>
@@ -159,7 +184,55 @@
             jobStarSection.style.display = 'block';
         }
     }
+    // code update
+    function showPassword() {
+        var passwordInput = document.getElementById('Matkhau');
+        passwordInput.setAttribute('type', 'text');
+    }
 
+    function hidePassword() {
+        var passwordInput = document.getElementById('Matkhau');
+        passwordInput.setAttribute('type', 'password');
+    }
+
+    function showRePassword() {
+        var passwordInput = document.getElementById('ReMatkhau');
+        passwordInput.setAttribute('type', 'text');
+    }
+
+    function hideRePassword() {
+        var passwordInput = document.getElementById('ReMatkhau');
+        passwordInput.setAttribute('type', 'password');
+    }
+
+    function showPasswordIcon() {
+        var eyeIcon = document.getElementById('eyeIcon');
+        eyeIcon.classList.remove('bi-eye-slash');
+        eyeIcon.classList.add('bi-eye');
+        showPassword();
+    }
+
+    function hidePasswordIcon() {
+        var eyeIcon = document.getElementById('eyeIcon');
+        eyeIcon.classList.remove('bi-eye');
+        eyeIcon.classList.add('bi-eye-slash');
+        hidePassword();
+    }
+
+    function showPasswordIconRe() {
+        var eyeIcon = document.getElementById('eyeIcon');
+        eyeIcon.classList.remove('bi-eye-slash');
+        eyeIcon.classList.add('bi-eye');
+        showRePassword();
+    }
+
+    function hidePasswordIconRe() {
+        var eyeIcon = document.getElementById('eyeIcon');
+        eyeIcon.classList.remove('bi-eye');
+        eyeIcon.classList.add('bi-eye-slash');
+        hideRePassword();
+    }
+    //-----
     window.addEventListener('load', hideOnMobile);
     window.addEventListener('resize', hideOnMobile);
     function showPasswordConditions() {

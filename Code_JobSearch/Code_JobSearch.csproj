@@ -2051,6 +2051,9 @@
     <Content Include="Views\User\Create.cshtml" />
     <Content Include="Views\User\UngtuyenCV.cshtml" />
     <Content Include="Views\User\HistoryofCVApply.cshtml" />
+    <Content Include="Views\Employer\GopY.cshtml" />
+    <Content Include="Views\Home\ProfileNhaTuyenDung.cshtml" />
+    <Content Include="Views\Home\EditNTD.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

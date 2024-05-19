@@ -53,8 +53,9 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav ms-auto p-4 p-lg-0 d-flex align-items-center">
                     @*<li class="nav-item"><a href="@Url.Action("Index","Home")" class="nav-link active">Tìm việc làm</a></li>
-                    <li class="nav-item"><a href="@Url.Action("Company","Home")" class="nav-link">Công ty</a></li>*@
+                        <li class="nav-item"><a href="@Url.Action("Company","Home")" class="nav-link">Công ty</a></li>*@
                     <li class="nav-item user-dropdown">
+                        @*code update*@
                         @if (ntd != null)
                         {
                             <div class="dropdown">
@@ -62,15 +63,17 @@
                                     @ntd.HoTen_NTD
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                    <li><span class="dropdown-item">Mã ứng viên: #@ntd.Id_NTD</span></li>
+                                    <li><span class="dropdown-item">Mã nhà tuyển dụng: #@ntd.Id_NTD</span></li>
                                     <li><span class="dropdown-item">Email: @ntd.Email_NTD</span></li>
-                                    <li><span class="dropdown-item">Employer</span></li>
+                                    <li><span class="dropdown-item">Vị trí công tác: @ntd.ViTriCongTac</span></li>
+                                    <li><span class="dropdown-item"><a href="@Url.Action("ProfileNhaTuyenDung","Home")" class="nav-link">Chỉnh sửa thông tin</a></span></li>
+                                    <li><span class="dropdown-item"><a href="@Url.Action("GopY","Employer")" class="nav-link">Góp ý cho website</a></span></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="@Url.Action("Logout", "Home")">Đăng Xuất</a></li>
                                 </ul>
                             </div>
                         }
-
+                        @*----------------*@
 
                         else
                         {

@@ -44,7 +44,12 @@ namespace Code_JobSearch.Controllers
             "Bà Rịa - Vũng Tàu", "Long An", "Tiền Giang", "Bến Tre", "Trà Vinh", "Vĩnh Long", "Đồng Tháp", "An Giang",
             "Kiên Giang", "Cần Thơ", "Hậu Giang", "Sóc Trăng", "Bạc Liêu", "Cà Mau"
         };
-
+        //code update
+        private List<string> danhSachViTriCongTac = new List<string>
+        {
+            "Nhân viên", "Quản lý", "Phó giám đốc", "Giám đốc", "Tổng giám đốc"
+        };
+        //---------------
 
         #region Auth User
         [HttpGet]
@@ -129,6 +134,12 @@ namespace Code_JobSearch.Controllers
             if (db.UngViens.Any(t => t.Email_TKUV == email))
             {
                 ViewData["Loi3"] = "Email đã tồn tại!";
+                return View();
+            }
+            //code update
+            if (VerifyEmail(tendn, email) == false)
+            {
+                ViewData["Loi3"] = "Email không thể xác thực!";
                 return View();
             }
 
@@ -239,13 +250,12 @@ namespace Code_JobSearch.Controllers
         }
         #endregion
 
-
-
         #region Auth Employer
         [HttpGet]
         public ActionResult Employer_Register()
         {
             ViewBag.DanhSachThanhPho = danhSachThanhPho;
+            ViewBag.DanhSachViTriCT = danhSachViTriCongTac;
             return View();
         }
 
@@ -261,7 +271,8 @@ namespace Code_JobSearch.Controllers
             var congty = f["Congty"];
             var sdt = f["SDT"];
             var tp = f["tp"];
-            
+            var vtct = f["vtct"];
+
 
             // Lưu trữ dữ liệu đã nhập vào ViewBag để hiển thị lại trong input nếu có lỗi
             ViewBag.HotenKH = hoten;
@@ -279,7 +290,8 @@ namespace Code_JobSearch.Controllers
                string.IsNullOrEmpty(email) ||
                string.IsNullOrEmpty(congty) ||
                string.IsNullOrEmpty(sdt) ||
-               string.IsNullOrEmpty(tp))
+               string.IsNullOrEmpty(tp) ||
+            string.IsNullOrEmpty(vtct))
             {
                 ViewData["Loino"] = "Vui lòng điền đầy đủ thông tin!";
                 return View();
@@ -306,6 +318,15 @@ namespace Code_JobSearch.Controllers
                 ViewData["Loiemail"] = "Email đã tồn tại!";
                 return View();
             }
+
+            //code update
+            if (!VerifyEmail(tendn, email))
+            {
+                ViewData["Loiemail"] = "Email không thể xác thực!";
+                return View();
+            }
+            //---
+
             // Kiểm tra mật khẩu hợp lệ
             if (string.IsNullOrEmpty(matkhau) || matkhau.Length < 8)
             {
@@ -342,6 +363,11 @@ namespace Code_JobSearch.Controllers
                 ViewData["Loithanhpho"] = "Vui lòng chọn thành phố!";
                 return View();
             }
+            if (string.IsNullOrEmpty(vtct))
+            {
+                ViewData["Loivitricongtac"] = "Vui lòng chọn vị trí công tác!";
+                return View();
+            }
 
             // Kktra sdt
             if (sdt.Length != 10 || !sdt.All(char.IsDigit))
@@ -373,6 +399,7 @@ namespace Code_JobSearch.Controllers
             ntd.HoTen_NTD = hoten;
             ntd.Email_NTD = email;
             ntd.SoDienThoai_NTD = sdt;
+            ntd.ViTriCongTac = vtct;
 
             db.NhaTuyenDungs.InsertOnSubmit(ntd);
             db.SubmitChanges();
@@ -443,8 +470,45 @@ namespace Code_JobSearch.Controllers
         }
         #endregion
 
-
         #region forget password
+        //code update
+        public static class VerificationCodeManager
+        {
+            public static string CodeVerify { get; set; } = "";
+            public static DateTime ExpirationTime { get; set; }
+
+            public static void GenerateNewCode()
+            {
+                CodeVerify = GenerateVerificationCode();
+                ExpirationTime = DateTime.Now.AddMinutes(2); // Set expiration time to 2 minute
+            }
+
+            private static string GenerateVerificationCode()
+            {
+                const int codeLength = 6;
+                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                var random = new Random();
+                var code = new char[codeLength];
+
+                for (int i = 0; i < codeLength; i++)
+                {
+                    code[i] = chars[random.Next(chars.Length)];
+                }
+
+                return new string(code);
+            }
+
+            public static bool IsCodeValid(string code)
+            {
+                return CodeVerify == code && DateTime.Now <= ExpirationTime;
+            }
+
+            public static void ClearCode()
+            {
+                CodeVerify = "";
+                ExpirationTime = DateTime.MinValue;
+            }
+        }
         public static bool SendResetPasswordEmail(string email, string tentk)
         {
 
@@ -456,7 +520,7 @@ namespace Code_JobSearch.Controllers
                     Credentials = new NetworkCredential("jobstarvn@gmail.com", "jxtt juxf gbqy nbdp"),
                     EnableSsl = true,
                 };
-
+                VerificationCodeManager.GenerateNewCode();
                 var mailMessage = new MailMessage
                 {
                     From = new MailAddress("jobstarvn@gmail.com"),
@@ -470,9 +534,9 @@ namespace Code_JobSearch.Controllers
                             <div class='container'>
                                 <div class='content'>
                                     <p class='title'><strong>Kính gửi! {tentk},</strong></p>
-                                    <p>Vui lòng nhấn vào nút bên dưới để cập nhật lại mật khẩu của bạn:</p>
-                                    <!-- Sử dụng thẻ <a> với các thuộc tính href và style để tạo nút màu xanh lá cây -->
-                                    <a href='https://localhost:44354/Auth/UpdatePassword' style='display: inline-block; background-color: #28a745; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Cập nhật mật khẩu</a>
+                                    <p>Dưới đây là mã xác thực để cập nhật lại mật khẩu chỉ có hạn 2 phút:</p>
+                                    <p><strong>{VerificationCodeManager.CodeVerify}</strong></p>
+                                   
                                 </div>
                             </div>
                         </body>
@@ -494,6 +558,70 @@ namespace Code_JobSearch.Controllers
 
         }
 
+
+        public static bool VerifyEmail(string tentk, string email)
+        {
+
+            try
+            {
+                var client = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587,
+                    Credentials = new NetworkCredential("jobstarvn@gmail.com", "jxtt juxf gbqy nbdp"),
+                    EnableSsl = true,
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress("jobstarvn@gmail.com"),
+                    Subject = "Đăng ký thành công",
+                    Body = $@"<html>
+                        <head>
+                            <!-- Bootstrap CSS -->
+                            <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css' rel='stylesheet'>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <div class='content'>
+                                    <p class='title'><strong>Kính gửi! {tentk},</strong></p>
+                                    <p>Chào mừng bạn đến với JobStar</p>
+                                </div>
+                            </div>
+                        </body>
+                    </html>",
+                    IsBodyHtml = true,
+                };
+                mailMessage.To.Add(email);
+                client.Send(mailMessage);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+        [HttpGet]
+        public ActionResult ForgetPassword_Employer(string tentk)
+        {
+            var user = db.TaiKhoans.FirstOrDefault(u => u.TenTK == tentk);
+            if (user != null)
+            {
+                string email = db.NhaTuyenDungs.Where(t => t.TenTK == tentk).Select(u => u.Email_NTD).FirstOrDefault();
+                bool isEmailSent1 = SendResetPasswordEmail(email, tentk);
+                if (!isEmailSent1)
+                {
+                    TempData["ErrorEmailMessage"] = "Gửi email thất bại";
+                    return RedirectToAction("Login_Employer", "Auth");
+                }
+                TempData["SuccessMessage"] = "Bạn hãy vui lòng kiểm tra email để nhận mã xác thực đổi mật khẩu.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Tên tài khoản không tồn tại trong hệ thống.";
+            }
+            return RedirectToAction("Login_Employer", "Auth");
+        }
         [HttpGet]
         public ActionResult ForgetPassword(string tentk)
         {
@@ -501,29 +629,22 @@ namespace Code_JobSearch.Controllers
             var user = db.TaiKhoans.FirstOrDefault(u => u.TenTK == tentk);
             if (user != null)
             {
-                string email = db.NhanViens.Where(t => t.TenTK == tentk).Select(o => o.Email_NV).FirstOrDefault();
+                string email = db.UngViens.Where(t => t.TenTK == tentk).Select(u => u.Email_TKUV).FirstOrDefault();
                 if (email == null)
                 {
-                    email = db.UngViens.Where(t => t.TenTK == tentk).Select(o => o.Email_TKUV).FirstOrDefault();
-                    if (email == null)
-                    {
-                        email = db.NhaTuyenDungs.Where(t => t.TenTK == tentk).Select(o => o.Email_NTD).FirstOrDefault();
-                    }
+                    email = db.NhanViens.Where(t => t.TenTK == tentk).Select(u => u.Email_NV).FirstOrDefault();
                 }
-
-                // Gửi email reset mật khẩu
                 bool isEmailSent = SendResetPasswordEmail(email, tentk);
                 if (!isEmailSent)
                 {
                     TempData["ErrorEmailMessage"] = "Gửi email thất bại";
                     return RedirectToAction("Login", "Auth");
                 }
+                TempData["SuccessMessage"] = "Bạn hãy vui lòng kiểm tra email để nhận mã xác thực đổi mật khẩu.";
 
-                TempData["SuccessMessage"] = "Một email đặt lại mật khẩu đã được gửi đến địa chỉ email của bạn. Vui lòng kiểm tra kỹ hòm thư cũng như hòm thư rác";
             }
             else
             {
-                // Nếu không tìm thấy tên tài khoản trong cơ sở dữ liệu, bạn có thể hiển thị thông báo lỗi cho người dùng
                 TempData["ErrorMessage"] = "Tên tài khoản không tồn tại trong hệ thống.";
             }
             return RedirectToAction("Login", "Auth");
@@ -542,6 +663,7 @@ namespace Code_JobSearch.Controllers
             var tendn = f["TenDN"];
             var matkhau = f["MatKhau"];
             var rematkhau = f["ReMatkhau"];
+            var maxacthuc = f["MaXacThuc"];
             ViewBag.TenDN = tendn;
 
             var user = db.TaiKhoans.FirstOrDefault(u => u.TenTK == tendn);
@@ -584,10 +706,23 @@ namespace Code_JobSearch.Controllers
                     ViewData["Loi3"] = "Mật khẩu nhập lại không khớp!";
                     return View();
                 }
+
+                if (!VerificationCodeManager.IsCodeValid(maxacthuc))
+                {
+                    ViewData["Loi4"] = "Mã xác thực không đúng hoặc đã hết hạn";
+                    return View();
+                }
                 user.MatKhau = HashPassword(matkhau);
                 db.SubmitChanges();
-
-                ViewBag.SuccessUpdatePass = "Succces !";
+                var ntd = db.NhaTuyenDungs.FirstOrDefault(t => t.TenTK.Equals(tendn));
+                if (ntd != null)
+                {
+                    ViewBag.SuccessUpdatePassNTD = "Succces !";
+                }
+                else
+                {
+                    ViewBag.SuccessUpdatePass = "Succces !";
+                }
                 return View();
 
             }
@@ -600,5 +735,6 @@ namespace Code_JobSearch.Controllers
 
         }
     }
+    //---------
     #endregion
 }
