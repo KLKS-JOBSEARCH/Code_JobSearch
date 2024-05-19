@@ -294,9 +294,10 @@ namespace Code_JobSearch.Controllers
             }
             else
             {
-                // Xử lý khi không có phiên đăng nhập
+                
                 ViewBag.TB = "Đăng nhập trước khi gửi góp ý!";
-                return RedirectToAction("Login", "Auth");
+                return RedirectToAction("Login_Employer", "Auth");
+
             }
         }
         #endregion

@@ -1,0 +1,113 @@
+﻿@model Code_JobSearch.Models.NhaTuyenDung
+@{
+    ViewBag.Title = "EditNTD";
+    Layout = "~/Views/Shared/EmployerLayout.cshtml";
+    var danhSachVTCT = ViewBag.DanhSachViTriCT as List<string>;
+}
+
+<h2>Chỉnh sửa thông tin cá nhân</h2>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id_NTD)
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3 row">
+                    <label for="HoTen_TKUV" class="col-sm-4 col-form-label">Họ tên:</label>
+                    <div class="col-sm-8">
+                        @Html.EditorFor(model => model.HoTen_NTD, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.HoTen_NTD, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="Email_TKUV" class="col-sm-4 col-form-label">Email:</label>
+                    <div class="col-sm-8">
+                        @Html.EditorFor(model => model.Email_NTD, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.Email_NTD, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="SoDienThoai_TKUV" class="col-sm-4 col-form-label">Số điện thoại:</label>
+                    <div class="col-sm-8">
+                        @Html.EditorFor(model => model.SoDienThoai_NTD, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SoDienThoai_NTD, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="TenTK" class="col-sm-4 col-form-label">Tên tài khoản:</label>
+                    <div class="col-sm-8">
+                        @Html.EditorFor(model => model.TenTK, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.TenTK, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="ViTriCongTac" class="col-sm-4 col-form-label">Vị trí công tác:</label>
+                    <div class="col-sm-8">
+                        @if (danhSachVTCT != null && danhSachVTCT.Any())
+                        {
+                            <div class="input-group custom-input-group">
+                                @Html.DropDownList("ViTriCongTac", new SelectList(danhSachVTCT), "Chọn vị trí công tác", new { @class = "form-control" })
+                            </div>
+                        }
+                        else
+                        {
+                            <p>Danh sách vị trí công tác không có hoặc bị rỗng.</p>
+                        }
+                        @Html.ValidationMessageFor(model => model.ViTriCongTac, "Chọn vị trí công tác", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3 row justify-content-center">
+                    <div class="col-sm-8 text-center">
+                        <img id="previewImage" style="max-width: 160px; margin-bottom: 10px; border-radius: 50%;" src="~/Image/Khachhang/@Html.Raw(Model.HinhAnh_NTD)" alt="...">
+                        <input type="file" name="uploadFile" id="inputFile" onchange="previewFile()" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mb-3 row">
+            <div class="col-sm-10 offset-sm-2">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Quay lại", "Index")
+</div>
+
+
+
+<script>
+    // Hàm để xem trước hình ảnh trước khi tải lên
+    function previewFile() {
+        var preview = document.getElementById('previewImage');
+        var file = document.getElementById('inputFile').files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+            preview.src = reader.result; // Hiển thị hình ảnh đã chọn
+        }
+
+        if (file) {
+            reader.readAsDataURL(file); // Đọc file và gọi onloadend khi hoàn thành
+        } else {
+            preview.src = ""; // Nếu không chọn file, hiển thị mặc định
+        }
+    }
+</script>
+
