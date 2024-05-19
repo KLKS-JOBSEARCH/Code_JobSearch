@@ -277,8 +277,6 @@ namespace Code_JobSearch.Controllers
                 return RedirectToAction("Login", "Auth");
             }
         }
-
-
         [HttpGet]
         public ActionResult Edit(int id)
         {
@@ -291,18 +289,35 @@ namespace Code_JobSearch.Controllers
 
             return View(emp);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, UngVien emp, HttpPostedFileBase uploadFile)
         {
             if (ModelState.IsValid)
             {
+                // Kiểm tra số điện thoại có đúng 10 chữ số
+                if (emp.SoDienThoai_TKUV.Length != 10)
+                {
+                    ModelState.AddModelError("", "Số điện thoại phải có đúng 10 chữ số!");
+                    return View(emp);
+                }
+
                 try
                 {
                     using (DatabaseDataContext db = new DatabaseDataContext())
                     {
                         // Lấy thông tin người dùng cần chỉnh sửa từ cơ sở dữ liệu
                         UngVien nvs = db.UngViens.Single(x => x.Id_UV == id);
+
+                        // Kiểm tra số điện thoại đã tồn tại trong hệ thống hay chưa
+                        var existingUserWithPhoneNumber = db.UngViens.FirstOrDefault(x => x.SoDienThoai_TKUV == emp.SoDienThoai_TKUV && x.Id_UV != id);
+                        if (existingUserWithPhoneNumber != null)
+                        {
+                            // Nếu số điện thoại đã tồn tại, hiển thị thông báo lỗi
+                            ModelState.AddModelError("", "Số điện thoại đã tồn tại trong hệ thống.");
+                            return View(emp);
+                        }
 
                         // Cập nhật thông tin từ form chỉnh sửa
                         nvs.HoTen_TKUV = emp.HoTen_TKUV;
@@ -360,6 +375,8 @@ namespace Code_JobSearch.Controllers
             }
             return View(emp);
         }
+
+
 
 
 

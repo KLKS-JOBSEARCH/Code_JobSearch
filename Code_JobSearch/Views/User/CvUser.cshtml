@@ -13,37 +13,41 @@
         </a>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var hs in Model.HoSoXinViec)
-        {
-            <div class="col">
-                <div class="card h-100 shadow">
-                    <div class="card-body">
-                        <h5 class="card-title"><strong>Tên hồ sơ:</strong> @hs.Ten_HSXV</h5>
-                        <p class="card-text"><strong>Thời gian cập nhật:</strong> @hs.TGCN_HSXV.Value.ToString("dd/MM/yyyy h:mm tt")</p>
-                        <p class="card-title"><strong>Tên file CV:</strong> @hs.File_HSXV</p>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between">
-                        <a href="@Url.Action("DownloadFile", new { fileName = hs.File_HSXV })" class="btn btn-primary">
-                            <i class="fas fa-download"></i> Tải xuống
-                        </a>
-                        <div>
-                            <a href="@Url.Action("Edit", "User", new { id = hs.Id_HSXV })" class="btn btn-warning me-2">
-                                <i class="fas fa-edit"></i>
+    @if (!Model.HoSoXinViec.Any())
+    {
+        <p>Trống,<a href="@Url.Action("Create", "User")"> thêm CV của bạn vào hệ thống</a></p>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var hs in Model.HoSoXinViec)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title"><strong>Tên hồ sơ:</strong> @hs.Ten_HSXV</h5>
+                            <p class="card-text"><strong>Thời gian cập nhật:</strong> @hs.TGCN_HSXV.Value.ToString("dd/MM/yyyy h:mm tt")</p>
+                            <p class="card-title"><strong>Tên file CV:</strong> @hs.File_HSXV</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a href="@Url.Action("DownloadFile", new { fileName = hs.File_HSXV })" class="btn btn-primary">
+                                <i class="fas fa-download"></i> Tải xuống
                             </a>
-                            <a href="@Url.Action("Delete", "User", new { id = hs.Id_HSXV })" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa hồ sơ này?');">
-                                <i class="fas fa-trash"></i>
-                            </a>
+                            <div>
+                                <a href="@Url.Action("Edit", "User", new { id = hs.Id_HSXV })" class="btn btn-warning me-2">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="@Url.Action("Delete", "User", new { id = hs.Id_HSXV })" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa hồ sơ này?');">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    }
 </div>
 
 
-
-<!-- Bao gồm Font Awesome để sử dụng các biểu tượng -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
