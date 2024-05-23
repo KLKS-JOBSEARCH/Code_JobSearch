@@ -37,7 +37,7 @@
                 <div class="mb-3 row">
                     <label for="SoDienThoai_TKUV" class="col-sm-4 col-form-label">Số điện thoại:</label>
                     <div class="col-sm-8">
-                        @Html.TextBoxFor(model => model.SoDienThoai_TKUV, new { @class = "form-control", @type = "tel", @pattern = "[0-9]{10}", @title = "Số điện thoại phải có đúng 10 chữ số" })
+                        @Html.TextBoxFor(model => model.SoDienThoai_TKUV, new { @class = "form-control", @type = "tel", @pattern = "[0-9]{10}", @title = "Số điện thoại phải có đúng 10 chữ số và không có các ký tự khác ngoài 0 - 9" })
                         @Html.ValidationMessageFor(model => model.SoDienThoai_TKUV, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -71,7 +71,7 @@
 }
 
 <div>
-    @Html.ActionLink("Quay lại", "Index")
+    @Html.ActionLink("Quay lại", "CvUser","User", new { @class = "btn btn-primary" })
 </div>
 
 <script>

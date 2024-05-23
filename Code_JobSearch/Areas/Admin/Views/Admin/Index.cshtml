@@ -1,8 +1,121 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/admin.cshtml";
+    string today = DateTime.Now.ToString("yyyy-MM-dd");
 }
 
-<h2>Chổ này test</h2>
+<h2 class="text-center mt-5 mb-4">Chào mừng đến Với trang quản trị!</h2>
+<p style="text-align:center;">Dưới đây là thống kê số lượng ứng viên, nhà tuyển dụng và bài viết có trên hệ thống</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h3 class="card-title">Lọc số lượng tin đăng tuyển</h3>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("Index", "Admin", FormMethod.Get, new { @id = "filterForm", @class = "form-inline" }))
+                    {
+                        <div class="form-group mb-2">
+                            @Html.Label("Từ ngày:", new { @class = "mr-2" })
+                            @Html.TextBox("fromDate", null, new { @class = "form-control", type = "date", @onchange = "submitForm()", @max = today })
+                        </div>
+                        <div class="form-group mb-2">
+                            @Html.Label("Đến ngày:", new { @class = "mr-2" })
+                            @Html.TextBox("toDate", today, new { @class = "form-control", type = "date", @onchange = "submitForm()", @max = today })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white fixed-height">
+                        <div class="card-header">
+                            <h3 class="card-title">Ứng viên</h3>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-text">@ViewBag.SoLuongUngVien</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white fixed-height">
+                        <div class="card-header">
+                            <h3 class="card-title">Nhà tuyển dụng</h3>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-text">@ViewBag.SoLuongNhaTuyenDung</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white fixed-height">
+                        <div class="card-header">
+                            <h3 class="card-title">tin tuyển dụng</h3>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-text">@ViewBag.SoLuongBaiViet</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white fixed-height">
+                        <div class="card-header">
+                            <h3 class="card-title">Hến hạn tuyển</h3>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-text">@ViewBag.SoLuongTinHetHan</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script>
+    function submitForm() {
+        document.getElementById('filterForm').submit();
+    }
+</script>
+
+<style>
+    .card {
+        margin-top: 20px;
+    }
+
+        .card .card-title {
+            font-size: 1rem;
+            color:green
+        }
+
+        .card .card-text {
+            font-size: 2rem;
+        }
+
+    .form-inline .form-group {
+        display: flex;
+        align-items: center;
+    }
+
+        .form-inline .form-group label {
+            margin-right: 10px;
+        }
+
+        .form-inline .form-group input {
+            margin-right: 10px;
+        }
+
+    .card-header.bg-light {
+        background-color: #f8f9fa !important;
+    }
+
+    .fixed-height {
+        height: 200px; /* Adjust the height as needed */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>

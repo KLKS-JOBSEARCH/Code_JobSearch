@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="~/Areas/Admin/Content/vendors/simple-line-icons/css/simple-line-icons.css">
     <link rel="stylesheet" href="~/Areas/Admin/Content/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <link rel="stylesheet" href="~/Areas/Admin/Content/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
@@ -63,100 +65,115 @@
 
 
                     <li class="nav-item dropdown d-none d-lg-block user-dropdown">
-                        <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img class="img-xs rounded-circle" src="~/Images/KhachHang/face8.jpg" alt="Profile image">
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
-                            <div class="dropdown-header text-center">
-                                <img class="img-md rounded-circle" src="~/Images/KhachHang/face8.jpg" alt="Profile image">
-                                <p class="mb-1 mt-3 font-weight-semibold">Trang quản trị</p>
-                            </div>
-                            <a class="dropdown-item nav-link dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2" href="@Url.Action("Logout", "Admin")">Đăng Xuất</a>
+                        @if (nv != null)
+                        {
 
-                        </div>
-                    </li>
-                </ul>
-                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
-                    <span class="mdi mdi-menu"></span>
-                </button>
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @if (string.IsNullOrEmpty(nv.HinhAnh_NV))
+                                    {
+                                        <img src="~/Image/basic.png" style="max-width:50px; border-radius: 50%;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Image/Khachhang/@Html.Raw(nv.HinhAnh_NV)" style="max-width:50px; border-radius: 50%;" />
+                                    }
+                                    @nv.HoTen_NV
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                    <li><span class="dropdown-item">Mã ứng viên: #@nv.Id_NV</span></li>
+                                    <li><span class="dropdown-item">Email: @nv.Email_NV</span></li>
+
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Logout", "Home")">Đăng Xuất</a></li>
+                                </ul>
+                            </div>
+                        }
             </div>
-        </nav>
-        <!-- partial -->
-        <div class="container-fluid page-body-wrapper">
-            <!-- partial:partials/_settings-panel.html -->
-            <div class="theme-setting-wrapper">
-                <div id="settings-trigger"><i class="ti-settings"></i></div>
-                <div id="theme-settings" class="settings-panel">
-                    <i class="settings-close ti-close"></i>
-                    <p class="settings-heading">SIDEBAR SKINS</p>
-                    <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border me-3"></div>Light</div>
-                    <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border me-3"></div>Dark</div>
-                    <p class="settings-heading mt-2">HEADER SKINS</p>
-                    <div class="color-tiles mx-0 px-4">
-                        <div class="tiles success"></div>
-                        <div class="tiles warning"></div>
-                        <div class="tiles danger"></div>
-                        <div class="tiles info"></div>
-                        <div class="tiles dark"></div>
-                        <div class="tiles default"></div>
-                    </div>
+            </li>
+            </ul>
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+                <span class="mdi mdi-menu"></span>
+            </button>
+    </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_settings-panel.html -->
+        <div class="theme-setting-wrapper">
+            <div id="settings-trigger"><i class="ti-settings"></i></div>
+            <div id="theme-settings" class="settings-panel">
+                <i class="settings-close ti-close"></i>
+                <p class="settings-heading">SIDEBAR SKINS</p>
+                <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border me-3"></div>Light</div>
+                <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border me-3"></div>Dark</div>
+                <p class="settings-heading mt-2">HEADER SKINS</p>
+                <div class="color-tiles mx-0 px-4">
+                    <div class="tiles success"></div>
+                    <div class="tiles warning"></div>
+                    <div class="tiles danger"></div>
+                    <div class="tiles info"></div>
+                    <div class="tiles dark"></div>
+                    <div class="tiles default"></div>
                 </div>
-            </div>           
-            <nav class="sidebar sidebar-offcanvas" id="sidebar">
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Thongke","Admin")">
-                            <i class="menu-icon mdi mdi-chart-line"></i>
-                            <span class="menu-title">Trang Thống kê</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("ShowNhanVien","NhanVien")">
-                            <i class="mdi mdi-grid-large menu-icon"></i>
-                            <span class="menu-title">Quản lý NTD</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("ShowVaccine","Vaccine")">
-                            <i class="menu-icon mdi mdi-floor-plan"></i>
-                            <span class="menu-title">Quản lý người Tìm Việc</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("ShowNhaCC","NhaCungCap")">
-                            <i class="menu-icon mdi mdi-card-text-outline"></i>
-                            <span class="menu-title">Quản lý Việc làm</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("ShowKhachHang","KhachHang")">
-                            <i class="menu-icon mdi mdi-table"></i>
-                            <span class="menu-title">Quản lý tài khoản</span>
-                        </a>
-                    </li>
-
-                </ul>
-            </nav>
-            <div class="main-panel">
-                <div class="content-wrapper">
-                    <div class="row">
-                        <div class="col-lg-12 grid-margin">
-                            <div class="card">
-                                <div class="card-body">
-                                    @RenderBody()
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <footer class="footer">
-                </footer>
             </div>
         </div>
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Thongke","Admin")">
+                        <i class="menu-icon mdi mdi-chart-line"></i>
+                        <span class="menu-title">Trang Thống kê</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("ShowNhanVien","NhanVien")">
+                        <i class="mdi mdi-grid-large menu-icon"></i>
+                        <span class="menu-title">Quản lý NTD</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("ShowVaccine","Vaccine")">
+                        <i class="menu-icon mdi mdi-floor-plan"></i>
+                        <span class="menu-title">Quản lý người Tìm Việc</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("ShowNhaCC","NhaCungCap")">
+                        <i class="menu-icon mdi mdi-card-text-outline"></i>
+                        <span class="menu-title">Quản lý Việc làm</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("ShowKhachHang","KhachHang")">
+                        <i class="menu-icon mdi mdi-table"></i>
+                        <span class="menu-title">Quản lý tài khoản</span>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-lg-12 grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                                @RenderBody()
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="footer">
+            </footer>
+        </div>
+    </div>
     </div>
 
     <!-- plugins:js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/Areas/Admin/Content/vendors/js/vendor.bundle.base.js"></script>
     <script src="~/Areas/Admin/Content/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script src="~/Areas/Admin/Content/vendors/chart.js/chart.min.js"></script>
