@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using PagedList;
 
 namespace Code_JobSearch.Areas.Admin.Controllers
 {
@@ -51,7 +51,24 @@ namespace Code_JobSearch.Areas.Admin.Controllers
 
 
 
+        public ActionResult UserProfilePortal(int page = 1)
+        {
+            if (Session["NV"] == null)
+            {
+                return RedirectToAction("Login", "Auth", new { area = "" });
+            }
+            NhanVien nv = Session["NV"] as NhanVien;
+            List<UngVien> ungvien = db.UngViens.ToList();
 
+            //paging
+            int NoOfRecordPerPage = 10;
+            int NoOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(ungvien.Count) / Convert.ToDouble(NoOfRecordPerPage)));
+            int NoOfRecordSkip = (page - 1) * NoOfRecordPerPage;
+            ViewBag.Page = page;
+            ViewBag.NoOfPage = NoOfPages;
+            ungvien = ungvien.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage).ToList();
+            return View(ungvien);
+        }
 
 
 

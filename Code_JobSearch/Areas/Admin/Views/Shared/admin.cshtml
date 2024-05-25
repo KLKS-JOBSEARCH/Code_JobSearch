@@ -5,191 +5,125 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Trang Admin </title>
-    <!-- plugins:css -->
-    <link rel="stylesheet" href="~/Areas/Admin/Content/vendors/feather/feather.css" />
-    <link rel="stylesheet" href="~/Areas/Admin/Content/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="~/Areas/Admin/Content/vendors/ti-icons/css/themify-icons.css">
-    <link rel="stylesheet" href="~/Areas/Admin/Content/vendors/typicons/typicons.css">
-    <link rel="stylesheet" href="~/Areas/Admin/Content/vendors/simple-line-icons/css/simple-line-icons.css">
-    <link rel="stylesheet" href="~/Areas/Admin/Content/vendors/css/vendor.bundle.base.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+    <title>Trang Admin</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <link rel="stylesheet" href="~/Areas/Admin/Content/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
-    <link rel="stylesheet" type="text/css" href="~/Areas/Admin/Content/js/select.dataTables.min.css">
-    <link href="~/Areas/Admin/Content/css/vertical-layout-light/style.css" rel="stylesheet" />
-    <link rel="shortcut icon" href="~/Areas/Admin/Content/images/favicon.png" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <!-- Custom styles -->
+    <link href="~/Content/css/adminstyle.css" rel="stylesheet" />
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
     @{
         NhanVien nv = Session["NV"] as NhanVien;
     }
-</head>
 
+</head>
 <body class="with-welcome-text">
     <div class="container-scroller">
-        <!-- partial:partials/_navbar.html -->
-        <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
-            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
-                <div class="me-3">
-                    <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
-                        <span class="icon-menu"></span>
-                    </button>
-                </div>
-                <div>
-                    <a class="navbar-brand brand-logo" href="#">
-
-                    </a>
-
-                </div>
-            </div>
-            @*Thanh header*@
-            <div class="navbar-menu-wrapper d-flex align-items-top">
-                <ul class="navbar-nav">
-                    <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
-                        <h1 class="welcome-text">Xin Chào, <span class="text-black fw-bold">Admin</span></h1>
-                        <h3 class="welcome-sub-text">Trang quản trị   </h3>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ms-auto">
-
-                    <li class="nav-item d-none d-lg-block">
-                        <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
-                            <span class="input-group-addon input-group-prepend border-right">
-                                <span class="icon-calendar input-group-text calendar-icon"></span>
-                            </span>
-                            <input type="text" class="form-control">
-                        </div>
-                    </li>
-
-
-                    <li class="nav-item dropdown d-none d-lg-block user-dropdown">
-                        @if (nv != null)
-                        {
-
-                            <div class="dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    @if (string.IsNullOrEmpty(nv.HinhAnh_NV))
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Trang Admin</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @if (nv != null)
+                                {
+                                    if (string.IsNullOrEmpty(nv.HinhAnh_NV))
                                     {
-                                        <img src="~/Image/basic.png" style="max-width:50px; border-radius: 50%;" />
+                                        <img src="~/Image/basic.png" alt="User Avatar" class="rounded-circle me-2" style="width: 30px;">
                                     }
                                     else
                                     {
-                                        <img src="~/Image/Khachhang/@Html.Raw(nv.HinhAnh_NV)" style="max-width:50px; border-radius: 50%;" />
+                                        <img src="~/Image/Khachhang/@Html.Raw(nv.HinhAnh_NV)" alt="User Avatar" class="rounded-circle me-2" style="width: 30px;">
                                     }
-                                    @nv.HoTen_NV
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                    <li><span class="dropdown-item">Mã ứng viên: #@nv.Id_NV</span></li>
-                                    <li><span class="dropdown-item">Email: @nv.Email_NV</span></li>
-
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="@Url.Action("Logout", "Home")">Đăng Xuất</a></li>
-                                </ul>
-                            </div>
-                        }
-            </div>
-            </li>
-            </ul>
-            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
-                <span class="mdi mdi-menu"></span>
-            </button>
-    </div>
-    </nav>
-    <!-- partial -->
-    <div class="container-fluid page-body-wrapper">
-        <!-- partial:partials/_settings-panel.html -->
-        <div class="theme-setting-wrapper">
-            <div id="settings-trigger"><i class="ti-settings"></i></div>
-            <div id="theme-settings" class="settings-panel">
-                <i class="settings-close ti-close"></i>
-                <p class="settings-heading">SIDEBAR SKINS</p>
-                <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border me-3"></div>Light</div>
-                <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border me-3"></div>Dark</div>
-                <p class="settings-heading mt-2">HEADER SKINS</p>
-                <div class="color-tiles mx-0 px-4">
-                    <div class="tiles success"></div>
-                    <div class="tiles warning"></div>
-                    <div class="tiles danger"></div>
-                    <div class="tiles info"></div>
-                    <div class="tiles dark"></div>
-                    <div class="tiles default"></div>
+                                    <span class="text-white">@nv.HoTen_NV</span>
+                                }
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><span class="dropdown-item">Mã ứng viên: #@nv.Id_NV</span></li>
+                                <li><span class="dropdown-item">Email: @nv.Email_NV</span></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Logout", "Home")">Đăng Xuất</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("Thongke","Admin")">
-                        <i class="menu-icon mdi mdi-chart-line"></i>
-                        <span class="menu-title">Trang Thống kê</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("ShowNhanVien","NhanVien")">
-                        <i class="mdi mdi-grid-large menu-icon"></i>
-                        <span class="menu-title">Quản lý NTD</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("ShowVaccine","Vaccine")">
-                        <i class="menu-icon mdi mdi-floor-plan"></i>
-                        <span class="menu-title">Quản lý người Tìm Việc</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("ShowNhaCC","NhaCungCap")">
-                        <i class="menu-icon mdi mdi-card-text-outline"></i>
-                        <span class="menu-title">Quản lý Việc làm</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("ShowKhachHang","KhachHang")">
-                        <i class="menu-icon mdi mdi-table"></i>
-                        <span class="menu-title">Quản lý tài khoản</span>
-                    </a>
-                </li>
-
-            </ul>
         </nav>
-        <div class="main-panel">
-            <div class="content-wrapper">
-                <div class="row">
-                    <div class="col-lg-12 grid-margin">
-                        <div class="card">
-                            <div class="card-body">
-                                @RenderBody()
 
+        <div class="container-fluid">
+            <div class="row">
+                <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                    <div class="position-sticky">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="@Url.Action("Index","Admin")">
+                                    <i class="fas fa-tachometer-alt me-2"></i>
+                                    Trang Thống kê
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <i class="fas fa-users me-2"></i>
+                                    Quản lý NTD
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("UserprofilePortal","Admin")">
+                                    <i class="fas fa-user-tie me-2"></i>
+                                    Quản lý Ứng Viên
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <i class="fas fa-briefcase me-2"></i>
+                                    Quản lý Việc làm
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <i class="fas fa-user-cog me-2"></i>
+                                    Quản lý tài khoản
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <div class="pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Dashboard</h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <!-- Your content here -->
+                                    @RenderBody()
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </main>
             </div>
-            <footer class="footer">
-            </footer>
         </div>
     </div>
-    </div>
 
-    <!-- plugins:js -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/Areas/Admin/Content/vendors/js/vendor.bundle.base.js"></script>
-    <script src="~/Areas/Admin/Content/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
-    <script src="~/Areas/Admin/Content/vendors/chart.js/chart.min.js"></script>
-    <script src="~/Areas/Admin/Content/vendors/progressbar.js/progressbar.min.js"></script>
-    <script src="~/Areas/Admin/Content/js/off-canvas.js"></script>
-    <script src="~/Areas/Admin/Content/js/hoverable-collapse.js"></script>
-    <script src="~/Areas/Admin/Content/js/template.js"></script>
-    <script src="~/Areas/Admin/Content/js/settings.js"></script>
-    <script src="~/Areas/Admin/Content/js/todolist.js"></script>
-    <script src="~/Areas/Admin/Content/js/jquery.cookie.js" type="text/javascript"></script>
-    <script src="~/Areas/Admin/Content/js/dashboard.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
 </body>
-
 </html>
-
-
-
-
-

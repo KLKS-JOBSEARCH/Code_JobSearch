@@ -1,0 +1,124 @@
+﻿body {
+    font-family: "Noto Sans HK", sans-serif;
+}
+
+    body.with-welcome-text {
+        background-color: #f8f9fa;
+    }
+
+.navbar {
+    background-color: #343a40;
+}
+
+.sidebar {
+    min-height: 100vh;
+    padding-top: 20px;
+}
+
+    .sidebar .nav-link {
+        color: #333;
+        font-weight: 500;
+        margin-bottom: 10px;
+        transition: color 0.3s, background-color 0.3s;
+    }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: #007bff;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+
+.navbar .nav-link {
+    color: #fff;
+}
+
+    .navbar .nav-link:hover {
+        color: #adb5bd;
+    }
+
+.navbar .dropdown-menu {
+    background-color: #343a40;
+}
+
+    .navbar .dropdown-menu .dropdown-item {
+        color: #fff;
+    }
+
+        .navbar .dropdown-menu .dropdown-item:hover {
+            background-color: #495057;
+        }
+
+    .navbar .dropdown-menu .dropdown-divider {
+        border-color: #495057;
+    }
+
+.main-panel {
+    padding: 20px;
+}
+
+/* Ensure the table container is scrollable */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Styling the table to fit within its container */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+
+    /* Styling the table header */
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    /* Styling the table body */
+    .table tbody + tbody {
+        border-top: 2px solid #dee2e6;
+    }
+
+/* Styling the table borders */
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+
+/* Styling images within the table */
+.img-thumbnail {
+    padding: 0.25rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    max-width: 100px; /* Ensure the images do not exceed this width */
+}
+
+/* Ensure buttons have proper margin */
+.btn {
+    margin-right: 5px;
+}
+
+/* Additional styling for the table to fit within the container */
+.table-responsive > .table {
+    margin-bottom: 0;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .card .card-body {
+        padding: 30px;
+    }
+
+.footer {
+    padding: 20px;
+    background-color: #f8f9fa;
+    text-align: center;
+}
