@@ -46,6 +46,8 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             ViewBag.SoLuongBaiViet = soLuongBaiViet;
             ViewBag.SoLuongTinHetHan = soLuongTinHetHan;
 
+
+            ViewBag.CurrentPage = "Index";
             return View();
         }
 
@@ -67,6 +69,8 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             ViewBag.Page = page;
             ViewBag.NoOfPage = NoOfPages;
             ungvien = ungvien.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage).ToList();
+
+            ViewBag.CurrentPage = "UserProfilePortal";
             return View(ungvien);
         }
 
