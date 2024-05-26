@@ -2012,6 +2012,8 @@
     <Content Include="Content\CvUser\hs.pdf" />
     <Content Include="Areas\Admin\Views\Admin\UserProfilePortal.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\EmployerProfilePortal.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\DetailsCompany.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\CompanyPortal.cshtml" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>

@@ -96,6 +96,60 @@ namespace Code_JobSearch.Areas.Admin.Controllers
         }
 
 
+
+        public ActionResult CompanyPortal(int page = 1)
+        {
+            if (Session["NV"] == null)
+            {
+                return RedirectToAction("Login", "Auth", new { area = "" });
+            }
+            NhanVien nv = Session["NV"] as NhanVien;
+            List<DoanhNghiep> dn = db.DoanhNghieps.ToList();
+
+            //paging
+            int NoOfRecordPerPage = 10;
+            int NoOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(dn.Count) / Convert.ToDouble(NoOfRecordPerPage)));
+            int NoOfRecordSkip = (page - 1) * NoOfRecordPerPage;
+            ViewBag.Page = page;
+            ViewBag.NoOfPage = NoOfPages;
+            dn = dn.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage).ToList();
+
+            ViewBag.CurrentPage = "UserProfilePortal";
+            return View(dn);
+        }
+
+        public ActionResult DetailsCompany(int id)
+        {
+            if (Session["NV"] == null)
+            {
+                return RedirectToAction("Login", "Auth", new { area = "" });
+            }
+            NhanVien nv = Session["NV"] as NhanVien;
+
+
+            var viewModel = new CompanyDetailsViewModel();
+
+            // Lấy thông tin của doanh nghiệp
+            viewModel.NhaTuyenDung = db.NhaTuyenDungs.SingleOrDefault(ntd => ntd.Id_NTD == id);
+            if (viewModel.NhaTuyenDung != null)
+            {
+                // Lấy thông tin của doanh nghiệp từ Id_DN
+                viewModel.DoanhNghiep = db.DoanhNghieps.SingleOrDefault(dn => dn.Id_DN == viewModel.NhaTuyenDung.Id_DN);
+
+                // Lấy danh sách tin tuyển dụng từ Id_NTD và sắp xếp theo ngày hạn tuyển dụng mới nhất đến cũ nhất
+                viewModel.TinTuyenDung = db.TinTuyenDungs
+                                            .Where(ttd => ttd.Id_NTD == id && ttd.HanTuyenDung.HasValue && ttd.HanTuyenDung > DateTime.Now)
+                                            .OrderByDescending(ttd => ttd.HanTuyenDung)
+                                            .ToList();
+            }
+
+            return View(viewModel);
+        }
+
+
+        
+
+
         public ActionResult Logout()
         {
             Session.Clear();

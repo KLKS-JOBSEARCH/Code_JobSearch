@@ -25,30 +25,32 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                <tr>
-                    <td style="width: 15%;" class="align-middle">@Html.DisplayFor(modelItem => item.HoTen_NTD)</td>
-                    <td style="width: 16%;" class="align-middle">@Html.DisplayFor(modelItem => item.Email_NTD)</td>
-                    <td style="width: 15%;" class="text-center align-middle">
-                        @if (string.IsNullOrEmpty(item.HinhAnh_NTD))
-                        {
-                            <img style="width: 100px; height: 100px;" src="~/Image/basic.png" alt="Chưa có hình ảnh">
-                        }
-                        else
-                        {
-                            <img src="/Image/Khachhang/@Html.Raw(item.HinhAnh_NTD)" alt="Ảnh ứng viên" class="img-thumbnail" style="width: 100px; height: 100px;" />
-                        }
-                    </td>
-                    <td style="width: 18%;" class="align-middle">@Html.DisplayFor(modelItem => item.ViTriCongTac)</td>
-                    <td style="width: 18%;" class="align-middle">@Html.DisplayFor(modelItem => item.DoanhNghiep.Ten_DN)</td>
-                    <td style="width: 18%;" class="align-middle">@Html.DisplayFor(modelItem => item.SoDienThoai_NTD)</td>
-                    <td style="width: 20%;" class="align-middle">@Html.DisplayFor(modelItem => item.TenTK)</td>
-                    <td style="width: 15%;" class="text-center align-middle">
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <a href="@Url.Action("Details", new { id = item.Id_NTD })" class="btn btn-info btn-sm">Chi tiết</a>
-                            <a href="@Url.Action("Delete", new { id = item.Id_NTD })" class="btn btn-danger btn-sm">Xóa</a>
-                        </div>
-                    </td>
-                </tr>
+                    <tr>
+                        <td style="width: 15%;" class="align-middle">@Html.DisplayFor(modelItem => item.HoTen_NTD)</td>
+                        <td style="width: 16%;" class="align-middle">@Html.DisplayFor(modelItem => item.Email_NTD)</td>
+                        <td style="width: 15%;" class="text-center align-middle">
+                            @if (string.IsNullOrEmpty(item.HinhAnh_NTD))
+                            {
+                                <img style="width: 100px; height: 100px;" src="~/Image/basic.png" alt="Chưa có hình ảnh">
+                            }
+                            else
+                            {
+                                <img src="/Image/Khachhang/@Html.Raw(item.HinhAnh_NTD)" alt="Ảnh ứng viên" class="img-thumbnail" style="width: 100px; height: 100px;" />
+                            }
+                        </td>
+                        <td style="width: 18%;" class="align-middle">@Html.DisplayFor(modelItem => item.ViTriCongTac)</td>
+                        <td style="width: 18%;" class="align-middle">
+                            @Html.ActionLink(item.DoanhNghiep.Ten_DN, "DetailsCompany", "Admin", new { id = item.DoanhNghiep.Id_DN }, null)
+                        </td>
+                        <td style="width: 18%;" class="align-middle">@Html.DisplayFor(modelItem => item.SoDienThoai_NTD)</td>
+                        <td style="width: 20%;" class="align-middle">@Html.DisplayFor(modelItem => item.TenTK)</td>
+                        <td style="width: 15%;" class="text-center align-middle">
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <a href="@Url.Action("Details", new { id = item.Id_NTD })" class="btn btn-info btn-sm">Chi tiết</a>
+                                <a href="@Url.Action("Delete", new { id = item.Id_NTD })" class="btn btn-danger btn-sm">Xóa</a>
+                            </div>
+                        </td>
+                    </tr>
                 }
             </tbody>
 
