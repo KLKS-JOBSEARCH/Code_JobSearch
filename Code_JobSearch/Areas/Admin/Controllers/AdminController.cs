@@ -74,6 +74,26 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             return View(ungvien);
         }
 
+        public ActionResult EmployerProfilePortal(int page = 1)
+        {
+            if (Session["NV"] == null)
+            {
+                return RedirectToAction("Login", "Auth", new { area = "" });
+            }
+            NhanVien nv = Session["NV"] as NhanVien;
+            List<NhaTuyenDung> NTD = db.NhaTuyenDungs.ToList();
+
+            //paging
+            int NoOfRecordPerPage = 10;
+            int NoOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(NTD.Count) / Convert.ToDouble(NoOfRecordPerPage)));
+            int NoOfRecordSkip = (page - 1) * NoOfRecordPerPage;
+            ViewBag.Page = page;
+            ViewBag.NoOfPage = NoOfPages;
+            NTD = NTD.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage).ToList();
+
+            ViewBag.CurrentPage = "UserProfilePortal";
+            return View(NTD);
+        }
 
 
         public ActionResult Logout()

@@ -75,10 +75,24 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="javascript:void(0)" id="employerMenuToggle">
                                     <i class="fas fa-users me-2"></i>
                                     Quản lý NTD
                                 </a>
+                                <ul class="nav flex-column sub-menu" id="employerSubMenu" style="display: none;">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">
+                                            <i class="fas fa-building me-2"></i>
+                                            Doanh nghiệp
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="@Url.Action("EmployerprofilePortal","Admin")">
+                                            <i class="fas fa-user-tie me-2"></i>
+                                            Nhà tuyển dụng
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="@Url.Action("UserprofilePortal","Admin")">
@@ -101,6 +115,8 @@
                         </ul>
                     </div>
                 </nav>
+
+
 
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     <div class="pt-3 pb-2 mb-3 border-bottom">
@@ -125,5 +141,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
+    <script>
+        document.getElementById('employerMenuToggle').addEventListener('click', function () {
+            var subMenu = document.getElementById('employerSubMenu');
+            if (subMenu.style.display === 'none' || subMenu.style.display === '') {
+                subMenu.style.display = 'block';
+            } else {
+                subMenu.style.display = 'none';
+            }
+        });
+
+
+    </script>
 </body>
 </html>

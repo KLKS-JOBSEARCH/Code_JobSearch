@@ -107,6 +107,14 @@
 .table-responsive > .table {
     margin-bottom: 0;
 }
+.sub-menu {
+    display: none;
+    padding-left: 40px; /* Optional: for indentation */
+}
+
+.nav-item .nav-link.active + .sub-menu {
+    display: block;
+}
 
 .card {
     border-radius: 10px;
