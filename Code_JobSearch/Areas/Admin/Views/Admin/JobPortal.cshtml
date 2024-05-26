@@ -1,0 +1,110 @@
+﻿@model IEnumerable<Code_JobSearch.Models.TinTuyenDung>
+
+@{
+    ViewBag.Title = "Danh sách việc làm";
+    Layout = "~/Areas/Admin/Views/Shared/admin.cshtml";
+    int startPage = Math.Max(1, ViewBag.Page - 2);
+    int endPage = Math.Min(ViewBag.NoOfPage, ViewBag.Page + 2);
+}
+<style>
+    .dynamic-width th {
+        white-space: nowrap; /* Ngăn chặn việc trường dữ liệu bị ngắt dòng */
+    }
+
+    .dynamic-width td {
+        max-width: 100%; /* Cố định độ rộng tối đa của trường dữ liệu */
+        overflow: hidden; /* Ẩn phần dư thừa của dữ liệu khi tràn ra ngoài */
+        text-overflow: ellipsis; /* Hiển thị dấu chấm ba (...) khi dữ liệu tràn ra ngoài */
+    }
+</style>
+<div class="container mt-5">
+    <h2 class="mb-4 text-success">Danh sách việc làm trên hệ thống</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered mt-3 dynamic-width">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th style="width: 15%;">Tiêu đề</th>
+                    <th style="width: 15%;">Hạn tuyển dụng</th>
+                    <th style="width: 15%;">Mức lương</th>
+                    <th style="width: 10%;">Yêu cầu giới tính</th>
+                    <th style="width: 10%;">Cấp bậc</th>
+                    <th style="width: 5%;">SL Tuyển</th>
+                    <th style="width: 10%;">Hình thức làm việc</th>
+                    <th style="width: 10%;">Ngày đăng</th>
+                    <th style="width: 10%;">Địa điểm</th>
+                    <th style="width: 20%;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.TieuDe_TTD)</td>
+                        <td class="align-middle text-center">@item.HanTuyenDung.Value.ToString("dd/MM/yyyy")</td>
+                        <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.MucLuongTD)</td>
+                        <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.YeuCauGioiTinh)</td>
+                        <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.CapBacTD)</td>
+                        <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.SoLuongTuyen)</td>
+                        <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.HinhThucLamViec)</td>
+                        <td class="align-middle text-center">@item.ThoiGianDangTuyen.Value.ToString("dd/MM/yyyy")</td>
+                        <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.DiaDiem_TTD)</td>
+                        <td class="text-center align-middle">
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <a href="@Url.Action("Details", new { id = item.Id_TTD })" class="btn btn-info btn-sm">
+                                    <i class="fas fa-info-circle"></i> 
+                                </a>
+                                <a href="@Url.Action("Delete", new { id = item.Id_TTD })" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i> 
+                                </a>
+                            </div>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mt-4">
+                @if (ViewBag.Page > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("JobPortal", new { page = 1 })" aria-label="First">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("JobPortal", new { page = ViewBag.Page - 1 })" aria-label="Previous">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("JobPortal", new { page = i })">@i</a>
+                    </li>
+                }
+
+                @if (ViewBag.Page < ViewBag.NoOfPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("JobPortal", new { page = ViewBag.Page + 1 })" aria-label="Next">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("JobPortal", new { page = ViewBag.NoOfPage })" aria-label="Last">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+        <!-- End of Pagination -->
+    </div>
+</div>
+
+
