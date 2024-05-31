@@ -2424,7 +2424,7 @@ namespace Code_JobSearch.Models
 		
 		private string _MoTa_TTD;
 		
-		private System.Nullable<bool> _XetDuyet;
+		private string _XetDuyet;
 		
 		private string _KinhNghiemLam;
 		
@@ -2470,7 +2470,7 @@ namespace Code_JobSearch.Models
     partial void OnLogo_DN_TTDChanged();
     partial void OnMoTa_TTDChanging(string value);
     partial void OnMoTa_TTDChanged();
-    partial void OnXetDuyetChanging(System.Nullable<bool> value);
+    partial void OnXetDuyetChanging(string value);
     partial void OnXetDuyetChanged();
     partial void OnKinhNghiemLamChanging(string value);
     partial void OnKinhNghiemLamChanged();
@@ -2768,8 +2768,8 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_XetDuyet", DbType="Bit")]
-		public System.Nullable<bool> XetDuyet
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_XetDuyet", DbType="NVarChar(50)")]
+		public string XetDuyet
 		{
 			get
 			{

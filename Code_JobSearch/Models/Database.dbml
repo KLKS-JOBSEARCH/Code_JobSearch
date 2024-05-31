@@ -120,7 +120,7 @@
       <Column Name="DiaDiem_TTD" Type="System.String" DbType="NVarChar(300)" CanBeNull="true" />
       <Column Name="Logo_DN_TTD" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="MoTa_TTD" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Column Name="XetDuyet" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="XetDuyet" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="KinhNghiemLam" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Id_NTD" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Id_PTTD" Type="System.Int32" DbType="Int" CanBeNull="true" />
