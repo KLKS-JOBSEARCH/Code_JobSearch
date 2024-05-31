@@ -1,0 +1,229 @@
+﻿@model List<Code_JobSearch.Models.TinTuyenDung>
+@{
+    ViewBag.Title = "Tin tuyển dụng";
+    Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
+    int idntd = ViewBag.idntd;
+    int totalItems = ViewBag.TotalItems;
+    int page = ViewBag.Page;
+    int pageSize = ViewBag.PageSize;
+    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+    int startItem = (page - 1) * pageSize + 1;
+    int endItem = Math.Min(page * pageSize, totalItems);
+    if (endItem == 0) { endItem = totalItems; }
+    int stt = startItem;
+
+}
+<style>
+    .img-thumbnail {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 3px;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    table tr {
+        vertical-align: middle;
+    }
+
+    .table-responsive thead {
+        position: sticky;
+        top: 0;
+        background-color: #fff; /* Màu nền cho tiêu đề cột */
+        z-index: 1; /* Đảm bảo tiêu đề cột hiển thị phía trên các dòng của bảng */
+    }
+</style>
+
+<h2 class="text-center text-success mb-4">TIN TUYỂN DỤNG</h2>
+<p class="edit-link ">
+    @Html.ActionLink("Thêm mới", "Create", new { @id = idntd }, new { @class = "btn btn-primary" })
+</p>
+<br />
+@if (Model != null && Model.Count > 0)
+{
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Danh sách tin tuyển dụng</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped ">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">STT</th>
+                            <th scope="col" class="text-center">Logo</th>
+                            <th scope="col" class="text-center">Tiêu đề</th>
+                            <th scope="col" class="text-center">Mức lương</th>
+                            <th scope="col" class="text-center">Số lượng tuyển</th>
+                            <th scope="col" class="text-center">Trạng thái đăng</th>
+                            <th scope="col" class="text-center">Xét duyệt</th>
+                            <th scope="col" class="text-center">Hạn tuyển dụng</th>
+                            <th scope="col" class="text-center">Địa điểm</th>
+                            <th scope="col" class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model)
+                        {
+
+                            <tr>
+                                <td class="text-center">@stt</td>
+                                <td>
+                                    <a href="@Url.Action("DetailsJob", "DoanhNghiep", new { id = p.Id_TTD })">
+                                        <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(p.Logo_DN_TTD)" alt="Logo" class="img-thumbnail" style="width: 100px;">
+                                    </a>
+                                </td>
+                                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="@p.TieuDe_TTD">@Html.ActionLink(p.TieuDe_TTD, "DetailsJob", "DoanhNghiep", new { id = p.Id_TTD }, null)</td>
+                                <td>@p.MucLuongTD</td>
+                                <td class="text-center">@p.SoLuongTuyen</td>
+                                <td class="text-center">
+                                    @if (p.TrangThaiDang == true)
+                                    {
+                                        <span class="badge bg-success">Đã đăng</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Chưa đăng</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (p.XetDuyet == "Đang xét duyệt")
+                                    {
+                                        <span class="badge bg-info">@p.XetDuyet</span>
+                                    }
+                                    else if (p.XetDuyet == "Duyệt thành công")
+                                    {
+                                        <span class="badge bg-success">@p.XetDuyet</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">@p.XetDuyet</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (p.HanTuyenDung.HasValue)
+                                    {
+                                        var remainingHours = Math.Floor((p.HanTuyenDung.Value - DateTime.Now).TotalHours);
+
+                                        if (remainingHours > 0)
+                                        {
+                                            if (remainingHours > 24 * 7) // If more than 7 days
+                                            {
+                                                var remainingWeeks = Math.Floor(remainingHours / (24 * 7)); // Remaining weeks
+                                                <span>Còn @remainingWeeks tuần</span>
+                                            }
+                                            else if (remainingHours > 24) // If more than 24 hours
+                                            {
+                                                var remainingDays = Math.Floor(remainingHours / 24); // Remaining days
+                                                <span>Còn @remainingDays ngày</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning text-dark">Còn @remainingHours giờ</span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Đã hết hạn</span>
+                                        }
+                                    }
+                                </td>
+                                <td class="text-center">@p.DiaDiem_TTD</td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center">
+                                        <a title="Xóa" href="@Url.Action("Delete", new { id = p.Id_TTD })" class="btn btn-icon" onclick="return confirmDelete();">
+                                            <i class="bi bi-trash" style="color: red;"></i>
+                                        </a>
+                                        <a title="Sửa" href="@Url.Action("Edit", new { id = p.Id_TTD })" class="btn btn-icon">
+                                            <i class="bi bi-pencil" style="color: blue;"></i>
+                                        </a>
+                                        <a title="Xem ứng viên" href="@Url.Action("ListUT", new { id = p.Id_TTD })" class="btn btn-icon">
+                                            <i class="bi bi-person" style="color: orange;"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            stt++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+            <span>
+                @if (startItem != endItem)
+                {
+                    <span>Hiển thị @startItem - @endItem trong tổng số @totalItems</span>
+                }
+                else
+                {
+                    <span>Hiển thị 1 trong tổng số @totalItems</span>
+                }
+            </span>
+        </div>
+        <div>
+            <span>Số lượng dòng: </span>
+            <select id="pageSize" class="form-select" style="width: auto; display: inline-block;" onchange="changePageSize()">
+                <option value="5" @(pageSize == 5 ? "selected" : "")>5</option>
+                <option value="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                <option value="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                <option value="40" @(pageSize == 40 ? "selected" : "")>40</option>
+            </select>
+            <nav aria-label="Page navigation example" style="display: inline-block;">
+                <ul class="pagination mb-0">
+                    <li class="page-item @(page <= 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("ListTTD", new { id = idntd, page = page - 1, pageSize = pageSize })" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(page == i ? "active" : "")"><a class="page-link" href="@Url.Action("ListTTD", new { id = idntd, page = i, pageSize = pageSize })">@i</a></li>
+                    }
+                    <li class="page-item @(page >= totalPages ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("ListTTD", new { id = idntd, page = page + 1, pageSize = pageSize })" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+
+}
+else
+{
+    <div class="alert alert-warning" role="alert">
+        Không có tin tuyển dụng nào.
+    </div>
+}
+
+<script>
+    function changePageSize() {
+        var pageSize = document.getElementById("pageSize").value;
+        window.location.href = '@Url.Action("ListTTD", new { id = idntd, page = 1, pageSize = "__pageSize__" })'.replace("__pageSize__", pageSize);
+    }
+
+    function confirmDelete() {
+        return confirm('Bạn có chắc chắn muốn xóa mục này?');
+    }
+    var isDel = '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.isDel))';
+    if (isDel) {
+        alert(isDel);
+    }
+    var isEdit = '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.isEdit))';
+    if (isEdit) {
+        alert(isEdit);
+    }
+</script>

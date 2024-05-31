@@ -217,7 +217,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
-    <Compile Include="Controllers\EmployerController.cs" />
+    <Compile Include="Controllers\DoanhnghiepController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -2047,10 +2047,6 @@
     <Content Include="Views\Auth\Login.cshtml" />
     <Content Include="Views\Home\Company.cshtml" />
     <Content Include="Views\Shared\_search_company.cshtml" />
-    <Content Include="Views\Auth\Employer_Register.cshtml" />
-    <Content Include="Views\Employer\Index.cshtml" />
-    <Content Include="Views\Auth\Login_employer.cshtml" />
-    <Content Include="Views\Shared\EmployerLayout.cshtml" />
     <Content Include="Views\Home\DetailsJob.cshtml" />
     <Content Include="Views\Home\TimKiem.cshtml" />
     <Content Include="Views\Home\ProfileUser.cshtml" />
@@ -2064,9 +2060,25 @@
     <Content Include="Views\User\Create.cshtml" />
     <Content Include="Views\User\UngtuyenCV.cshtml" />
     <Content Include="Views\User\HistoryofCVApply.cshtml" />
-    <Content Include="Views\Employer\GopY.cshtml" />
     <Content Include="Views\Home\ProfileNhaTuyenDung.cshtml" />
     <Content Include="Views\Home\EditNTD.cshtml" />
+    <Content Include="Views\Shared\DoanhNghiepLayout.cshtml" />
+    <Content Include="Views\Auth\DoanhNghiep_Register.cshtml" />
+    <Content Include="Views\Auth\DoanhNghiep_RegisterCodeVerify.cshtml" />
+    <Content Include="Views\Auth\Login_DoanhNghiep.cshtml" />
+    <Content Include="Views\Auth\RegisterCodeVerify.cshtml" />
+    <Content Include="Views\Doanhnghiep\ListTTD.cshtml" />
+    <Content Include="Views\Doanhnghiep\GopY.cshtml" />
+    <Content Include="Views\Doanhnghiep\DoanhNghiepInfo.cshtml" />
+    <Content Include="Views\Doanhnghiep\EditDN.cshtml" />
+    <Content Include="Views\Doanhnghiep\ProfileNhaTuyenDung.cshtml" />
+    <Content Include="Views\Doanhnghiep\EditNTD.cshtml" />
+    <Content Include="Views\Doanhnghiep\DetailsJob.cshtml" />
+    <Content Include="Views\Doanhnghiep\Create.cshtml" />
+    <Content Include="Views\Doanhnghiep\Edit.cshtml" />
+    <Content Include="Views\Doanhnghiep\ListUT.cshtml" />
+    <Content Include="Views\Doanhnghiep\XemChiTiet.cshtml" />
+    <Content Include="Views\Doanhnghiep\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

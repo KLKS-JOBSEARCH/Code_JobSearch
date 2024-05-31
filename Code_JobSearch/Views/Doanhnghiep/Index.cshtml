@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
+
+}
+<header>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</header>
+
+<h2 class="text-center text-success mb-4">Home</h2>
+
+<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+
+<!-- Form lọc tin đăng -->
+<form id="filterForm">
+    <label for="month">Chọn tháng:</label>
+    <select id="month" name="month">
+        <option value="1">Tháng 1</option>
+        <option value="2">Tháng 2</option>
+        <option value="3">Tháng 3</option>
+        <option value="4">Tháng 4</option>
+        <option value="5">Tháng 5</option>
+        <option value="6">Tháng 6</option>
+        <option value="7">Tháng 7</option>
+        <option value="8">Tháng 8</option>
+        <option value="9">Tháng 9</option>
+        <option value="10">Tháng 10</option>
+        <option value="11">Tháng 11</option>
+        <option value="12">Tháng 12</option>
+    </select>
+    <label for="year">Chọn năm:</label>
+    <select id="year" name="year">
+        @for (int i = 1900; i <= DateTime.Now.Year + 125; i++)
+        {
+            <option value="@i">@i</option>
+        }
+    </select>
+    <button type="submit">Lọc</button>
+</form>
+<script>
+    $(document).ready(function () {
+    // Function to draw column chart
+    function drawColumnChart(postData, candidateData) {
+        // Tạo một bảng dữ liệu Google Charts cho số lượng tin đã đăng
+        var postDataTable = new google.visualization.DataTable();
+        postDataTable.addColumn('string', 'Ngày');
+        postDataTable.addColumn('number', 'Số lượng tin đã đăng');
+        // Thêm dữ liệu cho số lượng tin đã đăng
+        postData.forEach(function (item) {
+            postDataTable.addRow([item.day, item.postCount]);
+        });
+
+        // Tạo một bảng dữ liệu Google Charts cho số lượng ứng viên đã ứng tuyển
+        var candidateDataTable = new google.visualization.DataTable();
+        candidateDataTable.addColumn('string', 'Ngày');
+        candidateDataTable.addColumn('number', 'Số lượng ứng viên đã ứng tuyển');
+        // Thêm dữ liệu cho số lượng ứng viên đã ứng tuyển
+        candidateData.forEach(function (item) {
+            candidateDataTable.addRow([item.day, item.candidateCount]);
+        });
+
+        // Thiết lập tùy chọn cho biểu đồ
+        var options = {
+            title: 'Thống kê số lượng tin đăng và số lượng ứng viên theo ngày',
+            hAxis: { title: 'Ngày' },
+            vAxis: { title: 'Số lượng' },
+            seriesType: 'bars',
+            series: { 0: { color: 'blue' }, 1: { color: 'green' } }
+        };
+
+        // Vẽ biểu đồ cột cho số lượng tin đã đăng
+        var postChart = new google.visualization.ComboChart(document.getElementById('chartContainer'));
+        postChart.draw(postDataTable, options);
+    }
+
+    // Xử lý sự kiện khi biểu mẫu lọc được nộp
+    $("#filterForm").submit(function (event) {
+        // Ngăn chặn việc gửi biểu mẫu
+        event.preventDefault();
+
+        // Lấy giá trị của tháng và năm từ biểu mẫu
+        var selectedMonth = $("#month").val();
+        var selectedYear = $("#year").val();
+
+        // Gửi yêu cầu lọc đến controller
+        $.get("@Url.Action("FilterPosts")", { month: selectedMonth, year: selectedYear })
+            .done(function (data) {
+                // Xóa biểu đồ hiện tại
+                $("#chartContainer").empty();
+
+                // Gọi hàm vẽ biểu đồ với dữ liệu nhận được từ controller
+                drawColumnChart(data.posts, data.candidates);
+            });
+    });
+
+    // Function to populate dropdowns
+    function populateDropdowns() {
+        // Populate months dropdown
+        var months = [
+            "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4",
+            "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8",
+            "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
+        ];
+
+        var selectMonth = $("#month");
+        for (var i = 0; i < months.length; i++) {
+            var option = $("<option>");
+            option.val(i + 1);
+            option.text(months[i]);
+            selectMonth.append(option);
+        }
+
+        // Populate years dropdown
+        var currentYear = new Date().getFullYear();
+        var selectYear = $("#year");
+        for (var i = currentYear; i >= currentYear - 10; i--) {
+            var option = $("<option>");
+            option.val(i);
+            option.text(i);
+            selectYear.append(option);
+        }
+    }
+
+    // Call the function to populate dropdowns on page load
+    populateDropdowns();
+});
+
+</script>
+
+

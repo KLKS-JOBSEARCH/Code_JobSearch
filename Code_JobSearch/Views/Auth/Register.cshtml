@@ -16,7 +16,45 @@
     .btn-register {
         width: 100%;
     }
+    /* CSS cho dialog loading */
+    .loading-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .loading-message {
+        background: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .loading-icon {
+        font-size: 30px;
+        transition: transform 0.1s linear;
+        color: #00B074;
+    }
 </style>
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-message">
+        <i class="fas fa-spinner loading-icon" id="loadingIcon"></i>
+        <p>
+            Đang chuyển trang xác thực mã đăng ký.
+            <br />Hãy vui lòng kiểm tra email để nhận mã xác thực để đăng ký.
+        </p>
+    </div>
+</div>
 <div class="container centered-form">
     <div class="row">
         <div class="col-md-6 order-last" id="jobStarSection" style="padding:20px; position: relative;">
@@ -40,12 +78,12 @@
             @using (Html.BeginForm("Register", "Auth", FormMethod.Post, new { id = "myForm" }))
             {
                 @Html.ValidationSummary(true)
-                <h7 class="error-message">@ViewData["Loi"]</h7>
+
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="HotenKH" class="form-label"><i class="fa fa-user"></i> Họ Tên Khách Hàng</label>
                         @Html.TextBox("HotenKH", ViewData["HotenKH"], new { @class = "form-control", type = "text", placeholder = "Nguyễn Văn A" })
-
+                        <h7 class="error-message">@ViewData["Loi"]</h7>
                     </div>
                     <div class="col-md-6">
                         <label for="Email" class="form-label"><i class="fa fa-envelope"></i> Email</label>
@@ -87,8 +125,10 @@
                         <h7 class="error-message">@ViewData["Loi1"]</h7>
                     </div>
 
+
                     @*--------------------*@
                 </div>
+
 
                 <div class="row">
                     <div class="col-sm-12">
@@ -111,7 +151,29 @@
                 </div>
             }
 
-
+            @if (TempData["ErrorEmailMessageRegister"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["ErrorEmailMessageRegister"]
+                </div>
+            }
+            @*code update*@
+            @if (TempData["SuccessMessageRegister"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["SuccessMessageRegister"]
+                </div>
+                <script>
+                        // Hiển thị dialog loading và chuyển trang sau một khoảng thời gian
+                        document.addEventListener("DOMContentLoaded", function () {
+                            showLoading();
+                            setTimeout(function () {
+                                window.location.href = '@Url.Action("RegisterCodeVerify", "Auth")';
+                            }, 3000); // Chuyển trang sau 3 giây
+                        });
+                </script>
+            }
+            @*-----*@
             </br>
             <p>Yêu cầu tạo một mật khẩu mạnh</p>
             <div id="password-conditions">
@@ -127,6 +189,7 @@
 
 
     </div>
+
 </div>
 
 <script>
@@ -138,7 +201,26 @@
             jobStarSection.style.display = 'block';
         }
     }
+     /*code update*/
+    let angle = 0;
+    const loadingIcon = document.getElementById('loadingIcon');
+    setInterval(() => {
+        angle = (angle + 36) % 360; // Thay đổi giá trị này để điều chỉnh tốc độ xoay
+        loadingIcon.style.transform = `rotate(${angle}deg)`;
+    }, 100);
 
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+    var successMessage = '@TempData["SuccessMessageRegister"]';
+    if (successMessage === '') {
+        hideLoading(); // Ẩn loading nếu không có thông báo thành công
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+    /*-----*/
     window.addEventListener('load', hideOnMobile);
     window.addEventListener('resize', hideOnMobile);
     // Function to show password conditions
@@ -196,7 +278,7 @@
         // Return overall password validity
         return isPasswordValid;
     }
-    // code update
+// code update
     function showPassword() {
         var passwordInput = document.getElementById('Matkhau');
         passwordInput.setAttribute('type', 'text');
@@ -244,16 +326,16 @@
         eyeIcon.classList.add('bi-eye-slash');
         hideRePassword();
     }
-    //-----
+//-----
 
-    // Add event listener to password input
-    document.addEventListener("DOMContentLoaded", function () {
-        var passwordInput = document.getElementById("Matkhau");
-        passwordInput.addEventListener("input", showPasswordConditions);
-    });
+// Add event listener to password input
+document.addEventListener("DOMContentLoaded", function () {
+    var passwordInput = document.getElementById("Matkhau");
+    passwordInput.addEventListener("input", showPasswordConditions);
+});
 
-    // Call showPasswordConditions on page load
-    showPasswordConditions();
+// Call showPasswordConditions on page load
+showPasswordConditions();
 
 </script>
 

@@ -20,7 +20,45 @@
     .btn-register {
         width: 100%;
     }
+    /* CSS cho dialog loading */
+    .loading-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .loading-message {
+        background: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .loading-icon {
+        font-size: 30px;
+        transition: transform 0.1s linear;
+        color: #00B074;
+    }
 </style>
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-message">
+        <i class="fas fa-spinner loading-icon" id="loadingIcon"></i>
+        <p>
+            Đang chuyển trang xác thực mã đăng ký.
+            <br />Hãy vui lòng kiểm tra email để nhận mã xác thực để đăng ký.
+        </p>
+    </div>
+</div>
 <div class="container centered-form">
     <div class="row">
         <div class="col-md-6 order-last" id="jobStarSection" style="padding:20px; position: relative;">
@@ -38,7 +76,7 @@
         <div class="col-md-6" style="padding-left: 0px; padding-right: 24px; margin-top: 20px;">
             <h2 style="color:green">Chào mừng bạn đến với JobStar</h2>
             <p><strong>Đăng ký hồ sơ cho nhà tuyển dụng của bạn</strong></p>
-            @using (Html.BeginForm("Employer_Register", "Auth", FormMethod.Post, new { id = "myForm" }))
+            @using (Html.BeginForm("DoanhNghiep_Register", "Auth", FormMethod.Post, new { id = "myForm" }))
             {
                 @Html.ValidationSummary(true)
                 <h7 style="color:red;">@ViewData["Loino"]</h7>
@@ -47,19 +85,19 @@
 
                         <div class="input-group custom-input-group">
                             <span class="input-group-text" style="color: green;"><i class="bi bi-person-fill"></i></span>
-                            @Html.TextBox("HotenKH", ViewData["HotenKH"], new { @class = "form-control", type = "text", placeholder = "Họ Tên Khách Hàng" })
+                            @Html.TextBox("HotenKH", ViewData["HotenKH"], new { @class = "form-control", type = "text", placeholder = "Họ Tên" })
                         </div>
 
                         <h7 style="color:red;">@ViewData["Loitendangnhap"]</h7>
                         <div class="input-group custom-input-group">
                             <span class="input-group-text" style="color: green;"><i class="bi bi-person-circle"></i></span>
-                            @Html.TextBox("TenDN", ViewData["TenDN"], new { @class = "form-control", type = "text", placeholder = "Tên Đăng Nhập" })
+                            @Html.TextBox("TenDN", ViewData["TenDN"], new { @class = "form-control", type = "text", placeholder = "Tên đăng nhập" })
                         </div>
                         @*code update*@
                         <h7 style="color:red;">@ViewData["Loi2"]</h7>
                         <div class="input-group custom-input-group">
                             <span class="input-group-text" style="color: green;"><i class="bi bi-lock-fill"></i></span>
-                            @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Mật Khẩu", oninput = "showPasswordConditions()" })
+                            @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập mật khẩu", oninput = "showPasswordConditions()" })
                             <button class="btn btn-outline-success" type="button" id="togglePasswordVisibility" onmouseover="showPasswordIcon()" onmouseout="hidePasswordIcon()">
                                 <i id="eyeIcon" class="bi bi-eye-slash"></i>
                             </button>
@@ -68,7 +106,7 @@
                         <h7 style="color:red;">@ViewData["Loimatkhaunhaplai"]</h7>
                         <div class="input-group custom-input-group">
                             <span class="input-group-text" style="color: green;"><i class="bi bi-lock-fill"></i></span>
-                            @Html.Password("ReMatkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Lại Mật Khẩu" })
+                            @Html.Password("ReMatkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập lại mật khẩu" })
                             <button class="btn btn-outline-success" type="button" id="togglePasswordVisibility" onmouseover="showPasswordIconRe()" onmouseout="hidePasswordIconRe()">
                                 <i id="eyeIcon" class="bi bi-eye-slash"></i>
                             </button>
@@ -80,7 +118,7 @@
                         <h7 style="color:red;">@ViewData["Loisdt"]</h7>
                         <div class="input-group custom-input-group">
                             <span class="input-group-text" style="color: green;"><i class="bi bi-telephone"></i></span>
-                            @Html.TextBox("sdt", ViewData["sdt"], new { @class = "form-control", type = "tel", placeholder = "Nhập Số điện thoại cá nhân", oninput = "this.value = this.value.replace(/[^0-9]/g, '')" })
+                            @Html.TextBox("sdt", ViewData["sdt"], new { @class = "form-control", type = "tel", placeholder = "Nhập số điện thoại cá nhân", oninput = "this.value = this.value.replace(/[^0-9]/g, '')" })
                         </div>
 
                         <h7 style="color:red;">@ViewData["Loiemail"]</h7>
@@ -92,13 +130,13 @@
                         <h7 style="color:red;">@ViewData["Loi4"]</h7>
                         <div class="input-group custom-input-group">
                             <span class="input-group-text" style="color: green;"><i class="bi bi-building"></i></span>
-                            @Html.TextBox("Congty", ViewData["Congty"], new { @class = "form-control", type = "text", placeholder = "Tên Doanh Nghiệp" })
+                            @Html.TextBox("Congty", ViewData["Congty"], new { @class = "form-control", type = "text", placeholder = "Tên doanh nghiệp" })
                         </div>
 
                         <h7 style="color:red;">@ViewData["Loithue"]</h7>
                         <div class="input-group custom-input-group">
                             <span class="input-group-text" style="color: green;"><i class="bi bi-file-earmark-spreadsheet"></i></span>
-                            @Html.TextBox("SoThue", ViewData["SoThue"], new { @class = "form-control", type = "tel", placeholder = "Nhập Mã số thuế", oninput = "this.value = this.value.replace(/[^0-9]/g, '')" })
+                            @Html.TextBox("SoThue", ViewData["SoThue"], new { @class = "form-control", type = "tel", placeholder = "Nhập mã số thuế", oninput = "this.value = this.value.replace(/[^0-9]/g, '')" })
                         </div>
                     </div>
                 </div>
@@ -149,13 +187,35 @@
                     <div class="col-sm-12">
                         <div class="input-group mb-0">
                             <center>
-                                <h7>Đã có tài khoản</h7> &nbsp; <h7>@Html.ActionLink("Đăng nhập", "Login_employer", null, new { style = "color: green;" })</h7>
+                                <h7>Đã có tài khoản</h7> &nbsp; <h7>@Html.ActionLink("Đăng nhập", "Login_DoanhNghiep", null, new { style = "color: green;" })</h7>
                             </center>
                         </div>
                     </div>
                 </div>
             }
-
+            @if (TempData["ErrorEmailMessageRegister"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["ErrorEmailMessageRegister"]
+                </div>
+            }
+            @*code update*@
+            @if (TempData["SuccessMessageRegister"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["SuccessMessageRegister"]
+                </div>
+                <script>
+                        // Hiển thị dialog loading và chuyển trang sau một khoảng thời gian
+                        document.addEventListener("DOMContentLoaded", function () {
+                            showLoading();
+                            setTimeout(function () {
+                                window.location.href = '@Url.Action("DoanhNghiep_RegisterCodeVerify", "Auth")';
+                            }, 3000); // Chuyển trang sau 3 giây
+                        });
+                </script>
+            }
+            @*-----*@
             </br>
             <p>Yêu cầu tạo một mật khẩu mạnh</p>
             <div id="password-conditions">
@@ -170,6 +230,7 @@
 
 
     </div>
+
 </div>
 
 
@@ -184,6 +245,26 @@
             jobStarSection.style.display = 'block';
         }
     }
+    /*code update*/
+    let angle = 0;
+    const loadingIcon = document.getElementById('loadingIcon');
+    setInterval(() => {
+        angle = (angle + 36) % 360; // Thay đổi giá trị này để điều chỉnh tốc độ xoay
+        loadingIcon.style.transform = `rotate(${angle}deg)`;
+    }, 100);
+
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+    var successMessage = '@TempData["SuccessMessageRegister"]';
+    if (successMessage === '') {
+        hideLoading(); // Ẩn loading nếu không có thông báo thành công
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+    /*-----*/
     // code update
     function showPassword() {
         var passwordInput = document.getElementById('Matkhau');
@@ -232,7 +313,7 @@
         eyeIcon.classList.add('bi-eye-slash');
         hideRePassword();
     }
-    //-----
+//-----
     window.addEventListener('load', hideOnMobile);
     window.addEventListener('resize', hideOnMobile);
     function showPasswordConditions() {

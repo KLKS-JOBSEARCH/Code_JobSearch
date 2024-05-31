@@ -1,0 +1,90 @@
+﻿@model Code_JobSearch.Models.DoanhNghiep
+@{
+    ViewBag.Title = "DoanhNghiepInfo";
+    Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
+}
+
+<h3 class="card-title text-right" style="color:green">Thông tin doanh nghiệp</h3>
+<!-- Hiển thị thông tin doanh nghiệp -->
+<div class="col-md-4">
+    <div class="card border-primary" style="min-height: 100px; width:500px">
+        <!-- Đặt kích thước cố định cho card -->
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="rounded-circle">
+                        @if (string.IsNullOrEmpty(Model.Logo_DN))
+                        {
+                            <img class="img-fluid" src="~/Content/Logo_DoanhNghiep/basic.png" alt="Logo tạm">
+                        }
+                        else
+                        {
+                            <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(Model.Logo_DN)" class="img-fluid" alt="Logo Doanh Nghiệp" />
+                        }
+
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="company-info">
+                        <p class="card-text"><strong>@Html.DisplayFor(model => model.Ten_DN)</strong></p>
+                        <p class="card-text">
+                            Website:
+                            @if (string.IsNullOrEmpty(Model.LinkWeb_DN))
+                            {
+                                <span></span>
+                            }
+                            else
+                            {
+                                <a href="@Model.LinkWeb_DN">@Html.DisplayFor(model => model.LinkWeb_DN)</a>
+                            }
+                        </p>
+                        <p class="card-text">Mã số thuế: @Html.DisplayFor(model => model.MaSoThue_DN)</p>
+                        <p class="card-text"><i class="bi bi-geo-alt-fill"></i> @Html.DisplayFor(model => model.DiaDiem_DN)</p>
+                        <p class="edit-link">
+                            @Html.ActionLink("Chỉnh sửa thông tin doanh nghiệp", "EditDN", new { id = Model.Id_DN }, new { @class = "btn btn-primary" })
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-8">
+        <h3 style="color:green">Mô tả Doanh nghiệp</h3>
+        <ul>
+            @if (string.IsNullOrEmpty(Model.MoTa_DN))
+            {
+                <li style="list-style: none"></li>
+            }
+            else
+            {
+                var lines = Model.MoTa_DN.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var line in lines)
+                {
+                    string[] words = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    for (int i = 0; i < words.Length; i++)
+                    {
+                        if (words[i].Contains("Vị Trí:") || words[i].Contains("Liên hệ:") || words[i].Contains("Mô Tả Công Việc:") || words[i].Contains("Yêu Cầu:") || words[i].Contains("Quyền Lợi:"))
+                        {
+                            <strong>@words[i]</strong>
+                        }
+                        else
+                        {
+                            @words[i]
+                        }
+                        if (i < words.Length - 1)
+                        {
+                            <text> </text> <!-- Thêm khoảng trắng giữa các từ -->
+                        }
+                    }
+                    <br />
+                }
+            }
+        </ul>
+
+    </div>
+</div>
+

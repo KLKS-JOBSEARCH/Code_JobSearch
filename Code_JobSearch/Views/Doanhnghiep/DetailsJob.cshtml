@@ -1,9 +1,9 @@
 ﻿@model Code_JobSearch.Models.JobDetailsViewModel
-
 @{
-    ViewBag.Title = "Chi tiết tuyển dụng";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "DetailsJob";
+    Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
 }
+
 <style>
     .rounded-circle {
         width: 100px;
@@ -25,9 +25,7 @@
 </style>
 
 <div class="container">
-    <div class="nav-item mb-4">
-        @Html.Partial("_Search")
-    </div>
+
     <div class="row">
         <div class="col-md-8">
             <div>
@@ -42,37 +40,31 @@
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.DiaDiem_TTD)</dd>
                     <dt class="col-sm-4"><i class="bi bi-calendar3-event-fill"></i> Yêu cầu kinh nghiệm</dt>
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.KinhNghiemLam)</dd>
+                    <dt class="col-sm-4"><i class="bi bi-info-square-fill"></i> Trạng thái</dt>
+                    <dd class="col-sm-8">
+
+                        @if (Model.TinTuyenDung.TrangThaiDang == true)
+                        {
+                            @:Đã đăng
+                        }
+                        else
+                        {
+                            if (Model.TinTuyenDung.TrangThaiDang == false)
+                            {
+                                @:Chưa đăng
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(model => model.TinTuyenDung.XetDuyet)
+                            }
+                        }
+                    </dd>
                 </dl>
             </div>
-            <a href="@Url.Action("UngtuyenCV", "User", new { idTTD = Model.TinTuyenDung.Id_TTD })" class="btn btn-primary mb-4">Ứng tuyển ngay</a>
-
-
-
+            <a href="@Url.Action("DangTin", "DoanhNghiep", new { idTTD = Model.TinTuyenDung.Id_TTD })" class="btn btn-primary mb-4">Đăng tin</a>
         </div>
 
-        <div class="col-md-4">
-            <div class="card border-primary" style="min-height: 100px;">
-                <!-- Đặt kích thước cố định cho card -->
-                <div class="card-body">
-                    <h3 class="card-title text-right">Thông tin doanh nghiệp</h3>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="rounded-circle">
-                                <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(Model.DoanhNghiep.Logo_DN)" class="img-fluid" alt="Logo Doanh Nghiệp" />
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="company-info">
-                                <p class="card-text" style="font-size: smaller;"><strong>@Html.DisplayFor(model => model.DoanhNghiep.Ten_DN)</strong></p>
-                                <p class="card-text">Website: <a href="@Html.DisplayFor(model => model.DoanhNghiep.LinkWeb_DN)">@Html.DisplayFor(model => model.DoanhNghiep.LinkWeb_DN)</a></p>
-                                <p class="card-text"><i class="bi bi-geo-alt-fill"></i> @Html.DisplayFor(model => model.DoanhNghiep.DiaDiem_DN)</p>
-                                <a class="card-text" href="@Url.Action("DetailsCompany", "Home", new { @id = Model.DoanhNghiep.Id_DN }, null)"><strong>Đến trang công ty</strong></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 
 
@@ -129,4 +121,3 @@
     </div>
 
 </div>
-

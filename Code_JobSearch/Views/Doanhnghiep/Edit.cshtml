@@ -1,0 +1,121 @@
+﻿@model Code_JobSearch.Models.TinTuyenDung
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
+    var danhSachTP = ViewBag.DSThanhPho as List<string>;
+}
+
+<h2>Cập nhật</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Tin tuyển dụng</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <span>Tiêu đề</span>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TieuDe_TTD, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TieuDe_TTD, "", new { @class = "text-danger" })
+                @if (ViewData["Loi1"] != null)
+                {
+                    <span class="text-danger">@ViewData["Loi1"]</span>
+                }
+            </div>
+            <span>Hạn tuyển dụng</span>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.HanTuyenDung, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.HanTuyenDung, "", new { @class = "text-danger" })
+                @if (ViewData["Loi2"] != null)
+                {
+                    <span class="text-danger">@ViewData["Loi2"]</span>
+                }
+            </div>
+            <span>Mức lương tuyển</span>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MucLuongTD, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MucLuongTD, "", new { @class = "text-danger" })
+                @if (ViewData["Loi3"] != null)
+                {
+                    <span class="text-danger">@ViewData["Loi3"]</span>
+                }
+            </div>
+            <span>Yêu cầu giới tính</span>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.YeuCauGioiTinh, new SelectList(new List<string> { "Nam", "Nữ", "Không yêu cầu" }), new { @class = "form-control" })
+            </div>
+            <span>Cấp bậc tuyển dụng</span>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.CapBacTD, new SelectList(new List<string> { "Thực tập sinh", "Nhân viên", "Quản lý", "Phó phòng", "Trưởng phòng", "Phó giám đốc", "Giám đốc" }), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CapBacTD, "", new { @class = "text-danger" })
+            </div>
+            <span>Số lượng tuyển</span>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SoLuongTuyen, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SoLuongTuyen, "", new { @class = "text-danger" })
+                @if (ViewData["Loi4"] != null)
+                {
+                    <span class="text-danger">@ViewData["Loi4"]</span>
+                }
+            </div>
+            <span>Hình thức làm việc</span>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.HinhThucLamViec, new SelectList(new List<string> { "Toàn thời gian", "Bán thời gian" }), new { @class = "form-control" })
+            </div>
+            <span>Yêu cầu kinh nghiệm (Gợi ý: 1 năm, 1-2 năm, không yêu cầu)</span>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.KinhNghiemLam, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.KinhNghiemLam, "", new { @class = "text-danger" })
+                @if (ViewData["Loi5"] != null)
+                {
+                    <span class="text-danger">@ViewData["Loi5"]</span>
+                }
+            </div>
+            <span>Địa điểm tuyển</span>
+            <div class="col-md-10">
+                @if (danhSachTP != null && danhSachTP.Any())
+                {
+                    <div class="input-group custom-input-group">
+                        @Html.DropDownListFor(model => model.DiaDiem_TTD, new SelectList(danhSachTP), new { @class = "form-control" })
+                    </div>
+                }
+                else
+                {
+                    <p>Danh sách địa điểm không có hoặc bị rỗng.</p>
+                }
+            </div>
+            <span>Mô tả</span> @*Thực hiện textarea*@
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.MoTa_TTD, new { @class = "form-control", rows = 5 })
+                @Html.ValidationMessageFor(model => model.MoTa_TTD, "", new { @class = "text-danger" })
+                @if (ViewData["Loi6"] != null)
+                {
+                    <span class="text-danger">@ViewData["Loi6"]</span>
+                }
+            </div>
+            @if (ViewBag.ErrorLogo != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.ErrorLogo
+                </div>
+            }
+            @if (ViewBag.isEdit != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.isEdit
+                </div>
+            }
+        </div>
+
+        <!-- Add other fields similarly -->
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10" style="margin-top: 10px;">
+                <input type="submit" value="Cập nhật" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}

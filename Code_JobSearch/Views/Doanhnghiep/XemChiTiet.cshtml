@@ -1,0 +1,40 @@
+﻿@model Code_JobSearch.Models.UV_TTD
+@{
+    ViewBag.Title = "XemChiTiet";
+    Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
+}
+
+<div class="card">
+    <div class="card-header">
+        Thông tin chi tiết ứng viên
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Họ tên: @Model.HoTenUV_TD</h5>
+        <p class="card-text">Email: @Model.EmailUV_TD</p>
+        <p class="card-text">Số điện thoại: @Model.SoDienThoaiUV_TD</p>
+        <p class="card-text">
+            Trạng thái:
+            @if (Model.TinhTrangUngTuyen == "Đã ứng tuyển")
+            {
+
+
+                @:Đang xét duyệt
+            }
+            else
+            {
+                @Model.TinhTrangUngTuyen
+            }
+        </p>
+        <p class="card-text">
+            <label for="thuGioiThieu">Thư giới thiệu:</label>
+            <textarea id="thuGioiThieu" class="form-control" rows="10" readonly>@Model.NoiDung_ThuGioiThieu</textarea>
+        </p>
+        <p class="card-text">
+            <label for="fileHoSo">File hồ sơ:</label>
+            <a href="@Url.Action("ViewFile", new { fileName = Model.File_CV })" target="_blank" class="btn btn-primary">Xem hồ sơ</a>
+        </p>
+    </div>
+</div>
+
+<a href="@Url.Action("ListUT", new {id=Model.Id_TTD})" class="btn btn-primary mt-3">Quay lại danh sách</a>
+

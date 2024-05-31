@@ -1,0 +1,181 @@
+﻿@model List<Code_JobSearch.Models.UV_TTD>
+@{
+    ViewBag.Title = "Danh sách ứng tuyển";
+    Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
+    int totalItems = ViewBag.TotalItems;
+    int page = ViewBag.Page;
+    int pageSize = ViewBag.PageSize;
+    int totalPages = ViewBag.TotalPages;
+    int startItem = (page - 1) * pageSize + 1;
+    int endItem = Math.Min(page * pageSize, totalItems);
+    if (endItem == 0) { endItem = totalItems; }
+    int stt = startItem;
+}
+
+<style>
+    .status-pending {
+        color: dodgerblue;
+        font-weight: bold;
+    }
+
+    .status-accepted {
+        color: lightseagreen;
+        font-weight: bold;
+    }
+
+    .table-container {
+        max-height: 300px; /* Thiết lập độ cao tối đa cho bảng */
+        overflow-y: auto; /* Thiết lập thanh cuộn dọc */
+    }
+
+    .card-body {
+        padding: 0; /* Xóa padding để tránh khoảng trắng xung quanh bảng */
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    table tr {
+        vertical-align: middle;
+    }
+
+    .table-responsive thead {
+        position: sticky;
+        top: 0;
+        background-color: #fff; /* Màu nền cho tiêu đề cột */
+        z-index: 1; /* Đảm bảo tiêu đề cột hiển thị phía trên các dòng của bảng */
+    }
+</style>
+
+<div class="row">
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Danh sách ứng viên đã ứng tuyển</h3>
+                </div>
+                <div class="card-body table-responsive">
+                    <div class="table-container ">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center; width: 10%;">STT</th>
+                                    <th style="text-align: center; width: 20%;">Họ tên</th>
+                                    <th style="text-align: center; width: 20%;">Email</th>
+                                    <th style="text-align: center; width: 15%;">Số điện thoại</th>
+                                    <th style="text-align: center; width: 15%;">Trạng thái</th>
+                                    <th style="text-align: center; width: 20%;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    foreach (var uv in Model)
+                                    {
+                                        <tr>
+                                            <td style="text-align: center; vertical-align: middle;">@stt</td>
+                                            <td style="text-align: center; vertical-align: middle;">@uv.HoTenUV_TD</td>
+                                            <td style="text-align: center; vertical-align: middle;">@uv.EmailUV_TD</td>
+                                            <td style="text-align: center; vertical-align: middle;">@uv.SoDienThoaiUV_TD</td>
+                                            <td style="text-align: center; vertical-align: middle;">
+                                                @if (uv.TinhTrangUngTuyen == "Đã ứng tuyển")
+                                                {
+                                                    <span class="status-pending">Đang xét duyệt</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="status-accepted">@uv.TinhTrangUngTuyen</span>
+                                                }
+                                            </td>
+                                            <td style="text-align: center; vertical-align: middle;">
+                                                <div class="d-flex justify-content-center">
+                                                    <button title="Xem chi tiết" class="btn btn-icon btn-primary me-3" onclick="window.location.href='@Url.Action("XemChiTiet", new { id = uv.Id_UT })'">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                    <button title="Nhận ứng viên" class="btn btn-icon btn-primary  me-3" onclick="confirmAction('@Url.Action("UpdateTTUT", new { id = uv.Id_UT })')">
+                                                        <i class="bi bi-check-circle-fill"></i>
+                                                    </button>
+                                                    <button title="Download hồ sơ" class="btn btn-icon btn-primary" onclick="window.location.href='@Url.Action("DownloadFile", new { fileName = uv.File_CV })'">
+                                                        <i class="bi bi-download"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        stt++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mt-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span>
+                        @if (startItem != endItem)
+                        {
+                            <span>Hiển thị @startItem - @endItem trong tổng số @totalItems</span>
+                        }
+                        else
+                        {
+                            <span>Hiển thị 1 trong tổng số @totalItems</span>
+                        }
+                    </span>
+                </div>
+                <div>
+                    <span>Số lượng dòng: </span>
+                    <select id="pageSize" class="form-select" style="width: auto; display: inline-block;" onchange="changePageSize()">
+                        <option value="5" @(pageSize == 5 ? "selected" : "")>5</option>
+                        <option value="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                        <option value="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                        <option value="40" @(pageSize == 40 ? "selected" : "")>40</option>
+                    </select>
+                    <nav aria-label="Page navigation example" style="display: inline-block;">
+                        <ul class="pagination mb-0">
+                            <li class="page-item @(page <= 1 ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("ListUT", new { page = page - 1, pageSize = pageSize })" aria-label="Previous">
+                                    <span aria-hidden="true">«</span>
+                                </a>
+                            </li>
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(page == i ? "active" : "")"><a class="page-link" href="@Url.Action("ListUT", new { page = i, pageSize = pageSize })">@i</a></li>
+                            }
+                            <li class="page-item @(page >= totalPages ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("ListUT", new { page = page + 1, pageSize = pageSize })" aria-label="Next">
+                                    <span aria-hidden="true">»</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-warning" role="alert">
+                Chưa có ứng viên ứng tuyển
+            </div>
+        </div>
+    }
+
+</div>
+<script>
+    function changePageSize() {
+        var pageSize = document.getElementById("pageSize").value;
+        window.location.href = '@Url.Action("ListUT", new { page = 1, pageSize = "__pageSize__" })'.replace("__pageSize__", pageSize);
+    }
+    function confirmAction(url) {
+        if (confirm('Bạn có chắc chắn muốn nhận ứng viên này không?')) {
+            window.location.href = url;
+        }
+    }
+</script>

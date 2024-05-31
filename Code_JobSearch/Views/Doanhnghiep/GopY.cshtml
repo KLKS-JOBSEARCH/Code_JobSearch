@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "GopY";
-    Layout = "~/Views/Shared/EmployerLayout.cshtml";
+    Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
 }
 
 <style>
@@ -57,7 +57,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title" style="color: green;">Đóng góp gợi ý của bạn tại đây</h2>
-                    @using (Html.BeginForm("GopY", "Employer", FormMethod.Post, new { id = "myForm", @class = "needs-validation", novalidate = "true", onsubmit = "showAlert()" }))
+                    @using (Html.BeginForm("GopY", "DoanhNghiep", FormMethod.Post, new { id = "myForm", @class = "needs-validation", novalidate = "true", onsubmit = "showAlert()" }))
                     {
                         <div class="mb-3">
                             @Html.ValidationSummary(true)

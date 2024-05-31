@@ -1,4 +1,5 @@
 ﻿using Code_JobSearch.Models;
+using FluentEmail.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,7 @@ namespace Code_JobSearch.Controllers
         //code update
         private List<string> danhSachViTriCongTac = new List<string>
         {
-            "Nhân viên", "Quản lý", "Phó giám đốc", "Giám đốc", "Tổng giám đốc"
+            "Nhân viên", "Phó phòng","Trưởng phòng", "Phó giám đốc", "Giám đốc", "Tổng giám đốc"
         };
         //---------------
 
@@ -59,7 +60,7 @@ namespace Code_JobSearch.Controllers
         }
 
         [HttpPost]
-        public ActionResult Register(UngVien kh, TaiKhoan ac, FormCollection f)
+        public ActionResult Register(FormCollection f)
         {
             var hoten = f["HotenKH"];
             var tendn = f["TenDN"];
@@ -136,12 +137,8 @@ namespace Code_JobSearch.Controllers
                 ViewData["Loi3"] = "Email đã tồn tại!";
                 return View();
             }
-            //code update
-            if (VerifyEmail(tendn, email) == false)
-            {
-                ViewData["Loi3"] = "Email không thể xác thực!";
-                return View();
-            }
+
+
 
             // Kiểm tra sự tồn tại của số điện thoại
             if (db.UngViens.Any(t => t.SoDienThoai_TKUV == sdt))
@@ -156,29 +153,53 @@ namespace Code_JobSearch.Controllers
                 ViewData["Loi5"] = "Số điện thoại phải có đúng 10 chữ số!";
                 return View();
             }
+            //code update
 
-            ac.TenTK = tendn;
-            ac.MatKhau = HashPassword(matkhau);
+            bool isEmailSent = VerifyEmail(email);
+            if (!isEmailSent)
+            {
+                TempData["ErrorEmailMessageRegister"] = "Gửi mã xác thực đăng ký thất bại. Có thể do email không đúng!";
+                return View();
+            }
+            TempData["SuccessMessageRegister"] = "Bạn hãy vui lòng kiểm tra email để nhận mã xác thực đăng ký.";
 
+            TempData["UngVien"] = new UngVien
+            {
+                HoTen_TKUV = hoten,
+                Email_TKUV = email,
+                SoDienThoai_TKUV = sdt,
+                TenTK = tendn
+            };
 
+            TempData["TaiKhoan"] = new TaiKhoan
+            {
+                TenTK = tendn,
+                MatKhau = HashPassword(matkhau)
+            };
+            return RedirectToAction("RegisterCodeVerify");
+        }
+        public ActionResult RegisterCodeVerify()
+        {
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult RegisterCodeVerify(FormCollection f)
+        {
+            var maxacthuc = f["MaXacThuc"];
+            if (!VerificationCodeManager.IsCodeValid(maxacthuc))
+            {
+                ViewData["LoiMaXacThuc"] = "Mã xác thực không đúng hoặc đã hết hạn";
+                return View();
+            }
+            var uv = TempData["UngVien"] as UngVien;
+            var ac = TempData["TaiKhoan"] as TaiKhoan;
             db.TaiKhoans.InsertOnSubmit(ac);
             db.SubmitChanges();
-
-
-            kh.TenTK = ac.TenTK;
-            kh.HoTen_TKUV = hoten;
-            kh.Email_TKUV = email;
-            kh.HinhAnhTKUV = null;
-            kh.SoDienThoai_TKUV = sdt;
-
-
-            db.UngViens.InsertOnSubmit(kh);
+            db.UngViens.InsertOnSubmit(uv);
             db.SubmitChanges();
-
-            ViewBag.TB = "Đăng ký thành công!";
             return RedirectToAction("Login", "Auth");
         }
-
 
 
         public ActionResult Login()
@@ -250,9 +271,11 @@ namespace Code_JobSearch.Controllers
         }
         #endregion
 
-        #region Auth Employer
+
+
+        #region Auth DoanhNghiep
         [HttpGet]
-        public ActionResult Employer_Register()
+        public ActionResult DoanhNghiep_Register()
         {
             ViewBag.DanhSachThanhPho = danhSachThanhPho;
             ViewBag.DanhSachViTriCT = danhSachViTriCongTac;
@@ -260,8 +283,10 @@ namespace Code_JobSearch.Controllers
         }
 
         [HttpPost]
-        public ActionResult Employer_Register(NhaTuyenDung ntd, TaiKhoan ac, DoanhNghiep dn, FormCollection f)
+        public ActionResult DoanhNghiep_Register(FormCollection f)
         {
+            ViewBag.DanhSachThanhPho = danhSachThanhPho;
+            ViewBag.DanhSachViTriCT = danhSachViTriCongTac;
             var hoten = f["HotenKH"];
             var tendn = f["TenDN"];
             var email = f["email"];
@@ -280,11 +305,10 @@ namespace Code_JobSearch.Controllers
             ViewBag.Email = email;
             ViewBag.Congty = congty;
             ViewBag.SDT = sdt;
-            ViewBag.SDT = sothue;
+            ViewBag.SoThue = sothue;
 
 
             if (string.IsNullOrEmpty(hoten) ||
-               string.IsNullOrEmpty(tendn) ||
                string.IsNullOrEmpty(matkhau) ||
                string.IsNullOrEmpty(rematkhau) ||
                string.IsNullOrEmpty(email) ||
@@ -319,13 +343,7 @@ namespace Code_JobSearch.Controllers
                 return View();
             }
 
-            //code update
-            if (!VerifyEmail(tendn, email))
-            {
-                ViewData["Loiemail"] = "Email không thể xác thực!";
-                return View();
-            }
-            //---
+
 
             // Kiểm tra mật khẩu hợp lệ
             if (string.IsNullOrEmpty(matkhau) || matkhau.Length < 8)
@@ -375,46 +393,87 @@ namespace Code_JobSearch.Controllers
                 ViewData["Loisdt"] = "Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số.";
                 return View();
             }
-
-            if (sothue.Length != 10 || !sothue.All(char.IsDigit))
+            if (db.NhaTuyenDungs.Any(t => t.SoDienThoai_NTD == sdt))
             {
-                ViewData["Loithue"] = "Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số.";
+                ViewData["Loisdt"] = "Số điện thoại đã tồn tại.";
                 return View();
             }
+            if (sothue.Length != 10 || !sothue.All(char.IsDigit))
+            {
+                ViewData["Loithue"] = "Mã số thuế! Vui lòng nhập đúng 10 số.";
+                return View();
+            }
+            if (db.DoanhNghieps.Any(t => t.MaSoThue_DN == sothue))
+            {
+                ViewData["Loithue"] = "Mã số thuế đã tồn tại!";
+                return View();
+            }
+            bool isEmailSent = VerifyEmail(email);
+            if (!isEmailSent)
+            {
+                TempData["ErrorEmailMessageRegister"] = "Gửi mã xác thực đăng ký thất bại. Có thể do email không đúng!";
+                return View();
+            }
+            TempData["SuccessMessageRegister"] = "Bạn hãy vui lòng kiểm tra email để nhận mã xác thực đăng ký.";
 
-            ac.TenTK = tendn;
-            ac.MatKhau = HashPassword(matkhau);
+            TempData["DoanhNghiep"] = new DoanhNghiep
+            {
+                Ten_DN = tendn,
+                DiaDiem_DN = tp,
+                MaSoThue_DN = sothue
+            };
+            TempData["NhaTuyenDung"] = new NhaTuyenDung
+            {
+                TenTK = tendn,
+                HoTen_NTD = hoten,
+                Email_NTD = email,
+                SoDienThoai_NTD = sdt,
+                ViTriCongTac = vtct,
+            };
+            TempData["TaiKhoanNTD"] = new TaiKhoan
+            {
+                TenTK = tendn,
+                MatKhau = HashPassword(matkhau)
+            };
 
-
-            db.TaiKhoans.InsertOnSubmit(ac);
-            db.SubmitChanges();
-
-            dn.Ten_DN = congty;
-            dn.MaSoThue_DN = sothue;
-            dn.DiaDiem_DN = tp;
-            db.DoanhNghieps.InsertOnSubmit(dn);
-            db.SubmitChanges();
-
-            ntd.TenTK = ac.TenTK;
-            ntd.HoTen_NTD = hoten;
-            ntd.Email_NTD = email;
-            ntd.SoDienThoai_NTD = sdt;
-            ntd.ViTriCongTac = vtct;
-
-            db.NhaTuyenDungs.InsertOnSubmit(ntd);
-            db.SubmitChanges();
-
-            ViewBag.TB = "Đăng ký thành công!";
-            return RedirectToAction("Login_employer", "Auth");
+            return RedirectToAction("DoanhNghiep_RegisterCodeVerify");
         }
 
+        public ActionResult DoanhNghiep_RegisterCodeVerify()
+        {
 
-        public ActionResult Login_employer()
+            return View();
+        }
+        [HttpPost]
+        public ActionResult DoanhNghiep_RegisterCodeVerify(FormCollection f)
+        {
+            var maxacthuc = f["MaXacThuc"];
+            if (!VerificationCodeManager.IsCodeValid(maxacthuc))
+            {
+                ViewData["LoiMaXacThuc"] = "Mã xác thực không đúng hoặc đã hết hạn";
+                return View();
+            }
+            var ac = TempData["TaiKhoanNTD"] as TaiKhoan;
+            var ntd = TempData["NhaTuyenDung"] as NhaTuyenDung;
+            var dn = TempData["DoanhNghiep"] as DoanhNghiep;
+            db.TaiKhoans.InsertOnSubmit(ac);
+            db.SubmitChanges();
+            db.DoanhNghieps.InsertOnSubmit(dn);
+            db.SubmitChanges();
+            db.NhaTuyenDungs.InsertOnSubmit(ntd);
+            db.SubmitChanges();
+            var iddn = db.DoanhNghieps.OrderByDescending(d => d.Id_DN).Select(d => d.Id_DN).FirstOrDefault();
+            var ntdupdate = db.NhaTuyenDungs.SingleOrDefault(o => o.Id_NTD.Equals(ntd.Id_NTD));
+            ntdupdate.Id_DN = iddn;
+            db.SubmitChanges();
+            return RedirectToAction("Login_DoanhNghiep", "Auth");
+        }
+        public ActionResult Login_DoanhNghiep()
         {
             return View();
         }
         [HttpPost]
-        public ActionResult Login_Employer(FormCollection f)
+        public ActionResult Login_DoanhNghiep(FormCollection f)
         {
             // Khai báo các biến nhận giá trị từ form f
             var tendn = f["TenDN"];
@@ -449,7 +508,7 @@ namespace Code_JobSearch.Controllers
                         {
                             ViewBag.TB = "Đăng nhập thành công!";
                             Session["NTD"] = ntd;
-                            return RedirectToAction("Index", "Employer");
+                            return RedirectToAction("Index", "DoanhNghiep");
                         }
 
                         return RedirectToAction("Index", "Home");
@@ -559,7 +618,7 @@ namespace Code_JobSearch.Controllers
         }
 
 
-        public static bool VerifyEmail(string tentk, string email)
+        public static bool VerifyEmail(string email)
         {
 
             try
@@ -570,11 +629,11 @@ namespace Code_JobSearch.Controllers
                     Credentials = new NetworkCredential("jobstarvn@gmail.com", "jxtt juxf gbqy nbdp"),
                     EnableSsl = true,
                 };
-
+                VerificationCodeManager.GenerateNewCode();
                 var mailMessage = new MailMessage
                 {
                     From = new MailAddress("jobstarvn@gmail.com"),
-                    Subject = "Đăng ký thành công",
+                    Subject = "Đăng ký",
                     Body = $@"<html>
                         <head>
                             <!-- Bootstrap CSS -->
@@ -583,8 +642,10 @@ namespace Code_JobSearch.Controllers
                         <body>
                             <div class='container'>
                                 <div class='content'>
-                                    <p class='title'><strong>Kính gửi! {tentk},</strong></p>
-                                    <p>Chào mừng bạn đến với JobStar</p>
+                                    <p class='title'><strong>Kính gửi! {email},</strong></p>
+                                    <p>Dưới đây là mã xác thực để đăng ký chỉ có hạn 2 phút:</p>
+                                    <p><strong>{VerificationCodeManager.CodeVerify}</strong></p>
+                                   
                                 </div>
                             </div>
                         </body>
@@ -602,7 +663,7 @@ namespace Code_JobSearch.Controllers
 
         }
         [HttpGet]
-        public ActionResult ForgetPassword_Employer(string tentk)
+        public ActionResult ForgetPassword_DoanhNghiep(string tentk)
         {
             var user = db.TaiKhoans.FirstOrDefault(u => u.TenTK == tentk);
             if (user != null)
@@ -612,7 +673,7 @@ namespace Code_JobSearch.Controllers
                 if (!isEmailSent1)
                 {
                     TempData["ErrorEmailMessage"] = "Gửi email thất bại";
-                    return RedirectToAction("Login_Employer", "Auth");
+                    return RedirectToAction("Login_DoanhNghiep", "Auth");
                 }
                 TempData["SuccessMessage"] = "Bạn hãy vui lòng kiểm tra email để nhận mã xác thực đổi mật khẩu.";
             }
@@ -620,7 +681,7 @@ namespace Code_JobSearch.Controllers
             {
                 TempData["ErrorMessage"] = "Tên tài khoản không tồn tại trong hệ thống.";
             }
-            return RedirectToAction("Login_Employer", "Auth");
+            return RedirectToAction("Login_DoanhNghiep", "Auth");
         }
         [HttpGet]
         public ActionResult ForgetPassword(string tentk)

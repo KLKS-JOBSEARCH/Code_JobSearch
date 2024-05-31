@@ -61,7 +61,7 @@
             <h2 style="color:green">Chào mừng bạn đến với JobStar</h2>
             <p>Cùng tìm kiếm được những ứng viên tiềm năng phù hợp với công việc của bạn</p>
 
-            @using (Html.BeginForm("Login_Employer", "Auth", FormMethod.Post, new { id = "loginForm" }))
+            @using (Html.BeginForm("Login_DoanhNghiep", "Auth", FormMethod.Post, new { id = "loginForm" }))
             {
                 @Html.ValidationSummary(true)
 
@@ -91,7 +91,7 @@
                 </div>
 
                 <div class="mb-3 text-center">
-                    <p>Bạn chưa có tài khoản? <a href="@Url.Action("Employer_Register", "Auth")" style="color: green;">Đăng ký ngay</a></p>
+                    <p>Bạn chưa có tài khoản? <a href="@Url.Action("DoanhNghiep_Register", "Auth")" style="color: green;">Đăng ký ngay</a></p>
                     <p>Quên mật khẩu?</p><a href="javascript:void(0)" onclick="redirectToForgetPassword()" style="color: green;">Điền tên tài khoản và Nhấn vào link sau để lấy lại mật khẩu</a>
                 </div>
             }
@@ -167,7 +167,7 @@
     }
     function redirectToForgetPassword() {
          var tenDN = document.getElementById('TenDN').value;
-         window.location.href = '@Url.Action("ForgetPassword_Employer", "Auth")?tentk=' + encodeURIComponent(tenDN);
+         window.location.href = '@Url.Action("ForgetPassword_DoanhNghiep", "Auth")?tentk=' + encodeURIComponent(tenDN);
     }
     /*-----*/
     /*show pass*/
