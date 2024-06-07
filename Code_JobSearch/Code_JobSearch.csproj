@@ -2015,6 +2015,7 @@
     <Content Include="Areas\Admin\Views\Admin\DetailsCompany.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\CompanyPortal.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\JobPortal.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\JobPortalWait.cshtml" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>

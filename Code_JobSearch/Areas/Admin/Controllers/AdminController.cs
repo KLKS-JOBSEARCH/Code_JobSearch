@@ -161,7 +161,6 @@ namespace Code_JobSearch.Areas.Admin.Controllers
                 tinTuyenDungs = tinTuyenDungs.OrderBy(t => t.ThoiGianDangTuyen);
             }
 
-            // Không cần chuyển đổi thành List ở đây
             int NoOfRecordPerPage = 10;
             int NoOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(tinTuyenDungs.Count()) / Convert.ToDouble(NoOfRecordPerPage)));
             int NoOfRecordSkip = (page - 1) * NoOfRecordPerPage;
@@ -169,12 +168,42 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             ViewBag.NoOfPage = NoOfPages;
             // tinTuyenDungs = tinTuyenDungs.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage).ToList();
 
-            // Chỉ phân trang, không cần chuyển đổi thành List
             tinTuyenDungs = tinTuyenDungs.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage);
 
             return View(tinTuyenDungs);
         }
 
+        public ActionResult JobPortalWait(int page = 1, string filter = "newest")
+        {
+            if (Session["NV"] == null)
+            {
+                return RedirectToAction("Login", "Auth", new { area = "" });
+            }
+            var tinTuyenDungs = db.TinTuyenDungs.AsQueryable();
+
+            // Lọc các việc làm có trạng thái đang chờ xét duyệt
+            tinTuyenDungs = tinTuyenDungs.Where(t => t.XetDuyet == "Chờ xét duyệt");
+
+            // Sắp xếp theo thời gian đăng tuyển
+            if (filter == "newest")
+            {
+                tinTuyenDungs = tinTuyenDungs.OrderByDescending(t => t.ThoiGianDangTuyen);
+            }
+            else if (filter == "oldest")
+            {
+                tinTuyenDungs = tinTuyenDungs.OrderBy(t => t.ThoiGianDangTuyen);
+            }
+
+            int NoOfRecordPerPage = 10;
+            int NoOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(tinTuyenDungs.Count()) / Convert.ToDouble(NoOfRecordPerPage)));
+            int NoOfRecordSkip = (page - 1) * NoOfRecordPerPage;
+            ViewBag.Page = page;
+            ViewBag.NoOfPage = NoOfPages;
+
+            var tinTuyenDungPaged = tinTuyenDungs.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage).ToList();
+
+            return View(tinTuyenDungPaged);
+        }
 
 
 
