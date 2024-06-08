@@ -30,6 +30,14 @@
       <Association Name="UngVien_UV_TTD" Member="UngVien" ThisKey="Id_UV" OtherKey="Id_UV" Type="UngVien" IsForeignKey="true" />
     </Type>
   </Table>
+  <Table Name="dbo.FileND" Member="FileNDs">
+    <Type Name="FileND">
+      <Column Name="Id_File" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Nd_File" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Id_TTD" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="TinTuyenDung_FileND" Member="TinTuyenDung" ThisKey="Id_TTD" OtherKey="Id_TTD" Type="TinTuyenDung" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Table Name="dbo.GopY" Member="Gopies">
     <Type Name="GopY">
       <Column Name="Id_GY" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -125,6 +133,7 @@
       <Column Name="Id_NTD" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Id_PTTD" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="TinTuyenDung_UV_TTD" Member="UV_TTDs" ThisKey="Id_TTD" OtherKey="Id_TTD" Type="UV_TTD" />
+      <Association Name="TinTuyenDung_FileND" Member="FileNDs" ThisKey="Id_TTD" OtherKey="Id_TTD" Type="FileND" />
       <Association Name="NhaTuyenDung_TinTuyenDung" Member="NhaTuyenDung" ThisKey="Id_NTD" OtherKey="Id_NTD" Type="NhaTuyenDung" IsForeignKey="true" />
       <Association Name="PhiTinTuyenDung_TinTuyenDung" Member="PhiTinTuyenDung" ThisKey="Id_PTTD" OtherKey="Id_PTTD" Type="PhiTinTuyenDung" IsForeignKey="true" />
     </Type>

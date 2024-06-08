@@ -36,6 +36,9 @@ namespace Code_JobSearch.Models
     partial void InsertUV_TTD(UV_TTD instance);
     partial void UpdateUV_TTD(UV_TTD instance);
     partial void DeleteUV_TTD(UV_TTD instance);
+    partial void InsertFileND(FileND instance);
+    partial void UpdateFileND(FileND instance);
+    partial void DeleteFileND(FileND instance);
     partial void InsertGopY(GopY instance);
     partial void UpdateGopY(GopY instance);
     partial void DeleteGopY(GopY instance);
@@ -105,6 +108,14 @@ namespace Code_JobSearch.Models
 			get
 			{
 				return this.GetTable<UV_TTD>();
+			}
+		}
+		
+		public System.Data.Linq.Table<FileND> FileNDs
+		{
+			get
+			{
+				return this.GetTable<FileND>();
 			}
 		}
 		
@@ -807,6 +818,157 @@ namespace Code_JobSearch.Models
 						this._Id_UV = default(Nullable<int>);
 					}
 					this.SendPropertyChanged("UngVien");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.FileND")]
+	public partial class FileND : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id_File;
+		
+		private string _Nd_File;
+		
+		private System.Nullable<int> _Id_TTD;
+		
+		private EntityRef<TinTuyenDung> _TinTuyenDung;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnId_FileChanging(int value);
+    partial void OnId_FileChanged();
+    partial void OnNd_FileChanging(string value);
+    partial void OnNd_FileChanged();
+    partial void OnId_TTDChanging(System.Nullable<int> value);
+    partial void OnId_TTDChanged();
+    #endregion
+		
+		public FileND()
+		{
+			this._TinTuyenDung = default(EntityRef<TinTuyenDung>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_File", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id_File
+		{
+			get
+			{
+				return this._Id_File;
+			}
+			set
+			{
+				if ((this._Id_File != value))
+				{
+					this.OnId_FileChanging(value);
+					this.SendPropertyChanging();
+					this._Id_File = value;
+					this.SendPropertyChanged("Id_File");
+					this.OnId_FileChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Nd_File", DbType="NVarChar(MAX)")]
+		public string Nd_File
+		{
+			get
+			{
+				return this._Nd_File;
+			}
+			set
+			{
+				if ((this._Nd_File != value))
+				{
+					this.OnNd_FileChanging(value);
+					this.SendPropertyChanging();
+					this._Nd_File = value;
+					this.SendPropertyChanged("Nd_File");
+					this.OnNd_FileChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_TTD", DbType="Int")]
+		public System.Nullable<int> Id_TTD
+		{
+			get
+			{
+				return this._Id_TTD;
+			}
+			set
+			{
+				if ((this._Id_TTD != value))
+				{
+					if (this._TinTuyenDung.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnId_TTDChanging(value);
+					this.SendPropertyChanging();
+					this._Id_TTD = value;
+					this.SendPropertyChanged("Id_TTD");
+					this.OnId_TTDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TinTuyenDung_FileND", Storage="_TinTuyenDung", ThisKey="Id_TTD", OtherKey="Id_TTD", IsForeignKey=true)]
+		public TinTuyenDung TinTuyenDung
+		{
+			get
+			{
+				return this._TinTuyenDung.Entity;
+			}
+			set
+			{
+				TinTuyenDung previousValue = this._TinTuyenDung.Entity;
+				if (((previousValue != value) 
+							|| (this._TinTuyenDung.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._TinTuyenDung.Entity = null;
+						previousValue.FileNDs.Remove(this);
+					}
+					this._TinTuyenDung.Entity = value;
+					if ((value != null))
+					{
+						value.FileNDs.Add(this);
+						this._Id_TTD = value.Id_TTD;
+					}
+					else
+					{
+						this._Id_TTD = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("TinTuyenDung");
 				}
 			}
 		}
@@ -2434,6 +2596,8 @@ namespace Code_JobSearch.Models
 		
 		private EntitySet<UV_TTD> _UV_TTDs;
 		
+		private EntitySet<FileND> _FileNDs;
+		
 		private EntityRef<NhaTuyenDung> _NhaTuyenDung;
 		
 		private EntityRef<PhiTinTuyenDung> _PhiTinTuyenDung;
@@ -2483,6 +2647,7 @@ namespace Code_JobSearch.Models
 		public TinTuyenDung()
 		{
 			this._UV_TTDs = new EntitySet<UV_TTD>(new Action<UV_TTD>(this.attach_UV_TTDs), new Action<UV_TTD>(this.detach_UV_TTDs));
+			this._FileNDs = new EntitySet<FileND>(new Action<FileND>(this.attach_FileNDs), new Action<FileND>(this.detach_FileNDs));
 			this._NhaTuyenDung = default(EntityRef<NhaTuyenDung>);
 			this._PhiTinTuyenDung = default(EntityRef<PhiTinTuyenDung>);
 			OnCreated();
@@ -2869,6 +3034,19 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TinTuyenDung_FileND", Storage="_FileNDs", ThisKey="Id_TTD", OtherKey="Id_TTD")]
+		public EntitySet<FileND> FileNDs
+		{
+			get
+			{
+				return this._FileNDs;
+			}
+			set
+			{
+				this._FileNDs.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="NhaTuyenDung_TinTuyenDung", Storage="_NhaTuyenDung", ThisKey="Id_NTD", OtherKey="Id_NTD", IsForeignKey=true)]
 		public NhaTuyenDung NhaTuyenDung
 		{
@@ -2964,6 +3142,18 @@ namespace Code_JobSearch.Models
 		}
 		
 		private void detach_UV_TTDs(UV_TTD entity)
+		{
+			this.SendPropertyChanging();
+			entity.TinTuyenDung = null;
+		}
+		
+		private void attach_FileNDs(FileND entity)
+		{
+			this.SendPropertyChanging();
+			entity.TinTuyenDung = this;
+		}
+		
+		private void detach_FileNDs(FileND entity)
 		{
 			this.SendPropertyChanging();
 			entity.TinTuyenDung = null;
