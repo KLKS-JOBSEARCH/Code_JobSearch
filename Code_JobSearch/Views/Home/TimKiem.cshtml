@@ -84,19 +84,46 @@
         {
             foreach (var p in Model)
             {
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <a href="@Url.Action("DetailsJob", "Home", new { id = p.Id_TTD })">
-                                        <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(p.Logo_DN_TTD)" alt="Logo" class="img-fluid">
-                                    </a>
-                                </div>
-                                <div class="col-md-8">
-                                    <h6 class="card-title" title="@p.TieuDe_TTD">@Html.Raw(p.TieuDe_TTD)</h6>
-                                    <p class="card-text">Mức lương: @p.MucLuongTD</p>
-                                    <!-- Các thông tin khác về công việc -->
+                <div class="col-lg-12 mb-4">
+                    <div class="card">
+                        <div class="row no-gutters">
+                            <div class="col-md-4">
+                                <a href="@Url.Action("DetailsJob", "Home", new { id = p.Id_TTD })">
+                                    <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(p.Logo_DN_TTD)" alt="Logo" class="card-img">
+                                </a>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title job-name">@Html.ActionLink(p.TieuDe_TTD, "DetailsJob", "Home", new { id = p.Id_TTD }, null)</h5>
+                                    <p class="card-text"><i class="bi bi-cash-stack"></i>Mức lương: @p.MucLuongTD</p>
+                                    <p class="card-text"><i class="bi bi-person"></i>Số lượng: @p.SoLuongTuyen</p>
+                                    <p class="card-text">
+                                        <i class="bi bi-clock"></i>
+                                        @if (p.HanTuyenDung.HasValue && DateTime.Now < p.HanTuyenDung.Value)
+                                        {
+                                            var remainingHours = Math.Floor((p.HanTuyenDung.Value - DateTime.Now).TotalHours);
+
+                                            if (remainingHours > 24 * 7) // If more than 7 days
+                                            {
+                                                var remainingWeeks = Math.Floor(remainingHours / (24 * 7)); // Remaining weeks
+                                                <text>Còn @remainingWeeks tuần</text>
+                                            }
+                                            else if (remainingHours > 24) // If more than 24 hours
+                                            {
+                                                var remainingDays = Math.Floor(remainingHours / 24); // Remaining days
+                                                <text>Còn @remainingDays ngày</text>
+                                            }
+                                            else
+                                            {
+                                                <text>Còn @remainingHours giờ</text>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <text>Đã hết hạn</text>
+                                        }
+                                    </p>
+                                    <p class="card-text"><i class="bi bi-geo-alt-fill"></i>@p.DiaDiem_TTD</p>
                                 </div>
                             </div>
                         </div>
@@ -117,7 +144,7 @@
         <li class="page-item">
             @if (ViewBag.Page > 1)
             {
-                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=1">
+                <a class="page-link" href="/Home/TimKiem?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=1">
                     &lt;&lt;
                 </a>
             }
@@ -125,7 +152,7 @@
         <li class="page-item">
             @if (ViewBag.Page > 1)
             {
-                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page - 1)">
+                <a class="page-link" href="/Home/TimKiem?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page - 1)">
                     &lt;
                 </a>
             }
@@ -134,7 +161,7 @@
         @for (int i = startPage; i <= endPage; i++)
         {
             <li class="page-item @(i == ViewBag.Page ? "active" : "")">
-                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@i">
+                <a class="page-link" href="/Home/TimKiem?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@i">
                     @i
                 </a>
             </li>
@@ -143,7 +170,7 @@
         <li class="page-item">
             @if (ViewBag.Page < ViewBag.NoOfPage)
             {
-                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page + 1)">
+                <a class="page-link" href="/Home/TimKiem?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page + 1)">
                     &gt;
                 </a>
             }
@@ -151,7 +178,7 @@
         <li class="page-item">
             @if (ViewBag.Page < ViewBag.NoOfPage)
             {
-                <a class="page-link" href="/Home/Index?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@ViewBag.NoOfPage">
+                <a class="page-link" href="/Home/TimKiem?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@ViewBag.NoOfPage">
                     &gt;&gt;
                 </a>
             }
