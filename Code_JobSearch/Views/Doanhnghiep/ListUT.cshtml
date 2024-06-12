@@ -10,6 +10,7 @@
     int endItem = Math.Min(page * pageSize, totalItems);
     if (endItem == 0) { endItem = totalItems; }
     int stt = startItem;
+    int idttd = ViewBag.IdTTD;
 }
 
 <style>
@@ -145,10 +146,10 @@
                             </li>
                             @for (int i = 1; i <= totalPages; i++)
                             {
-                                <li class="page-item @(page == i ? "active" : "")"><a class="page-link" href="@Url.Action("ListUT", new { page = i, pageSize = pageSize })">@i</a></li>
+                                <li class="page-item @(page == i ? "active" : "")"><a class="page-link" href="@Url.Action("ListUT",  new {id = idttd, page = i, pageSize = pageSize })">@i</a></li>
                             }
                             <li class="page-item @(page >= totalPages ? "disabled" : "")">
-                                <a class="page-link" href="@Url.Action("ListUT", new { page = page + 1, pageSize = pageSize })" aria-label="Next">
+                                <a class="page-link" href="@Url.Action("ListUT",  new {id = idttd, page = page + 1, pageSize = pageSize })" aria-label="Next">
                                     <span aria-hidden="true">»</span>
                                 </a>
                             </li>
@@ -169,10 +170,12 @@
 
 </div>
 <script>
+
     function changePageSize() {
-        var pageSize = document.getElementById("pageSize").value;
-        window.location.href = '@Url.Action("ListUT", new { page = 1, pageSize = "__pageSize__" })'.replace("__pageSize__", pageSize);
-    }
+    var pageSize = document.getElementById("pageSize").value;
+    var url = '/DoanhNghiep/Listut/@idttd?page=1&pageSize=' + pageSize;
+    window.location.assign(url);
+}
     function confirmAction(url) {
         if (confirm('Bạn có chắc chắn muốn nhận ứng viên này không?')) {
             window.location.href = url;

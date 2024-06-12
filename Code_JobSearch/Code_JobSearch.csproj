@@ -2081,6 +2081,7 @@
     <Content Include="Views\Doanhnghiep\ListUT.cshtml" />
     <Content Include="Views\Doanhnghiep\XemChiTiet.cshtml" />
     <Content Include="Views\Doanhnghiep\Index.cshtml" />
+    <Content Include="Views\Doanhnghiep\DangTin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

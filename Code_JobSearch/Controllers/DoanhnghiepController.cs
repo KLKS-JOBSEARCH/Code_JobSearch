@@ -23,14 +23,16 @@ namespace Code_JobSearch.Controllers
             return View();
 
         }
-        public ActionResult FilterPosts(int month, int year)
+        public ActionResult FilterPosts(int? month, int? year)
         {
-            // Truy vấn cơ sở dữ liệu để lấy số lượng tin đã đăng và số lượng ứng viên đã ứng tuyển
-            if (month == 0)
+            if (month == null || year == null)
             {
-                month = DateTime.Now.Month;
-                year = DateTime.Now.Year;
+                // Nếu không có tháng hoặc năm được truyền vào, lấy tháng và năm hiện tại
+                var currentDate = DateTime.Now;
+                month = currentDate.Month;
+                year = currentDate.Year;
             }
+
             var postCounts = db.TinTuyenDungs
                                 .Where(o => o.ThoiGianDangTuyen.Value.Month == month &&
                                             o.ThoiGianDangTuyen.Value.Year == year &&
@@ -43,14 +45,24 @@ namespace Code_JobSearch.Controllers
             var candidateCounts = db.UV_TTDs
                                     .Where(o => o.ThoiGianUngTuyen.Value.Month == month &&
                                                 o.ThoiGianUngTuyen.Value.Year == year &&
-                                                o.TinhTrangUngTuyen == "Đã ứng tuyển")
+                                                o.TinhTrangUngTuyen == "Đã ứng tuyển"
+                                                || o.TinhTrangUngTuyen == "Đậu"
+                                                || o.TinhTrangUngTuyen == "Rớt")
                                     .GroupBy(o => o.ThoiGianUngTuyen.Value.Day)
                                     .Select(g => new { day = g.Key, candidateCount = g.Count() })
                                     .OrderBy(x => x.day)
                                     .ToList();
 
-            // Trả về dữ liệu dưới dạng JSON hoặc PartialView để cập nhật biểu đồ cột
-            return Json(new { posts = postCounts, candidates = candidateCounts }, JsonRequestBehavior.AllowGet);
+            var passedCandidateCounts = db.UV_TTDs
+                                          .Where(o => o.ThoiGianUngTuyen.Value.Month == month &&
+                                                      o.ThoiGianUngTuyen.Value.Year == year &&
+                                                      o.TinhTrangUngTuyen == "Đậu")
+                                          .GroupBy(o => o.ThoiGianUngTuyen.Value.Day)
+                                          .Select(g => new { day = g.Key, passedCandidateCount = g.Count() })
+                                          .OrderBy(x => x.day)
+                                          .ToList();
+
+            return Json(new { posts = postCounts, candidates = candidateCounts, passedCandidates = passedCandidateCounts }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -442,7 +454,7 @@ namespace Code_JobSearch.Controllers
 
             ViewBag.Title = "Thông tin tuyển dụng";
             ViewBag.ProductName = viewModel.TinTuyenDung.TieuDe_TTD;
-
+            ViewBag.isDangTin = TempData["isDangTin"];
             return View(viewModel);
         }
         #endregion
@@ -450,6 +462,7 @@ namespace Code_JobSearch.Controllers
         #region #region CREATE, EDIT, DELETE
         public ActionResult Create()
         {
+
             ViewBag.DSThanhPho = danhSachThanhPho;
             return View();
         }
@@ -465,7 +478,7 @@ namespace Code_JobSearch.Controllers
                               where ntd.Id_NTD == id
                               select dn.Logo_DN).FirstOrDefault();
                 ttd.Id_NTD = id;
-                ttd.ThoiGianDangTuyen = DateTime.Now;
+
                 ttd.TrangThaiDang = false;
                 ttd.XetDuyet = "Đang xét duyệt";
 
@@ -474,11 +487,7 @@ namespace Code_JobSearch.Controllers
                     ViewData["Loi1"] = "Tiêu đề không bỏ trống";
                     return View();
                 }
-                if (!ttd.HanTuyenDung.HasValue || ttd.HanTuyenDung.Value < DateTime.Now.Date.AddDays(10))
-                {
-                    ViewData["Loi2"] = "Hạn tuyển dụng cần ít nhất 10 ngày";
-                    return View();
-                }
+
                 if (string.IsNullOrEmpty(ttd.MucLuongTD))
                 {
                     ViewData["Loi3"] = "Mức lương không bỏ trống";
@@ -488,7 +497,7 @@ namespace Code_JobSearch.Controllers
 
                 if (ttd.SoLuongTuyen.ToString() == "" || !ttd.SoLuongTuyen.ToString().All(char.IsDigit) || ttd.SoLuongTuyen < 1)
                 {
-                    ViewData["Loi4"] = "Số lượng tuyển tối thiểu 1 người (là số tự nhiên)";
+                    ViewData["Loi4"] = "Số lượng tuyển tối thiểu 1 người";
                     return View();
                 }
 
@@ -562,11 +571,7 @@ namespace Code_JobSearch.Controllers
                     ViewData["Loi1"] = "Tiêu đề không bỏ trống";
                     return View(ttd);
                 }
-                if (!ttd.HanTuyenDung.HasValue || ttd.HanTuyenDung.Value < DateTime.Now.Date.AddDays(10))
-                {
-                    ViewData["Loi2"] = "Hạn tuyển dụng cần ít nhất 10 ngày";
-                    return View(ttd);
-                }
+
                 if (string.IsNullOrEmpty(ttd.MucLuongTD))
                 {
                     ViewData["Loi3"] = "Mức lương không bỏ trống";
@@ -602,7 +607,8 @@ namespace Code_JobSearch.Controllers
                     return View(ttd);
                 }
                 ttds.TieuDe_TTD = ttd.TieuDe_TTD;
-                ttds.HanTuyenDung = ttd.HanTuyenDung;
+
+
                 ttds.MucLuongTD = ttd.MucLuongTD;
                 ttds.YeuCauGioiTinh = ttd.YeuCauGioiTinh;
                 ttds.CapBacTD = ttd.CapBacTD;
@@ -722,30 +728,62 @@ namespace Code_JobSearch.Controllers
         #endregion
 
         #region Đăng tin
-        public ActionResult DangTin()
+        public ActionResult DangTin(int idttd)
         {
             var phitin = db.PhiTinTuyenDungs.SingleOrDefault(o => o.ApDungPhi == true);
-            ViewBag.PhiTin = phitin.Id_PTTD;
-            return View();
+            ViewBag.PhiTin = phitin.Gia_PTTD;
+            ViewBag.IdPhiTin = phitin.Id_PTTD;
+            var ttd = db.TinTuyenDungs.SingleOrDefault(o => o.Id_TTD == idttd);
+            if (ttd == null)
+            {
+                return HttpNotFound();
+            }
+            if (ttd.TrangThaiDang == true)
+            {
+                TempData["isDangTin"] = "Không thể đăng do tin đã được đăng";
+                return RedirectToAction("DetailsJob", new { id = idttd });
+            }
+            return View(ttd);
         }
-        public ActionResult DangTin(int? id, int phitin)
+        [HttpPost]
+        public ActionResult DangTin(int idttd, int phitin, DateTime? htd)
         {
-            var ttd = db.TinTuyenDungs.SingleOrDefault(o => o.Id_TTD == id);
+            var ttd = db.TinTuyenDungs.SingleOrDefault(o => o.Id_TTD == idttd);
+            ViewBag.PhiTin = db.PhiTinTuyenDungs.SingleOrDefault(o => o.Id_PTTD == phitin)?.Gia_PTTD;
+            if (!htd.HasValue)
+            {
+                ViewData["LoiHTD"] = "Hạn tuyển dụng bắt buộc nhập";
+                return View();
+            }
             if (ttd.TrangThaiDang == false)
             {
+                if (htd < DateTime.Now.Date.AddDays(10))
+                {
+                    ViewData["LoiHTD"] = "Hạn tuyển dụng cần ít nhất 10 ngày";
+                    return View();
+                }
                 if (phitin == 0)
                 {
                     ttd.TrangThaiDang = true;
+                    ttd.ThoiGianDangTuyen = DateTime.Now;
+                    ttd.HanTuyenDung = htd;
                 }
                 else
                 {
                     ttd.Id_PTTD = phitin;
                     ttd.TrangThaiDang = true;
+                    ttd.ThoiGianDangTuyen = DateTime.Now;
+                    ttd.HanTuyenDung = htd;
+
                 }
                 db.SubmitChanges();
             }
-
-            return View();
+            else
+            {
+                ViewBag.LoiDangTin = "Tin tuyển dụng đã đăng";
+                return View();
+            }
+            return RedirectToAction("ListTTD", new { id = ttd.Id_NTD, page = 1, pageSize = 5 });
         }
         #endregion
     }

@@ -215,6 +215,18 @@
                         });
                 </script>
             }
+            @if (TempData["ErrorMessageTDNNTD"] != null)
+            {
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var message = @Html.Raw(Json.Encode(TempData["ErrorMessageTDNNTD"].ToString()));
+                        var result = confirm(message);
+                        if (result) {
+                            window.location.href = '@Url.Action("Login_DoanhNghiep", "Auth")';
+                        }
+                    });
+                </script>
+            }
             @*-----*@
             </br>
             <p>Yêu cầu tạo một mật khẩu mạnh</p>

@@ -110,7 +110,7 @@
                         <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.HinhThucLamViec)</dd>
                         <dt class="col-7"><i class="bi bi-gender-fill"></i> Giới tính</dt>
                         <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.YeuCauGioiTinh)</dd>
-                        <dt class="col-7"><i class="bi bi-people-fill"></i> Số lượng</dt>
+                        <dt class="col-7"><i class="bi bi-people-fill"></i> Số lượng tuyển</dt>
                         <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.SoLuongTuyen)</dd>
                         <dt class="col-7"><i class="bi bi-calendar3-event-fill"></i> Kinh nghiệm</dt>
                         <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.KinhNghiemLam)</dd>
@@ -121,3 +121,9 @@
     </div>
 
 </div>
+<script>
+    var isDangTin = '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.isDangTin))';
+    if (isDangTin) {
+        alert(isDangTin);
+    }
+</script>

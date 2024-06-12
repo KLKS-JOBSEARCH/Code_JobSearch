@@ -81,7 +81,7 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="HotenKH" class="form-label"><i class="fa fa-user"></i> Họ Tên Khách Hàng</label>
+                        <label for="HotenKH" class="form-label"><i class="fa fa-user"></i> Họ Tên</label>
                         @Html.TextBox("HotenKH", ViewData["HotenKH"], new { @class = "form-control", type = "text", placeholder = "Nguyễn Văn A" })
                         <h7 class="error-message">@ViewData["Loi"]</h7>
                     </div>
@@ -94,12 +94,12 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="TenDN" class="form-label"><i class="fa fa-user"></i> Tên Đăng Nhập</label>
+                        <label for="TenDN" class="form-label"><i class="fa fa-user"></i> Tên đăng nhập</label>
                         @Html.TextBox("TenDN", ViewData["TenDN"], new { @class = "form-control", type = "text", placeholder = "Nhập tên đăng nhập của bạn" })
                         <h7 class="error-message">@ViewData["Loi2"]</h7>
                     </div>
                     <div class="col-md-6">
-                        <label for="SDT" class="form-label"><i class="fa fa-phone"></i> Số Điện Thoại</label>
+                        <label for="SDT" class="form-label"><i class="fa fa-phone"></i> Số điện thoại</label>
                         @Html.TextBox("SDT", ViewData["SDT"], new { @class = "form-control", type = "tel", placeholder = "Nhập số điện thoại của bạn", oninput = "this.value = this.value.replace(/[^0-9]/g, '')" })
                         <h7 class="error-message">@ViewData["Loi5"]</h7>
                     </div>
@@ -108,7 +108,7 @@
                 <div class="row mb-3">
                     @*code update*@
                     <div class="col-md-6">
-                        <label for="Matkhau" class="form-label"><i class="fa fa-lock"></i> Mật Khẩu</label>
+                        <label for="Matkhau" class="form-label"><i class="fa fa-lock"></i> Mật khẩu</label>
                         @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Mật Khẩu" })
                         <button class="btn btn-outline-success" type="button" id="togglePasswordVisibility" onmouseover="showPasswordIcon()" onmouseout="hidePasswordIcon()">
                             <i id="eyeIcon" class="bi bi-eye-slash"></i>
@@ -117,7 +117,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label for="ReMatkhau" class="form-label"><i class="fa fa-lock"></i> Nhập Lại Mật Khẩu</label>
+                        <label for="ReMatkhau" class="form-label"><i class="fa fa-lock"></i> Nhập lại mật khẩu</label>
                         @Html.Password("ReMatkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Lại Mật Khẩu" })
                         <button class="btn btn-outline-success" type="button" id="togglePasswordVisibility" onmouseover="showPasswordIconRe()" onmouseout="hidePasswordIconRe()">
                             <i id="eyeIcon" class="bi bi-eye-slash"></i>
@@ -171,6 +171,18 @@
                                 window.location.href = '@Url.Action("RegisterCodeVerify", "Auth")';
                             }, 3000); // Chuyển trang sau 3 giây
                         });
+                </script>
+            }
+            @if (TempData["ErrorMessageTDNUV"] != null)
+            {
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var message = @Html.Raw(Json.Encode(TempData["ErrorMessageTDNUV"].ToString()));
+                        var result = confirm(message);
+                        if (result) {
+                            window.location.href = '@Url.Action("Login", "Auth")';
+                        }
+                    });
                 </script>
             }
             @*-----*@

@@ -128,6 +128,7 @@ namespace Code_JobSearch.Controllers
             if (db.TaiKhoans.Any(t => t.TenTK == tendn))
             {
                 ViewData["Loi2"] = "Tên đăng nhập đã tồn tại!";
+                TempData["ErrorMessageTDNUV"] = "Tên đăng nhập đã tồn tại, trả về trang đăng nhập?";
                 return View();
             }
 
@@ -333,6 +334,7 @@ namespace Code_JobSearch.Controllers
             if (db.TaiKhoans.Any(t => t.TenTK == tendn))
             {
                 ViewData["Loitendangnhap"] = "Tên đăng nhập đã tồn tại!";
+                TempData["ErrorMessageTDNNTD"] = "Tên đăng nhập đã tồn tại, trả về trang đăng nhập?";
                 return View();
             }
 
@@ -531,21 +533,38 @@ namespace Code_JobSearch.Controllers
 
         #region forget password
         //code update
+        public class CodeVerify
+        {
+            public string Code { get; set; }
+            public DateTime time { get; set; }
+        }
         public static class VerificationCodeManager
         {
-            public static string CodeVerify { get; set; } = "";
-            public static DateTime ExpirationTime { get; set; }
+            private static readonly List<CodeVerify> ListCodeVerify = new List<CodeVerify>();
+            public static string CodeVerify { get; private set; }
+            public static DateTime ExpirationTime { get; private set; }
 
             public static void GenerateNewCode()
             {
-                CodeVerify = GenerateVerificationCode();
-                ExpirationTime = DateTime.Now.AddMinutes(2); // Set expiration time to 2 minute
+                string newCode;
+                do
+                {
+                    newCode = GenerateVerificationCode();
+                }
+                while (IsCodeExists(newCode));
+
+                CodeVerify = newCode;
+                ExpirationTime = DateTime.Now.AddMinutes(2); // Set expiration time to 2 minutes
+            }
+            private static bool IsCodeExists(string code)
+            {
+                return ListCodeVerify.Any(cv => cv.Code == code);
             }
 
             private static string GenerateVerificationCode()
             {
                 const int codeLength = 6;
-                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
                 var random = new Random();
                 var code = new char[codeLength];
 
@@ -557,17 +576,28 @@ namespace Code_JobSearch.Controllers
                 return new string(code);
             }
 
-            public static bool IsCodeValid(string code)
+            public static void AddCodeToList(CodeVerify codeVerify)
             {
-                return CodeVerify == code && DateTime.Now <= ExpirationTime;
+                ListCodeVerify.Add(codeVerify);
             }
 
-            public static void ClearCode()
+            public static bool IsCodeValid(string code)
             {
-                CodeVerify = "";
-                ExpirationTime = DateTime.MinValue;
+                var codeVerify = ListCodeVerify.FirstOrDefault(cv => cv.Code == code);
+                if (codeVerify != null && DateTime.Now <= codeVerify.time)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            public static void CleanupExpiredCodes()
+            {
+                ListCodeVerify.RemoveAll(cv => DateTime.Now > cv.time);
             }
         }
+
+
         public static bool SendResetPasswordEmail(string email, string tentk)
         {
 
@@ -579,6 +609,7 @@ namespace Code_JobSearch.Controllers
                     Credentials = new NetworkCredential("jobstarvn@gmail.com", "jxtt juxf gbqy nbdp"),
                     EnableSsl = true,
                 };
+
                 VerificationCodeManager.GenerateNewCode();
                 var mailMessage = new MailMessage
                 {
@@ -608,6 +639,12 @@ namespace Code_JobSearch.Controllers
                 mailMessage.To.Add(email);
 
                 client.Send(mailMessage);
+                var codeVerify = new CodeVerify
+                {
+                    Code = VerificationCodeManager.CodeVerify,
+                    time = VerificationCodeManager.ExpirationTime
+                };
+                VerificationCodeManager.AddCodeToList(codeVerify);
                 return true;
             }
             catch

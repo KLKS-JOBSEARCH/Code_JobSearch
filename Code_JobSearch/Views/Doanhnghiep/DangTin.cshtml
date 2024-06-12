@@ -1,0 +1,73 @@
+﻿@model Code_JobSearch.Models.TinTuyenDung
+@{
+    ViewBag.Title = "DangTin";
+    Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
+    var formattedPhiTin = string.Format("{0:#,0} VND", ViewBag.PhiTin);
+}
+
+<h2>Đăng tin</h2>
+
+@if (!string.IsNullOrEmpty(ViewBag.LoiDangTin))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.LoiDangTin
+    </div>
+}
+
+<form id="postForm" action="@Url.Action("DangTin")" method="post">
+    <div class="form-check">
+        <!-- Hiển thị các radio button -->
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="phitin" value="0" checked>
+            Đăng tin không phí
+        </label>
+    </div>
+    <div class="form-check">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="phitin" value="@ViewBag.IdPhiTin">
+            Đăng tin với phí @formattedPhiTin
+        </label>
+    </div>
+    <!-- Trường input ẩn để truyền Id_TTD -->
+    <input type="hidden" name="idttd" value="@Model.Id_TTD">
+    <div class="form-group">
+        <label for="hanTuyenDung">Hạn tuyển dụng</label>
+        <input type="date" class="form-control" id="htd" name="htd" required />
+    </div>
+    @if (ViewData["LoiHTD"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewData["LoiHTD"]
+        </div>
+    }
+</form>
+
+<!-- Button Đăng tin -->
+<button type="button" class="btn btn-primary" onclick="submitForm()" style="margin-top: 10px">Đăng tin</button>
+
+<script>
+    function submitForm() {
+        // Gửi form
+        document.getElementById("postForm").submit();
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        var htdInput = document.getElementById("htd");
+        var today = new Date();
+        var day = String(today.getDate()).padStart(2, '0');
+        var month = String(today.getMonth() + 1).padStart(2, '0'); // Tháng tính từ 0-11 nên cần +1
+        var year = today.getFullYear();
+        htdInput.value = `${year}-${month}-${day}`;
+    });
+</script>
+
+<style>
+    /* Định dạng cho radio button */
+    .form-check-input[type="radio"] {
+        margin-right: 5px; /* Khoảng cách giữa radio button và chữ */
+    }
+
+    /* Định dạng cho label của radio button */
+    .form-check-label {
+        color: #007bff; /* Màu chữ */
+    }
+</style>

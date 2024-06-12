@@ -1,131 +1,134 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Home";
     Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
-
 }
 <header>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </header>
 
-<h2 class="text-center text-success mb-4">Home</h2>
+<h2 class="text-center text-success mb-4">Thống kê</h2>
 
-<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<div id="chartContainer" class="chart-container" style="height: 370px;"></div>
 
-<!-- Form lọc tin đăng -->
-<form id="filterForm">
-    <label for="month">Chọn tháng:</label>
-    <select id="month" name="month">
-        <option value="1">Tháng 1</option>
-        <option value="2">Tháng 2</option>
-        <option value="3">Tháng 3</option>
-        <option value="4">Tháng 4</option>
-        <option value="5">Tháng 5</option>
-        <option value="6">Tháng 6</option>
-        <option value="7">Tháng 7</option>
-        <option value="8">Tháng 8</option>
-        <option value="9">Tháng 9</option>
-        <option value="10">Tháng 10</option>
-        <option value="11">Tháng 11</option>
-        <option value="12">Tháng 12</option>
-    </select>
-    <label for="year">Chọn năm:</label>
-    <select id="year" name="year">
-        @for (int i = 1900; i <= DateTime.Now.Year + 125; i++)
-        {
-            <option value="@i">@i</option>
-        }
-    </select>
-    <button type="submit">Lọc</button>
-</form>
+<div class="row mb-3" id="filterForm">
+    <div class="col d-flex align-items-center">
+        <label for="month" class="mr-2">Chọn tháng:</label>
+        <select id="month" name="month" class="form-control mr-1">
+            @for (int i = 1; i <= 12; i++)
+            {
+                <option value="@i">Tháng @i</option>
+            }
+        </select>
+    </div>
+    <div class="col d-flex align-items-center">
+        <label for="year" class="mr-2">Chọn năm:</label>
+        <select id="year" name="year" class="form-control mr-1">
+            @for (int i = 1950; i <= DateTime.Now.Year + 125; i++)
+            {
+                <option value="@i">@i</option>
+            }
+        </select>
+    </div>
+    <div class="col d-flex align-items-center">
+        <button id="filterButton" type="button" class="btn btn-icon btn-primary">
+            Lọc <i class="bi bi-filter"></i>
+        </button>
+    </div>
+</div>
+
 <script>
     $(document).ready(function () {
-    // Function to draw column chart
-    function drawColumnChart(postData, candidateData) {
-        // Tạo một bảng dữ liệu Google Charts cho số lượng tin đã đăng
-        var postDataTable = new google.visualization.DataTable();
-        postDataTable.addColumn('string', 'Ngày');
-        postDataTable.addColumn('number', 'Số lượng tin đã đăng');
-        // Thêm dữ liệu cho số lượng tin đã đăng
-        postData.forEach(function (item) {
-            postDataTable.addRow([item.day, item.postCount]);
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(init);
+
+        function init() {
+            loadChartData();
+        }
+
+        function loadChartData() {
+            $.get("@Url.Action("FilterPosts")")
+                .done(function (data) {
+                    if (data.posts.length === 0 && data.candidates.length === 0 && data.passedCandidates.length === 0) {
+                        $("#chartContainer").html('<div class="alert alert-warning" role="alert">Không có dữ liệu cho tháng và năm hiện tại.</div>');
+                    } else {
+                        var today = new Date();
+                        drawColumnChart(data.posts, data.candidates, data.passedCandidates, today.getMonth() + 1, today.getFullYear());
+                    }
+                })
+                .fail(function () {
+                    $("#chartContainer").html('<div class="alert alert-danger" role="alert">Lỗi khi tải dữ liệu</div>');
+                });
+        }
+
+        $("#filterButton").click(function () {
+            var selectedMonth = $("#month").val();
+            var selectedYear = $("#year").val();
+            filterChartData(selectedMonth, selectedYear);
         });
 
-        // Tạo một bảng dữ liệu Google Charts cho số lượng ứng viên đã ứng tuyển
-        var candidateDataTable = new google.visualization.DataTable();
-        candidateDataTable.addColumn('string', 'Ngày');
-        candidateDataTable.addColumn('number', 'Số lượng ứng viên đã ứng tuyển');
-        // Thêm dữ liệu cho số lượng ứng viên đã ứng tuyển
-        candidateData.forEach(function (item) {
-            candidateDataTable.addRow([item.day, item.candidateCount]);
-        });
+        function filterChartData(selectedMonth, selectedYear) {
+            $.get("@Url.Action("FilterPosts")", { month: selectedMonth, year: selectedYear })
+                .done(function (data) {
+                    if (data.posts.length === 0 && data.candidates.length === 0 && data.passedCandidates.length === 0) {
+                        $("#chartContainer").html('<div class="alert alert-warning" role="alert">Không có dữ liệu cho tháng và năm đã chọn.</div>');
+                    } else {
+                        drawColumnChart(data.posts, data.candidates, data.passedCandidates, selectedMonth, selectedYear);
+                    }
+                })
+                .fail(function () {
+                    $("#chartContainer").html('<div class="alert alert-danger" role="alert">Lỗi khi tải dữ liệu</div>');
+                });
+        }
 
-        // Thiết lập tùy chọn cho biểu đồ
-        var options = {
-            title: 'Thống kê số lượng tin đăng và số lượng ứng viên theo ngày',
-            hAxis: { title: 'Ngày' },
-            vAxis: { title: 'Số lượng' },
-            seriesType: 'bars',
-            series: { 0: { color: 'blue' }, 1: { color: 'green' } }
-        };
+        function drawColumnChart(postData, candidateData, passedCandidateData, selectedMonth, selectedYear) {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Ngày');
+            data.addColumn({ type: 'string', role: 'tooltip', p: { html: true } });
+            data.addColumn('number', 'Số tin xét duyệt thành công');
+            data.addColumn('number', 'Số ứng viên ứng tuyển');
+            data.addColumn('number', 'Số ứng viên đậu');
 
-        // Vẽ biểu đồ cột cho số lượng tin đã đăng
-        var postChart = new google.visualization.ComboChart(document.getElementById('chartContainer'));
-        postChart.draw(postDataTable, options);
-    }
+            var days = [...new Set([...postData.map(item => item.day), ...candidateData.map(item => item.day), ...passedCandidateData.map(item => item.day)])];
+            days.sort((a, b) => a - b);
 
-    // Xử lý sự kiện khi biểu mẫu lọc được nộp
-    $("#filterForm").submit(function (event) {
-        // Ngăn chặn việc gửi biểu mẫu
-        event.preventDefault();
-
-        // Lấy giá trị của tháng và năm từ biểu mẫu
-        var selectedMonth = $("#month").val();
-        var selectedYear = $("#year").val();
-
-        // Gửi yêu cầu lọc đến controller
-        $.get("@Url.Action("FilterPosts")", { month: selectedMonth, year: selectedYear })
-            .done(function (data) {
-                // Xóa biểu đồ hiện tại
-                $("#chartContainer").empty();
-
-                // Gọi hàm vẽ biểu đồ với dữ liệu nhận được từ controller
-                drawColumnChart(data.posts, data.candidates);
+            days.forEach(function(day) {
+                var postCount = postData.find(item => item.day == day)?.postCount || 0;
+                var candidateCount = candidateData.find(item => item.day == day)?.candidateCount || 0;
+                var passedCandidateCount = passedCandidateData.find(item => item.day == day)?.passedCandidateCount || 0;
+                data.addRow([
+                    day.toString(),
+                    `Ngày ${day}`,
+                    postCount,
+                    candidateCount,
+                    passedCandidateCount
+                ]);
             });
+
+            var options = {
+                title: 'Biểu đồ tin tuyển dụng tháng ' + ('0' + selectedMonth).slice(-2) + '/' + selectedYear,
+                hAxis: { title: 'Ngày' },
+                vAxis: { title: 'Số lượng' },
+                seriesType: 'bars',
+                series: { 0: { color: 'green' }, 1: { color: 'red' }, 2: { color: 'blue' } },
+                width: '100%',
+                height: 370,
+                tooltip: { isHtml: true }
+            };
+
+            var chart = new google.visualization.ComboChart(document.getElementById('chartContainer'));
+            chart.draw(data, options);
+        }
     });
-
-    // Function to populate dropdowns
-    function populateDropdowns() {
-        // Populate months dropdown
-        var months = [
-            "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4",
-            "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8",
-            "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
-        ];
-
-        var selectMonth = $("#month");
-        for (var i = 0; i < months.length; i++) {
-            var option = $("<option>");
-            option.val(i + 1);
-            option.text(months[i]);
-            selectMonth.append(option);
-        }
-
-        // Populate years dropdown
-        var currentYear = new Date().getFullYear();
-        var selectYear = $("#year");
-        for (var i = currentYear; i >= currentYear - 10; i--) {
-            var option = $("<option>");
-            option.val(i);
-            option.text(i);
-            selectYear.append(option);
-        }
-    }
-
-    // Call the function to populate dropdowns on page load
-    populateDropdowns();
-});
-
 </script>
 
+<style>
+    .chart-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
 
+    .form-inline {
+        white-space: nowrap;
+    }
+</style>

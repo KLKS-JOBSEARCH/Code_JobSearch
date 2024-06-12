@@ -11,8 +11,8 @@
     int endItem = Math.Min(page * pageSize, totalItems);
     if (endItem == 0) { endItem = totalItems; }
     int stt = startItem;
-
 }
+
 <style>
     .img-thumbnail {
         max-width: 100%;
@@ -73,7 +73,6 @@
                     <tbody>
                         @foreach (var p in Model)
                         {
-
                             <tr>
                                 <td class="text-center">@stt</td>
                                 <td>
@@ -145,7 +144,7 @@
                                         <a title="Sửa" href="@Url.Action("Edit", new { id = p.Id_TTD })" class="btn btn-icon">
                                             <i class="bi bi-pencil" style="color: blue;"></i>
                                         </a>
-                                        <a title="Xem ứng viên" href="@Url.Action("ListUT", new { id = p.Id_TTD })" class="btn btn-icon">
+                                        <a title="Xem ứng viên" href="@Url.Action("ListUT", new { id = p.Id_TTD, page = 1, pageSize = 5 })" class="btn btn-icon">
                                             <i class="bi bi-person" style="color: orange;"></i>
                                         </a>
                                     </div>
@@ -199,8 +198,6 @@
             </nav>
         </div>
     </div>
-
-
 }
 else
 {
@@ -211,9 +208,12 @@ else
 
 <script>
     function changePageSize() {
-        var pageSize = document.getElementById("pageSize").value;
-        window.location.href = '@Url.Action("ListTTD", new { id = idntd, page = 1, pageSize = "__pageSize__" })'.replace("__pageSize__", pageSize);
-    }
+    var pageSize = document.getElementById("pageSize").value;
+    var url = '/DoanhNghiep/ListTTD/@idntd?page=1&pageSize=' + pageSize;
+    window.location.assign(url);
+}
+
+
 
     function confirmDelete() {
         return confirm('Bạn có chắc chắn muốn xóa mục này?');
