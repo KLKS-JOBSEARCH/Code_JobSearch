@@ -10,15 +10,16 @@ namespace Code_JobSearch.Areas.Admin.Controllers
     public class AdminController : Controller
     {
         DatabaseDataContext db = new DatabaseDataContext();
+       
         // GET: Admin/Admin
         public ActionResult Index(DateTime? fromDate, DateTime? toDate)
         {
-            if (Session["NV"] == null)
+            ViewBag.PendingJobCount = GetPendingJobCount();
+            if (Session["AD"] == null)
             {
                 return RedirectToAction("Login", "Auth", new { area = "" });
             }
-
-            NhanVien nv = Session["NV"] as NhanVien;
+            TaiKhoan ac = Session["AD"] as TaiKhoan;
 
             int soLuongUngVien = db.UngViens.Count();
             int soLuongNhaTuyenDung = db.NhaTuyenDungs.Count();
@@ -53,11 +54,13 @@ namespace Code_JobSearch.Areas.Admin.Controllers
 
         public ActionResult UserProfilePortal(int page = 1)
         {
-            if (Session["NV"] == null)
+            ViewBag.PendingJobCount = GetPendingJobCount();
+            if (Session["AD"] == null)
             {
                 return RedirectToAction("Login", "Auth", new { area = "" });
             }
-            NhanVien nv = Session["NV"] as NhanVien;
+            TaiKhoan ac = Session["AD"] as TaiKhoan;
+
             List<UngVien> ungvien = db.UngViens.ToList();
 
             //paging
@@ -74,11 +77,12 @@ namespace Code_JobSearch.Areas.Admin.Controllers
 
         public ActionResult EmployerProfilePortal(int page = 1)
         {
-            if (Session["NV"] == null)
+            ViewBag.PendingJobCount = GetPendingJobCount();
+            if (Session["AD"] == null)
             {
                 return RedirectToAction("Login", "Auth", new { area = "" });
             }
-            NhanVien nv = Session["NV"] as NhanVien;
+            TaiKhoan ac = Session["AD"] as TaiKhoan;
             List<NhaTuyenDung> NTD = db.NhaTuyenDungs.ToList();
 
             //paging
@@ -96,11 +100,12 @@ namespace Code_JobSearch.Areas.Admin.Controllers
 
         public ActionResult CompanyPortal(int page = 1)
         {
-            if (Session["NV"] == null)
+            ViewBag.PendingJobCount = GetPendingJobCount();
+            if (Session["AD"] == null)
             {
                 return RedirectToAction("Login", "Auth", new { area = "" });
             }
-            NhanVien nv = Session["NV"] as NhanVien;
+            TaiKhoan ac = Session["AD"] as TaiKhoan;
             List<DoanhNghiep> dn = db.DoanhNghieps.ToList();
 
             //paging
@@ -117,11 +122,12 @@ namespace Code_JobSearch.Areas.Admin.Controllers
 
         public ActionResult DetailsCompany(int id)
         {
-            if (Session["NV"] == null)
+            ViewBag.PendingJobCount = GetPendingJobCount();
+            if (Session["AD"] == null)
             {
                 return RedirectToAction("Login", "Auth", new { area = "" });
             }
-            NhanVien nv = Session["NV"] as NhanVien;
+            TaiKhoan ac = Session["AD"] as TaiKhoan; ;
 
 
             var viewModel = new CompanyDetailsViewModel();
@@ -143,13 +149,23 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             return View(viewModel);
         }
 
+
+        #region JOBS PORTAL
         public ActionResult JobPortal(int page = 1, string filter = "newest")
         {
-            if (Session["NV"] == null)
+            ViewBag.PendingJobCount = GetPendingJobCount();
+
+            // Kiểm tra xem phiên làm việc có tồn tại hay không
+            if (Session["AD"] == null)
             {
                 return RedirectToAction("Login", "Auth", new { area = "" });
             }
-            var tinTuyenDungs = db.TinTuyenDungs.AsQueryable();
+            TaiKhoan ac = Session["AD"] as TaiKhoan;
+
+            // Lấy danh sách tin tuyển dụng từ cơ sở dữ liệu và lọc theo trạng thái và hạn tuyển dụng
+            var tinTuyenDungs = db.TinTuyenDungs
+                .Where(t => t.XetDuyet == "Duyệt thành công" && t.HanTuyenDung >= DateTime.Now)
+                .AsQueryable();
 
             // Sắp xếp theo thời gian đăng tuyển
             if (filter == "newest")
@@ -172,17 +188,22 @@ namespace Code_JobSearch.Areas.Admin.Controllers
 
             return View(tinTuyenDungs);
         }
-
+        private int GetPendingJobCount()
+        {
+            return db.TinTuyenDungs.Count(ttd => ttd.XetDuyet == "Đang xét duyệt");
+        }
         public ActionResult JobPortalWait(int page = 1, string filter = "newest")
         {
-            if (Session["NV"] == null)
+            ViewBag.PendingJobCount = GetPendingJobCount();
+            if (Session["AD"] == null)
             {
                 return RedirectToAction("Login", "Auth", new { area = "" });
             }
+            TaiKhoan ac = Session["AD"] as TaiKhoan;
             var tinTuyenDungs = db.TinTuyenDungs.AsQueryable();
 
             // Lọc các việc làm có trạng thái đang chờ xét duyệt
-            tinTuyenDungs = tinTuyenDungs.Where(t => t.XetDuyet == "Chờ xét duyệt");
+            tinTuyenDungs = tinTuyenDungs.Where(t => t.XetDuyet == "Đang xét duyệt");
 
             // Sắp xếp theo thời gian đăng tuyển
             if (filter == "newest")
@@ -205,7 +226,7 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             return View(tinTuyenDungPaged);
         }
 
-
+        #endregion
 
         public ActionResult Logout()
         {

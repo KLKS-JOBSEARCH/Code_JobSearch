@@ -24,9 +24,8 @@
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
     @{
-        NhanVien nv = Session["NV"] as NhanVien;
+        TaiKhoan ac = Session["AD"] as TaiKhoan;
     }
-
 </head>
 <body class="with-welcome-text">
     <div class="container-scroller">
@@ -40,23 +39,12 @@
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                @if (nv != null)
+                                @if (ac != null)
                                 {
-                                    if (string.IsNullOrEmpty(nv.HinhAnh_NV))
-                                    {
-                                        <img src="~/Image/basic.png" alt="User Avatar" class="rounded-circle me-2" style="width: 30px;">
-                                    }
-                                    else
-                                    {
-                                        <img src="~/Image/Khachhang/@Html.Raw(nv.HinhAnh_NV)" alt="User Avatar" class="rounded-circle me-2" style="width: 30px;">
-                                    }
-                                    <span class="text-white">@nv.HoTen_NV</span>
+                                    <span class="text-white">@ac.TenTK</span>
                                 }
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><span class="dropdown-item">Mã nhân viên: #@nv.Id_NV</span></li>
-                                <li><span class="dropdown-item">Email: @nv.Email_NV</span></li>
-                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="@Url.Action("Logout", "Admin")">Đăng Xuất</a></li>
                             </ul>
                         </li>
@@ -106,18 +94,20 @@
                                 <a class="nav-link" href="javascript:void(0)" id="jobMenuToggle">
                                     <i class="fas fa-briefcase me-2"></i>
                                     Quản lý Việc Làm
+                                    @if (ViewBag.PendingJobCount != null)
+                                    {
+                                        <span class="badge bg-danger">@ViewBag.PendingJobCount</span>
+                                    }
                                 </a>
                                 <ul class="nav flex-column sub-menu" id="jobSubMenu" style="display: none;">
                                     <li class="nav-item">
                                         <a class="nav-link" href="@Url.Action("JobPortalWait","Admin")">
                                             <i class="fas fa-building me-2"></i>
                                             Việc làm đang chờ xét duyệt
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">
-                                            <i class="fas fa-user-tie me-2"></i>
-                                            Việc làm hết hạn
+                                            @if (ViewBag.PendingJobCount != null)
+                                            {
+                                                <span class="badge bg-danger">@ViewBag.PendingJobCount</span>
+                                            }
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -129,7 +119,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="@Url.Action("staffAccount","Account")">
                                     <i class="fas fa-user-cog me-2"></i>
                                     Quản lý tài khoản
                                 </a>
@@ -137,9 +127,6 @@
                         </ul>
                     </div>
                 </nav>
-
-
-
 
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     <div class="row">

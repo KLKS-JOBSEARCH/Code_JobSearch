@@ -65,20 +65,6 @@
       <Association Name="UngVien_HoSoXinViec" Member="UngVien" ThisKey="Id_UV" OtherKey="Id_UV" Type="UngVien" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.NhanVien" Member="NhanViens">
-    <Type Name="NhanVien">
-      <Column Name="Id_NV" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="HoTen_NV" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="GioiTinh_NV" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="SoDienThoai_NV" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
-      <Column Name="DiaChi_NV" Type="System.String" DbType="NVarChar(300)" CanBeNull="true" />
-      <Column Name="Email_NV" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="HinhAnh_NV" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Column Name="NgaySinh_NV" Type="System.DateTime" DbType="Date" CanBeNull="true" />
-      <Column Name="TenTK" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Association Name="TaiKhoan_NhanVien" Member="TaiKhoan" ThisKey="TenTK" OtherKey="TenTK" Type="TaiKhoan" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.NhaTuyenDung" Member="NhaTuyenDungs">
     <Type Name="NhaTuyenDung">
       <Column Name="Id_NTD" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -107,7 +93,6 @@
     <Type Name="TaiKhoan">
       <Column Name="TenTK" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="MatKhau" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Association Name="TaiKhoan_NhanVien" Member="NhanViens" ThisKey="TenTK" OtherKey="TenTK" Type="NhanVien" />
       <Association Name="TaiKhoan_NhaTuyenDung" Member="NhaTuyenDungs" ThisKey="TenTK" OtherKey="TenTK" Type="NhaTuyenDung" />
       <Association Name="TaiKhoan_UngVien" Member="UngViens" ThisKey="TenTK" OtherKey="TenTK" Type="UngVien" />
     </Type>

@@ -216,7 +216,6 @@ namespace Code_JobSearch.Controllers
             var matkhau = f["MatKhau"];
             ViewBag.TenDN = tendn;
 
-
             if (string.IsNullOrEmpty(tendn))
             {
                 ViewData["Loidangnhap"] = "Tên đăng nhập không được bỏ trống!";
@@ -237,24 +236,26 @@ namespace Code_JobSearch.Controllers
 
                     if (hashedPasswordInput == ac.MatKhau)
                     {
+                        // Kiểm tra nếu tài khoản là ứng viên
                         UngVien kh = db.UngViens.SingleOrDefault(t => t.TenTK == tendn);
-                        NhanVien nv = db.NhanViens.SingleOrDefault(t => t.TenTK == tendn);
-
-                        if (nv != null && ac.TenTK == nv.TenTK)
-                        {
-                            ViewBag.TB = "Đăng nhập thành công!";
-                            Session["NV"] = nv;
-                            return RedirectToAction("Index", "Admin", "Admin");
-                        }
-
-                        if (kh != null && ac.TenTK == kh.TenTK)
+                        if (kh != null)
                         {
                             ViewBag.TB = "Đăng nhập thành công!";
                             Session["KH"] = kh;
                             return RedirectToAction("Index", "Home");
                         }
 
-                        return RedirectToAction("Index", "Home");
+                        // Kiểm tra nếu tài khoản là admin
+                        TaiKhoan ad = db.TaiKhoans.SingleOrDefault(t => t.TenTK == tendn);
+                        if (ad != null)
+                        {
+                            ViewBag.TB = "Đăng nhập thành công!";
+                            Session["AD"] = ad;
+                            return RedirectToAction("Index", "Admin", new { area = "" });
+                        }
+
+                        // Nếu không khớp với bất kỳ loại tài khoản nào
+                        ViewData["Loisaimatkhau"] = "Tài khoản không thuộc loại hợp lệ!";
                     }
                     else
                     {
@@ -267,9 +268,9 @@ namespace Code_JobSearch.Controllers
                 }
             }
 
-
             return View();
         }
+
         #endregion
 
 
@@ -670,10 +671,9 @@ namespace Code_JobSearch.Controllers
                 var mailMessage = new MailMessage
                 {
                     From = new MailAddress("jobstarvn@gmail.com"),
-                    Subject = "Đăng ký",
+                    Subject = "Xác thực đăng ký",
                     Body = $@"<html>
                         <head>
-                            <!-- Bootstrap CSS -->
                             <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css' rel='stylesheet'>
                         </head>
                         <body>
@@ -691,6 +691,12 @@ namespace Code_JobSearch.Controllers
                 };
                 mailMessage.To.Add(email);
                 client.Send(mailMessage);
+                var codeVerify = new CodeVerify
+                {
+                    Code = VerificationCodeManager.CodeVerify,
+                    time = VerificationCodeManager.ExpirationTime
+                };
+                VerificationCodeManager.AddCodeToList(codeVerify);
                 return true;
             }
             catch
@@ -728,10 +734,6 @@ namespace Code_JobSearch.Controllers
             if (user != null)
             {
                 string email = db.UngViens.Where(t => t.TenTK == tentk).Select(u => u.Email_TKUV).FirstOrDefault();
-                if (email == null)
-                {
-                    email = db.NhanViens.Where(t => t.TenTK == tentk).Select(u => u.Email_NV).FirstOrDefault();
-                }
                 bool isEmailSent = SendResetPasswordEmail(email, tentk);
                 if (!isEmailSent)
                 {

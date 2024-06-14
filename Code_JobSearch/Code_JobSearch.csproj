@@ -215,7 +215,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UngvienController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\DoanhnghiepController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -2017,6 +2019,7 @@
     <Content Include="Areas\Admin\Views\Admin\CompanyPortal.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\JobPortal.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\JobPortalWait.cshtml" />
+    <Content Include="Areas\Admin\Views\Ungvien\UngvienDetails.cshtml" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>
@@ -2086,6 +2089,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Views\Account\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
