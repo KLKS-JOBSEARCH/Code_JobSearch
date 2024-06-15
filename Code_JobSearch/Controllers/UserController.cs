@@ -340,6 +340,16 @@ namespace Code_JobSearch.Controllers
 
             UngVien kh = Session["KH"] as UngVien;
 
+            // Kiểm tra lại xem có lỗi gì không trước khi tiếp tục
+            if (!ModelState.IsValid)
+            {
+                // Nạp lại danh sách hồ sơ xin việc vào model để hiển thị trong view
+                model.HoSoXinViecList = db.HoSoXinViecs.Where(h => h.Id_UV == kh.Id_UV).ToList();
+                model.UngVien = kh;
+
+                return View(model);
+            }
+
             // Tạo đối tượng UV_TTD để lưu vào database
             UV_TTD uv_ttd = new UV_TTD
             {
@@ -363,37 +373,41 @@ namespace Code_JobSearch.Controllers
                     uv_ttd.File_CV = hoSo.File_HSXV;
                 }
             }
-            else if (model.SelectedHoSoId == null && File_CV == null)
+            else
             {
-                ModelState.AddModelError("", "Vui lòng chọn một hồ sơ hoặc tải lên CV mới.");
-                return View(model);
-            }
-            else if (File_CV != null && File_CV.ContentLength > 0)
-            {
-                // Giới hạn kích thước tệp là 5MB
-                if (File_CV.ContentLength > 5 * 1024 * 1024)
+                if (File_CV != null && File_CV.ContentLength > 0)
                 {
-                    ModelState.AddModelError("", "Kích thước tệp phải nhỏ hơn hoặc bằng 5MB.");
+                    // Giới hạn kích thước tệp là 5MB
+                    if (File_CV.ContentLength > 5 * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("", "Kích thước tệp phải nhỏ hơn hoặc bằng 5MB.");
+                        model.HoSoXinViecList = db.HoSoXinViecs.Where(h => h.Id_UV == kh.Id_UV).ToList();
+                        model.UngVien = kh;
+                        return View(model);
+                    }
+
+                    // Kiểm tra phần mở rộng của tệp có phải là .pdf không
+                    if (Path.GetExtension(File_CV.FileName).ToLower() != ".pdf")
+                    {
+                        ModelState.AddModelError("", "Vui lòng chọn một tệp PDF.");
+                        model.HoSoXinViecList = db.HoSoXinViecs.Where(h => h.Id_UV == kh.Id_UV).ToList();
+                        model.UngVien = kh;
+                        return View(model);
+                    }
+
+                    // Lưu tệp và gán tên vào đối tượng UV_TTD
+                    string fileName = Path.GetFileName(File_CV.FileName);
+                    string filePath = Path.Combine(Server.MapPath("~/Content/CvUser"), fileName);
+                    File_CV.SaveAs(filePath);
+                    uv_ttd.File_CV = fileName;
+                }
+                else // Nếu không có tệp được chọn
+                {
+                    ModelState.AddModelError("", "Vui lòng chọn một tệp để tải lên.");
+                    model.HoSoXinViecList = db.HoSoXinViecs.Where(h => h.Id_UV == kh.Id_UV).ToList();
+                    model.UngVien = kh;
                     return View(model);
                 }
-
-                // Kiểm tra phần mở rộng của tệp có phải là .pdf không
-                if (Path.GetExtension(File_CV.FileName).ToLower() != ".pdf")
-                {
-                    ModelState.AddModelError("", "Vui lòng chọn một tệp PDF.");
-                    return View(model);
-                }
-
-                // Lưu tệp và gán tên vào đối tượng UV_TTD
-                string fileName = Path.GetFileName(File_CV.FileName);
-                string filePath = Path.Combine(Server.MapPath("~/Content/CvUser"), fileName);
-                File_CV.SaveAs(filePath);
-                uv_ttd.File_CV = fileName;
-            }
-            else // Nếu không có tệp được chọn
-            {
-                ModelState.AddModelError("", "Vui lòng chọn một tệp để tải lên.");
-                return View(model);
             }
 
             db.UV_TTDs.InsertOnSubmit(uv_ttd);
@@ -401,6 +415,7 @@ namespace Code_JobSearch.Controllers
 
             return RedirectToAction("HistoryofCVApply", "User"); // Chuyển hướng đến trang thành công hoặc trang khác
         }
+
 
         #endregion
 
