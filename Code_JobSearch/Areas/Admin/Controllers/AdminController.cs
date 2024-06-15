@@ -165,12 +165,13 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             }
             TaiKhoan ac = Session["AD"] as TaiKhoan;
 
+            ViewBag.CurrentFilter = filter;
+
             // Lấy danh sách tin tuyển dụng từ cơ sở dữ liệu và lọc theo trạng thái và hạn tuyển dụng
             var tinTuyenDungs = db.TinTuyenDungs
-                .Where(t => t.XetDuyet == "Duyệt thành công" && t.HanTuyenDung >= DateTime.Now)
-                .AsQueryable();
+                .Where(t => t.XetDuyet == "Duyệt thành công" && t.HanTuyenDung >= DateTime.Now);
 
-            // Sắp xếp theo thời gian đăng tuyển
+            // Sắp xếp theo thời gian đăng tuyển hoặc số lượng ứng viên
             if (filter == "newest")
             {
                 tinTuyenDungs = tinTuyenDungs.OrderByDescending(t => t.ThoiGianDangTuyen);
@@ -179,18 +180,49 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             {
                 tinTuyenDungs = tinTuyenDungs.OrderBy(t => t.ThoiGianDangTuyen);
             }
+            else if (filter == "mostApplicants" || filter == "leastApplicants")
+            {
+                var tinTuyenDungList = tinTuyenDungs.ToList();
+                var soLuongUngVien = new Dictionary<int, int>();
+                foreach (var tin in tinTuyenDungList)
+                {
+                    int count = db.UV_TTDs.Count(uv => uv.Id_TTD == tin.Id_TTD);
+                    soLuongUngVien[tin.Id_TTD] = count;
+                }
+
+                if (filter == "mostApplicants")
+                {
+                    tinTuyenDungs = tinTuyenDungList.OrderByDescending(tin => soLuongUngVien[tin.Id_TTD]).AsQueryable();
+                }
+                else if (filter == "leastApplicants")
+                {
+                    tinTuyenDungs = tinTuyenDungList.OrderBy(tin => soLuongUngVien[tin.Id_TTD]).AsQueryable();
+                }
+            }
 
             int NoOfRecordPerPage = 10;
             int NoOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(tinTuyenDungs.Count()) / Convert.ToDouble(NoOfRecordPerPage)));
             int NoOfRecordSkip = (page - 1) * NoOfRecordPerPage;
             ViewBag.Page = page;
             ViewBag.NoOfPage = NoOfPages;
-            // tinTuyenDungs = tinTuyenDungs.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage).ToList();
 
-            tinTuyenDungs = tinTuyenDungs.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage);
+            // Lấy dữ liệu phân trang
+            var paginatedTinTuyenDungs = tinTuyenDungs.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage).ToList();
 
-            return View(tinTuyenDungs);
+            // Tính số lượng ứng viên cho mỗi tin tuyển dụng
+            var soLuongUngVienDict = new Dictionary<int, int>();
+            foreach (var tin in paginatedTinTuyenDungs)
+            {
+                int count = db.UV_TTDs.Count(uv => uv.Id_TTD == tin.Id_TTD);
+                soLuongUngVienDict[tin.Id_TTD] = count;
+            }
+            ViewBag.SoLuongUngVien = soLuongUngVienDict;
+
+            return View(paginatedTinTuyenDungs);
         }
+
+
+
         private int GetPendingJobCount()
         {
             return db.TinTuyenDungs.Count(ttd => ttd.XetDuyet == "Đang xét duyệt");
@@ -252,6 +284,10 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
+
+            // Đếm số lượng ứng viên ứng tuyển vào công việc này
+            int soLuongUngVien = db.UV_TTDs.Count(uv => uv.Id_TTD == id);
+            ViewBag.SoLuongUngVien = soLuongUngVien;
 
             ViewBag.Title = "Thông tin tuyển dụng";
             ViewBag.ProductName = viewModel.TinTuyenDung.TieuDe_TTD;

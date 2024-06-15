@@ -22,6 +22,10 @@
             top: 50%;
             transform: translate(-50%, -50%);
         }
+    .badge-custom {
+        background-color: #28a745;
+        color: white;
+    }
 </style>
 
 <div class="container">
@@ -39,20 +43,23 @@
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.DiaDiem_TTD)</dd>
                     <dt class="col-sm-4"><i class="bi bi-calendar3-event-fill"></i> Yêu cầu kinh nghiệm</dt>
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.KinhNghiemLam)</dd>
+                    <dt class="col-sm-4"><i class="bi bi-person-fill"></i> Số lượng ứng viên</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge badge-custom">@ViewBag.SoLuongUngVien</span>
+                    </dd>
                 </dl>
             </div>
 
             @if (Model.TinTuyenDung.XetDuyet != "Duyệt thành công" && Model.TinTuyenDung.XetDuyet != "Duyệt không thành công")
             {
-        <div class="d-flex justify-content-left">
-            <button class="btn btn-icon btn-primary me-3" onclick="confirmAction('@Url.Action("ConfirmJob", new { id = Model.TinTuyenDung.Id_TTD })', 'Bạn có chắc chắn muốn duyệt tin này không?')">
-                <i class="fas fa-check"></i> Duyệt tin
-            </button>
-            <button class="btn btn-icon btn-danger me-3" onclick="confirmAction('@Url.Action("RejectJob", new { id = Model.TinTuyenDung.Id_TTD })', 'Bạn có chắc chắn muốn từ chối duyệt tin này không?')">
-                <i class="fas fa-times"></i> Từ chối duyệt tin
-            </button>
-        </div>            }
-
+                <div class="d-flex justify-content-left">
+                    <button class="btn btn-icon btn-primary me-3" onclick="confirmAction('@Url.Action("ConfirmJob", new { id = Model.TinTuyenDung.Id_TTD })', 'Bạn có chắc chắn muốn duyệt tin này không?')">
+                        <i class="fas fa-check"></i> Duyệt tin
+                    </button>
+                    <button class="btn btn-icon btn-danger me-3" onclick="confirmAction('@Url.Action("RejectJob", new { id = Model.TinTuyenDung.Id_TTD })', 'Bạn có chắc chắn muốn từ chối duyệt tin này không?')">
+                        <i class="fas fa-times"></i> Từ chối duyệt tin
+                    </button>
+                </div>}
         </div>
 
         <div class="col-md-4">
@@ -85,7 +92,7 @@
 
     <div class="row">
         <div class="col-md-8">
-            <h3>Mô tả công việc</h3>
+            <h3><b>Mô tả công việc</b></h3>
             <ul>
                 @{
                     var lines = Model.TinTuyenDung.MoTa_TTD.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
