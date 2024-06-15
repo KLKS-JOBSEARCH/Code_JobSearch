@@ -78,6 +78,7 @@ namespace Code_JobSearch.Controllers
             return RedirectToAction("Login", "Account"); // Chuyển hướng đến trang đăng nhập nếu session không tồn tại
         }
 
+
         [HttpPost]
         public ActionResult Create(HoSoXinViecViewModel model, HttpPostedFileBase uploadFile)
         {
@@ -95,8 +96,12 @@ namespace Code_JobSearch.Controllers
                         HoTenUV = ungVien.HoTen_TKUV,
                         EmailUV = ungVien.Email_TKUV,
                         SoDienThoaiUV = ungVien.SoDienThoai_TKUV,
+                        DiaChiUV = model.DiaChiUV,
+                        HocVan = model.HocVan,
+                        KyNang = model.KyNang,
+                        DuAnThamGia = model.DuAnThamGia,
+                        MoTaBanThan = model.MoTaBanThan,
                     };
-
 
                     if (uploadFile != null && uploadFile.ContentLength > 0)
                     {
@@ -131,8 +136,14 @@ namespace Code_JobSearch.Controllers
         }
 
 
+
         public ActionResult Edit(int id)
         {
+            if (Session["KH"] == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            TaiKhoan ac = Session["KH"] as TaiKhoan;
             var hoSo = db.HoSoXinViecs.SingleOrDefault(h => h.Id_HSXV == id);
             if (hoSo == null)
             {
@@ -150,8 +161,25 @@ namespace Code_JobSearch.Controllers
                 var existingHoSo = db.HoSoXinViecs.SingleOrDefault(h => h.Id_HSXV == model.Id_HSXV);
                 if (existingHoSo != null)
                 {
-                    // Chỉ cập nhật các trường quan trọng
-                    existingHoSo.Ten_HSXV = model.Ten_HSXV;
+                    // Cập nhật các trường nếu có sự thay đổi
+                    if (existingHoSo.Ten_HSXV != model.Ten_HSXV)
+                        existingHoSo.Ten_HSXV = model.Ten_HSXV;
+
+                    if (existingHoSo.DiaChiUV != model.DiaChiUV)
+                        existingHoSo.DiaChiUV = model.DiaChiUV;
+
+                    if (existingHoSo.HocVan != model.HocVan)
+                        existingHoSo.HocVan = model.HocVan;
+
+                    if (existingHoSo.KyNang != model.KyNang)
+                        existingHoSo.KyNang = model.KyNang;
+
+                    if (existingHoSo.DuAnThamGia != model.DuAnThamGia)
+                        existingHoSo.DuAnThamGia = model.DuAnThamGia;
+
+                    if (existingHoSo.MoTaBanThan != model.MoTaBanThan)
+                        existingHoSo.MoTaBanThan = model.MoTaBanThan;
+
                     existingHoSo.TGCN_HSXV = now;
 
                     // Xử lý upload file nếu có
@@ -160,8 +188,8 @@ namespace Code_JobSearch.Controllers
                         // Kiểm tra loại file
                         if (Path.GetExtension(uploadFile.FileName).ToLower() == ".pdf")
                         {
-                            // Kiểm tra kích thước của file (giới hạn dưới 30MB)
-                            if (uploadFile.ContentLength <= 5 * 1024 * 1024) // 5MB = 30 * 1024 * 1024 bytes
+                            // Kiểm tra kích thước của file (giới hạn dưới 5MB)
+                            if (uploadFile.ContentLength <= 5 * 1024 * 1024) // 5MB = 5 * 1024 * 1024 bytes
                             {
                                 var fileName = Path.GetFileName(uploadFile.FileName);
                                 var filePath = Path.Combine(Server.MapPath("~/Content/CvUser"), fileName);
@@ -191,6 +219,7 @@ namespace Code_JobSearch.Controllers
                             return View(model);
                         }
                     }
+
                     db.SubmitChanges();
                     return RedirectToAction("CvUser", "User");
                 }
@@ -201,6 +230,7 @@ namespace Code_JobSearch.Controllers
             }
             return View(model);
         }
+
 
 
 
@@ -370,6 +400,12 @@ namespace Code_JobSearch.Controllers
                 HoSoXinViec hoSo = db.HoSoXinViecs.FirstOrDefault(h => h.Id_HSXV == model.SelectedHoSoId);
                 if (hoSo != null)
                 {
+                    // Sao chép thông tin từ HoSoXinViec sang UV_TTD
+                    uv_ttd.DiaChiUV = hoSo.DiaChiUV;
+                    uv_ttd.HocVan = hoSo.HocVan;
+                    uv_ttd.KyNang = hoSo.KyNang;
+                    uv_ttd.DuAnThamGia = hoSo.DuAnThamGia;
+                    uv_ttd.MoTaBanThan = hoSo.MoTaBanThan;
                     uv_ttd.File_CV = hoSo.File_HSXV;
                 }
             }
@@ -400,6 +436,13 @@ namespace Code_JobSearch.Controllers
                     string filePath = Path.Combine(Server.MapPath("~/Content/CvUser"), fileName);
                     File_CV.SaveAs(filePath);
                     uv_ttd.File_CV = fileName;
+
+                    // Lấy các thông tin nhập từ người dùng
+                    uv_ttd.DiaChiUV = model.DiaChiUV;
+                    uv_ttd.HocVan = model.HocVan;
+                    uv_ttd.KyNang = model.KyNang;
+                    uv_ttd.DuAnThamGia = model.DuAnThamGia;
+                    uv_ttd.MoTaBanThan = model.MoTaBanThan;
                 }
                 else // Nếu không có tệp được chọn
                 {

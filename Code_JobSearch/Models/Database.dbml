@@ -21,6 +21,11 @@
       <Column Name="HoTenUV_TD" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="EmailUV_TD" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="SoDienThoaiUV_TD" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="DiaChiUV" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="HocVan" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="KyNang" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="DuAnThamGia" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="MoTaBanThan" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="ThoiGianUngTuyen" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="TinhTrangUngTuyen" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="File_CV" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
@@ -60,6 +65,11 @@
       <Column Name="HoTenUV" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="EmailUV" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="SoDienThoaiUV" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="DiaChiUV" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="HocVan" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="KyNang" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="DuAnThamGia" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="MoTaBanThan" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="File_HSXV" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Association Name="HoSoXinViec_UV_TTD" Member="UV_TTDs" ThisKey="Id_HSXV" OtherKey="Id_HSXV" Type="UV_TTD" />
       <Association Name="UngVien_HoSoXinViec" Member="UngVien" ThisKey="Id_UV" OtherKey="Id_UV" Type="UngVien" IsForeignKey="true" />

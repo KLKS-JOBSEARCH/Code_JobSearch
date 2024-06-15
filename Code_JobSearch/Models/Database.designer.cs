@@ -427,6 +427,16 @@ namespace Code_JobSearch.Models
 		
 		private string _SoDienThoaiUV_TD;
 		
+		private string _DiaChiUV;
+		
+		private string _HocVan;
+		
+		private string _KyNang;
+		
+		private string _DuAnThamGia;
+		
+		private string _MoTaBanThan;
+		
 		private System.Nullable<System.DateTime> _ThoiGianUngTuyen;
 		
 		private string _TinhTrangUngTuyen;
@@ -459,6 +469,16 @@ namespace Code_JobSearch.Models
     partial void OnEmailUV_TDChanged();
     partial void OnSoDienThoaiUV_TDChanging(string value);
     partial void OnSoDienThoaiUV_TDChanged();
+    partial void OnDiaChiUVChanging(string value);
+    partial void OnDiaChiUVChanged();
+    partial void OnHocVanChanging(string value);
+    partial void OnHocVanChanged();
+    partial void OnKyNangChanging(string value);
+    partial void OnKyNangChanged();
+    partial void OnDuAnThamGiaChanging(string value);
+    partial void OnDuAnThamGiaChanged();
+    partial void OnMoTaBanThanChanging(string value);
+    partial void OnMoTaBanThanChanged();
     partial void OnThoiGianUngTuyenChanging(System.Nullable<System.DateTime> value);
     partial void OnThoiGianUngTuyenChanged();
     partial void OnTinhTrangUngTuyenChanging(string value);
@@ -625,6 +645,106 @@ namespace Code_JobSearch.Models
 					this._SoDienThoaiUV_TD = value;
 					this.SendPropertyChanged("SoDienThoaiUV_TD");
 					this.OnSoDienThoaiUV_TDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiaChiUV", DbType="NVarChar(150)")]
+		public string DiaChiUV
+		{
+			get
+			{
+				return this._DiaChiUV;
+			}
+			set
+			{
+				if ((this._DiaChiUV != value))
+				{
+					this.OnDiaChiUVChanging(value);
+					this.SendPropertyChanging();
+					this._DiaChiUV = value;
+					this.SendPropertyChanged("DiaChiUV");
+					this.OnDiaChiUVChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HocVan", DbType="NVarChar(MAX)")]
+		public string HocVan
+		{
+			get
+			{
+				return this._HocVan;
+			}
+			set
+			{
+				if ((this._HocVan != value))
+				{
+					this.OnHocVanChanging(value);
+					this.SendPropertyChanging();
+					this._HocVan = value;
+					this.SendPropertyChanged("HocVan");
+					this.OnHocVanChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_KyNang", DbType="NVarChar(MAX)")]
+		public string KyNang
+		{
+			get
+			{
+				return this._KyNang;
+			}
+			set
+			{
+				if ((this._KyNang != value))
+				{
+					this.OnKyNangChanging(value);
+					this.SendPropertyChanging();
+					this._KyNang = value;
+					this.SendPropertyChanged("KyNang");
+					this.OnKyNangChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DuAnThamGia", DbType="NVarChar(MAX)")]
+		public string DuAnThamGia
+		{
+			get
+			{
+				return this._DuAnThamGia;
+			}
+			set
+			{
+				if ((this._DuAnThamGia != value))
+				{
+					this.OnDuAnThamGiaChanging(value);
+					this.SendPropertyChanging();
+					this._DuAnThamGia = value;
+					this.SendPropertyChanged("DuAnThamGia");
+					this.OnDuAnThamGiaChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MoTaBanThan", DbType="NVarChar(MAX)")]
+		public string MoTaBanThan
+		{
+			get
+			{
+				return this._MoTaBanThan;
+			}
+			set
+			{
+				if ((this._MoTaBanThan != value))
+				{
+					this.OnMoTaBanThanChanging(value);
+					this.SendPropertyChanging();
+					this._MoTaBanThan = value;
+					this.SendPropertyChanged("MoTaBanThan");
+					this.OnMoTaBanThanChanged();
 				}
 			}
 		}
@@ -1291,6 +1411,16 @@ namespace Code_JobSearch.Models
 		
 		private string _SoDienThoaiUV;
 		
+		private string _DiaChiUV;
+		
+		private string _HocVan;
+		
+		private string _KyNang;
+		
+		private string _DuAnThamGia;
+		
+		private string _MoTaBanThan;
+		
 		private string _File_HSXV;
 		
 		private EntitySet<UV_TTD> _UV_TTDs;
@@ -1315,6 +1445,16 @@ namespace Code_JobSearch.Models
     partial void OnEmailUVChanged();
     partial void OnSoDienThoaiUVChanging(string value);
     partial void OnSoDienThoaiUVChanged();
+    partial void OnDiaChiUVChanging(string value);
+    partial void OnDiaChiUVChanged();
+    partial void OnHocVanChanging(string value);
+    partial void OnHocVanChanged();
+    partial void OnKyNangChanging(string value);
+    partial void OnKyNangChanged();
+    partial void OnDuAnThamGiaChanging(string value);
+    partial void OnDuAnThamGiaChanged();
+    partial void OnMoTaBanThanChanging(string value);
+    partial void OnMoTaBanThanChanged();
     partial void OnFile_HSXVChanging(string value);
     partial void OnFile_HSXVChanged();
     #endregion
@@ -1466,6 +1606,106 @@ namespace Code_JobSearch.Models
 					this._SoDienThoaiUV = value;
 					this.SendPropertyChanged("SoDienThoaiUV");
 					this.OnSoDienThoaiUVChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiaChiUV", DbType="NVarChar(150)")]
+		public string DiaChiUV
+		{
+			get
+			{
+				return this._DiaChiUV;
+			}
+			set
+			{
+				if ((this._DiaChiUV != value))
+				{
+					this.OnDiaChiUVChanging(value);
+					this.SendPropertyChanging();
+					this._DiaChiUV = value;
+					this.SendPropertyChanged("DiaChiUV");
+					this.OnDiaChiUVChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HocVan", DbType="NVarChar(MAX)")]
+		public string HocVan
+		{
+			get
+			{
+				return this._HocVan;
+			}
+			set
+			{
+				if ((this._HocVan != value))
+				{
+					this.OnHocVanChanging(value);
+					this.SendPropertyChanging();
+					this._HocVan = value;
+					this.SendPropertyChanged("HocVan");
+					this.OnHocVanChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_KyNang", DbType="NVarChar(MAX)")]
+		public string KyNang
+		{
+			get
+			{
+				return this._KyNang;
+			}
+			set
+			{
+				if ((this._KyNang != value))
+				{
+					this.OnKyNangChanging(value);
+					this.SendPropertyChanging();
+					this._KyNang = value;
+					this.SendPropertyChanged("KyNang");
+					this.OnKyNangChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DuAnThamGia", DbType="NVarChar(MAX)")]
+		public string DuAnThamGia
+		{
+			get
+			{
+				return this._DuAnThamGia;
+			}
+			set
+			{
+				if ((this._DuAnThamGia != value))
+				{
+					this.OnDuAnThamGiaChanging(value);
+					this.SendPropertyChanging();
+					this._DuAnThamGia = value;
+					this.SendPropertyChanged("DuAnThamGia");
+					this.OnDuAnThamGiaChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MoTaBanThan", DbType="NVarChar(MAX)")]
+		public string MoTaBanThan
+		{
+			get
+			{
+				return this._MoTaBanThan;
+			}
+			set
+			{
+				if ((this._MoTaBanThan != value))
+				{
+					this.OnMoTaBanThanChanging(value);
+					this.SendPropertyChanging();
+					this._MoTaBanThan = value;
+					this.SendPropertyChanged("MoTaBanThan");
+					this.OnMoTaBanThanChanged();
 				}
 			}
 		}

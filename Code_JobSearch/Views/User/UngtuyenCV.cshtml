@@ -1,96 +1,119 @@
 ﻿@model Code_JobSearch.Models.UngtuyenViewmodel
-@{
-    ViewBag.Title = "Ứng tuyển CV";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-<p></p>
+@{ ViewBag.Title = "Ứng tuyển CV";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+<style>
+    textarea::placeholder {
+        opacity: 0.5;
+    }
+</style>
 @using (Html.BeginForm("UngtuyenCV", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    @Html.HiddenFor(model => model.TinTuyenDung.Id_TTD)
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="container mt-4">
-        <!-- Vùng Chọn hồ sơ xin việc hoặc tải lên CV mới -->
-        <div class="card mb-3">
-            <div class="card-header bg-primary text-white">
-                <h5>Chọn cách ứng tuyển</h5>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label for="SelectionMethod">Phương thức ứng tuyển:</label>
-                    <select id="SelectionMethod" class="form-control">
-                        <option value="upload">Tải lên CV mới</option>
-                        <option value="select">Chọn hồ sơ xin việc</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+@Html.HiddenFor(model => model.TinTuyenDung.Id_TTD)
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="container mt-4">
+                                    <!-- Vùng Chọn hồ sơ xin việc hoặc tải lên CV mới -->
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-primary text-white">
+                                            <h5>Chọn cách ứng tuyển</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="SelectionMethod">Phương thức ứng tuyển:</label>
+                                                <select id="SelectionMethod" class="form-control">
+                                                    <option value="upload">Tải lên CV mới</option>
+                                                    <option value="select">Chọn hồ sơ xin việc</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
 
-        <!-- Vùng Tải lên CV mới (mặc định hiển thị) -->
-        <div class="card mb-3" id="uploadCVSection">
-            <div class="card-header bg-success text-white">
-                <h5>Tải lên CV mới</h5>
-            </div>
-            <div class="card-body">
-                <div class="form-group row">
-                    <div class="col">
-                        <label for="HoTenUV_TD">Họ và tên:</label>
-                        @Html.TextBoxFor(model => model.UngVien.HoTen_TKUV, new { @class = "form-control", @readonly = "readonly" })
-                    </div>
-                    <div class="col">
-                        <label for="EmailUV_TD">Email:</label>
-                        @Html.TextBoxFor(model => model.UngVien.Email_TKUV, new { @class = "form-control", @readonly = "readonly" })
-                    </div>
-                    <div class="col">
-                        <label for="SoDienThoaiUV_TD">Số điện thoại:</label>
-                        @Html.TextBoxFor(model => model.UngVien.SoDienThoai_TKUV, new { @class = "form-control", @readonly = "readonly" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="File_CV">Tải lên CV mới:</label>
-                    <input type="file" name="File_CV" class="form-control" id="File_CV" />
-                </div>
-            </div>
-        </div>
+                                    <!-- Vùng Tải lên CV mới (mặc định hiển thị) -->
+                                    <div class="card mb-3" id="uploadCVSection">
+                                        <div class="card-header bg-success text-white">
+                                            <h5><i class="fas fa-upload"></i> Tải lên CV mới</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="form-group row">
+                                                <div class="col">
+                                                    <label for="HoTenUV_TD"><i class="fas fa-user"></i> Họ và tên:</label>
+                                                    @Html.TextBoxFor(model => model.UngVien.HoTen_TKUV, new { @class = "form-control", @readonly = "readonly" })
+                                                </div>
+                                                <div class="col">
+                                                    <label for="EmailUV_TD"><i class="fas fa-envelope"></i> Email:</label>
+                                                    @Html.TextBoxFor(model => model.UngVien.Email_TKUV, new { @class = "form-control", @readonly = "readonly" })
+                                                </div>
+                                                <div class="col">
+                                                    <label for="SoDienThoaiUV_TD"><i class="fas fa-phone"></i> Số điện thoại:</label>
+                                                    @Html.TextBoxFor(model => model.UngVien.SoDienThoai_TKUV, new { @class = "form-control", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                            <!-- Thêm các trường cho khi người dùng tải lên CV mới -->
+                                            <div class="form-group">
+                                                <label for="DiaChiUV"><i class="fas fa-map-marker-alt"></i> Địa chỉ:</label>
+                                                @Html.TextBoxFor(model => model.DiaChiUV, new { @class = "form-control", id = "DiaChiUV" })
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="HocVan"><i class="fas fa-graduation-cap"></i> Học vấn:</label>
+                                                @Html.TextBoxFor(model => model.HocVan, new { @class = "form-control", id = "HocVan" })
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="KyNang"><i class="fas fa-tools"></i> Kỹ năng:</label>
+                                                @Html.TextBoxFor(model => model.KyNang, new { @class = "form-control", id = "KyNang" })
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="DuAnThamGia"><i class="fas fa-project-diagram"></i> Dự án tham gia:</label>
+                                                @Html.TextBoxFor(model => model.DuAnThamGia, new { @class = "form-control", id = "DuAnThamGia" })
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="MoTaBanThan"><i class="fas fa-info-circle"></i> Mô tả bản thân:</label>
+                                                @Html.TextAreaFor(model => model.MoTaBanThan, new { @class = "form-control", rows = 5, id = "MoTaBanThan", placeholder = "Viết giới thiệu ngắn gọn về bản thân (điểm mạnh, điểm yếu) và nêu rõ mục tiêu, lý do bạn muốn ứng tuyển cho vị trí này" })
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="File_CV"><i class="fas fa-file-upload"></i> Tải lên CV mới:</label>
+                                                <input type="file" name="File_CV" class="form-control" id="File_CV" />
+                                            </div>
+                                        </div>
+                                    </div>
 
-        <!-- Vùng Chọn hồ sơ xin việc (mặc định ẩn) -->
-        <div class="card mb-3" id="selectHoSoSection" style="display:none;">
-            <div class="card-header bg-info text-white">
-                <h5>Chọn hồ sơ xin việc</h5>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label for="SelectedHoSoId">Chọn hồ sơ xin việc:</label>
-                    @if (Model.HoSoXinViecList != null && Model.HoSoXinViecList.Count > 0)
-                    {
-                        @Html.DropDownListFor(model => model.SelectedHoSoId, new SelectList(Model.HoSoXinViecList, "Id_HSXV", "Ten_HSXV"), "Chọn hồ sơ", new { @class = "form-control", id = "SelectedHoSoId" })
-                    }
-                    else
-                    {
-                        <p>Không có hồ sơ xin việc để chọn.</p>
-                    }
-                </div>
-            </div>
-        </div>
+                                    <!-- Vùng Chọn hồ sơ xin việc (mặc định ẩn) -->
+                                    <div class="card mb-3" id="selectHoSoSection" style="display:none;">
+                                        <div class="card-header bg-info text-white">
+                                            <h5>Chọn hồ sơ xin việc</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="SelectedHoSoId"><i class="fas fa-file-alt"></i> Chọn hồ sơ xin việc:</label>
+                                                @if (Model.HoSoXinViecList != null && Model.HoSoXinViecList.Count > 0)
+                                                {
+                                @Html.DropDownListFor(model => model.SelectedHoSoId, new SelectList(Model.HoSoXinViecList, "Id_HSXV", "Ten_HSXV"), "Chọn hồ sơ", new { @class = "form-control", id = "SelectedHoSoId" }) }
+                            else
+                            {
+            <p>Không có hồ sơ xin việc để chọn.</p>}
+                                            </div>
+                                        </div>
+                                    </div>
 
-        <!-- Vùng Nội dung thư giới thiệu -->
-        <div class="card mb-3">
-            <div class="card-header bg-info text-white">
-                <h5>Nội dung thư giới thiệu</h5>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label for="NoiDung_ThuGioiThieu">Nội dung thư giới thiệu:</label>
-                    @Html.TextAreaFor(model => model.NoiDung_ThuGioiThieu, new { @class = "form-control", rows = 5, id = "NoiDung_ThuGioiThieu" })
-                </div>
-            </div>
-        </div>
+                                    <!-- Vùng Nội dung thư giới thiệu -->
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-info text-white">
+                                            <h5><i class="fas fa-envelope"></i> Nội dung thư giới thiệu</h5>
+                                            <p class="small" style="color:black">Một thư giới thiệu ngắn gọn, chỉn chu sẽ giúp bạn trở nên chuyên nghiệp và gây ấn tượng hơn với nhà tuyển dụng.</p>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                @Html.TextAreaFor(model => model.NoiDung_ThuGioiThieu, new { @class = "form-control", rows = 5, id = "NoiDung_ThuGioiThieu", placeholder = "Viết giới thiệu ngắn gọn về bản thân (điểm mạnh, điểm yếu) và nêu rõ mục tiêu, lý do bạn muốn ứng tuyển cho vị trí này" })
+                                            </div>
+                                        </div>
+                                    </div>
 
-        <!-- Nút gửi -->
-        <div class="form-group">
-            <input type="submit" value="Ứng tuyển" class="btn btn-primary" />
-        </div>
-    </div>
-}
+                                    <!-- Nút gửi với thông báo xác nhận -->
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary" onclick="return confirm('Bạn có chắc chắn muốn ứng tuyển CV này?');">
+                                            <i class="fas fa-save"></i> Ứng tuyển
+                                        </button>
+                                    </div>
+
+                                </div>}
 
 <script>
     document.getElementById("SelectionMethod").addEventListener("change", function () {

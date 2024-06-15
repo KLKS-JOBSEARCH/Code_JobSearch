@@ -13,7 +13,7 @@
 
     <div class="card mt-4">
         <div class="card-header bg-primary text-white">
-            <h4 style="color:white;"><i class="fas fa-file-alt"></i> Hồ sơ xin việc</h4>
+            <h4><i class="fas fa-file-alt"></i> Hồ sơ xin việc</h4>
         </div>
         <div class="card-body">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -23,41 +23,70 @@
                 <span style="color:red;">* Các thông tin bắt buộc</span>
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="HoTen_TKUV" class="form-label">Họ tên</label>
+                        <label for="HoTen_TKUV" class="form-label"><i class="fas fa-user"></i> Họ tên</label>
                         <input type="text" class="form-control" value="@Model.HoTen_TKUV" readonly />
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="Email_TKUV" class="form-label">Email</label>
+                        <label for="Email_TKUV" class="form-label"><i class="fas fa-envelope"></i> Email</label>
                         <input type="email" class="form-control" value="@Model.Email_TKUV" readonly />
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="SoDienThoai_TKUV" class="form-label">Số điện thoại</label>
+                        <label for="SoDienThoai_TKUV" class="form-label"><i class="fas fa-phone"></i> Số điện thoại</label>
                         <input type="text" class="form-control" value="@Model.SoDienThoai_TKUV" readonly />
                     </div>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label for="Ten_HSXV" class="form-label">Tên hồ sơ</label>
+                <label for="Ten_HSXV" class="form-label"><i class="fas fa-file-alt"></i> Tên hồ sơ</label>
                 @Html.EditorFor(model => model.Ten_HSXV, new { htmlAttributes = new { @class = "form-control", placeholder = "VD: CV_Nhân Viên Kinh Doanh....." } })
                 @Html.ValidationMessageFor(model => model.Ten_HSXV, "", new { @class = "text-danger" })
             </div>
 
             <div class="mb-3">
-                <label for="inputFile" class="form-label">Chọn file CV của bạn</label>
+                <label for="DiaChiUV" class="form-label"><i class="fas fa-map-marker-alt"></i> Địa chỉ</label>
+                @Html.EditorFor(model => model.DiaChiUV, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DiaChiUV, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="mb-3">
+                <label for="HocVan" class="form-label"><i class="fas fa-graduation-cap"></i> Học vấn</label>
+                @Html.EditorFor(model => model.HocVan, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HocVan, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="mb-3">
+                <label for="KyNang" class="form-label"><i class="fas fa-tools"></i> Kỹ năng</label>
+                @Html.EditorFor(model => model.KyNang, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.KyNang, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="mb-3">
+                <label for="DuAnThamGia" class="form-label"><i class="fas fa-project-diagram"></i> Dự án tham gia</label>
+                @Html.EditorFor(model => model.DuAnThamGia, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DuAnThamGia, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="mb-3">
+                <label for="MoTaBanThan" class="form-label"><i class="fas fa-info-circle"></i> Mô tả bản thân</label>
+                @Html.EditorFor(model => model.MoTaBanThan, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MoTaBanThan, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="mb-3">
+                <label for="inputFile" class="form-label"><i class="fas fa-file-upload"></i> Chọn file CV của bạn</label>
                 <input type="file" name="uploadFile" id="inputFile" accept=".pdf" class="form-control" />
             </div>
 
             <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Lưu</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu</button>
             </div>
         </div>
     </div>
-
 }
 
 <div class="mt-3">
