@@ -349,7 +349,7 @@ namespace Code_JobSearch.Controllers
                 EmailUV_TD = kh.Email_TKUV,
                 SoDienThoaiUV_TD = kh.SoDienThoai_TKUV,
                 ThoiGianUngTuyen = DateTime.Now,
-                TinhTrangUngTuyen = "Đã ứng tuyển",
+                TinhTrangUngTuyen = "Đang xét duyệt",
                 NoiDung_ThuGioiThieu = string.IsNullOrEmpty(model.NoiDung_ThuGioiThieu) ? "Chưa có nội dung thư!" : model.NoiDung_ThuGioiThieu,
                 Id_HSXV = model.SelectedHoSoId // Gán Id_HSXV từ lựa chọn của người dùng
             };
@@ -363,35 +363,37 @@ namespace Code_JobSearch.Controllers
                     uv_ttd.File_CV = hoSo.File_HSXV;
                 }
             }
-            else
+            else if (model.SelectedHoSoId == null && File_CV == null)
             {
-                if (File_CV != null && File_CV.ContentLength > 0)
+                ModelState.AddModelError("", "Vui lòng chọn một hồ sơ hoặc tải lên CV mới.");
+                return View(model);
+            }
+            else if (File_CV != null && File_CV.ContentLength > 0)
+            {
+                // Giới hạn kích thước tệp là 5MB
+                if (File_CV.ContentLength > 5 * 1024 * 1024)
                 {
-                    // Giới hạn kích thước tệp là 5MB
-                    if (File_CV.ContentLength > 5 * 1024 * 1024)
-                    {
-                        ModelState.AddModelError("", "Kích thước tệp phải nhỏ hơn hoặc bằng 5MB.");
-                        return View(model);
-                    }
-
-                    // Kiểm tra phần mở rộng của tệp có phải là .pdf không
-                    if (Path.GetExtension(File_CV.FileName).ToLower() != ".pdf")
-                    {
-                        ModelState.AddModelError("", "Vui lòng chọn một tệp PDF.");
-                        return View(model);
-                    }
-
-                    // Lưu tệp và gán tên vào đối tượng UV_TTD
-                    string fileName = Path.GetFileName(File_CV.FileName);
-                    string filePath = Path.Combine(Server.MapPath("~/Content/CvUser"), fileName);
-                    File_CV.SaveAs(filePath);
-                    uv_ttd.File_CV = fileName;
-                }
-                else // Nếu không có tệp được chọn
-                {
-                    ModelState.AddModelError("", "Vui lòng chọn một tệp để tải lên.");
+                    ModelState.AddModelError("", "Kích thước tệp phải nhỏ hơn hoặc bằng 5MB.");
                     return View(model);
                 }
+
+                // Kiểm tra phần mở rộng của tệp có phải là .pdf không
+                if (Path.GetExtension(File_CV.FileName).ToLower() != ".pdf")
+                {
+                    ModelState.AddModelError("", "Vui lòng chọn một tệp PDF.");
+                    return View(model);
+                }
+
+                // Lưu tệp và gán tên vào đối tượng UV_TTD
+                string fileName = Path.GetFileName(File_CV.FileName);
+                string filePath = Path.Combine(Server.MapPath("~/Content/CvUser"), fileName);
+                File_CV.SaveAs(filePath);
+                uv_ttd.File_CV = fileName;
+            }
+            else // Nếu không có tệp được chọn
+            {
+                ModelState.AddModelError("", "Vui lòng chọn một tệp để tải lên.");
+                return View(model);
             }
 
             db.UV_TTDs.InsertOnSubmit(uv_ttd);
@@ -399,6 +401,7 @@ namespace Code_JobSearch.Controllers
 
             return RedirectToAction("HistoryofCVApply", "User"); // Chuyển hướng đến trang thành công hoặc trang khác
         }
+
         #endregion
 
         #region Xem lịch sử công việc đã ứng tuyển

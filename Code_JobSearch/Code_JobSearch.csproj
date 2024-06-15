@@ -2020,6 +2020,7 @@
     <Content Include="Areas\Admin\Views\Admin\JobPortalWait.cshtml" />
     <Content Include="Areas\Admin\Views\Ungvien\UngvienDetails.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\DetailJobPortal.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\Feedback.cshtml" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>

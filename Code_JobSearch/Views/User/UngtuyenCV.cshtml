@@ -4,31 +4,30 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <p></p>
-
-<div class="col-md-8">
-    <div>
-        <!-- Đặt kích thước cố định cho card -->
-        <h3 class="card-title">@Html.DisplayFor(model => model.TinTuyenDung.TieuDe_TTD)</h3>
-        <dl class="row">
-            <dt class="col-sm-4"><i class="bi bi-calendar"></i> Hạn nộp hồ sơ</dt>
-            <dd class="col-sm-8">@Model.TinTuyenDung.HanTuyenDung.Value.ToString("dd/MM/yyyy")</dd>
-            <dt class="col-sm-4"><i class="bi bi-cash"></i> Mức lương</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.MucLuongTD)</dd>
-            <dt class="col-sm-4"><i class="bi bi-geo-alt-fill"></i> Địa điểm</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.DiaDiem_TTD)</dd>
-            <dt class="col-sm-4"><i class="bi bi-calendar3-event-fill"></i> Yêu cầu kinh nghiệm</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.KinhNghiemLam)</dd>
-        </dl>
-    </div>
-</div>
 @using (Html.BeginForm("UngtuyenCV", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.HiddenFor(model => model.TinTuyenDung.Id_TTD)
-
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="container mt-4">
-        <!-- Vùng Tải lên CV mới -->
+        <!-- Vùng Chọn hồ sơ xin việc hoặc tải lên CV mới -->
         <div class="card mb-3">
             <div class="card-header bg-primary text-white">
+                <h5>Chọn cách ứng tuyển</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="SelectionMethod">Phương thức ứng tuyển:</label>
+                    <select id="SelectionMethod" class="form-control">
+                        <option value="upload">Tải lên CV mới</option>
+                        <option value="select">Chọn hồ sơ xin việc</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vùng Tải lên CV mới (mặc định hiển thị) -->
+        <div class="card mb-3" id="uploadCVSection">
+            <div class="card-header bg-success text-white">
                 <h5>Tải lên CV mới</h5>
             </div>
             <div class="card-body">
@@ -36,21 +35,25 @@
                     <label for="File_CV">Tải lên CV mới:</label>
                     <input type="file" name="File_CV" class="form-control" id="File_CV" />
                 </div>
-                <div class="form-group mt-2">
-                    <button type="button" class="btn btn-secondary" id="showHoSoBtn">Chọn hồ sơ xin việc</button>
-                </div>
             </div>
         </div>
 
         <!-- Vùng Chọn hồ sơ xin việc (mặc định ẩn) -->
-        <div class="card mb-3" id="hoSoSection" style="display:none;">
-            <div class="card-header bg-success text-white">
+        <div class="card mb-3" id="selectHoSoSection" style="display:none;">
+            <div class="card-header bg-info text-white">
                 <h5>Chọn hồ sơ xin việc</h5>
             </div>
             <div class="card-body">
                 <div class="form-group">
                     <label for="SelectedHoSoId">Chọn hồ sơ xin việc:</label>
-                    @Html.DropDownListFor(model => model.SelectedHoSoId, new SelectList(Model.HoSoXinViecList, "Id_HSXV", "Ten_HSXV"), "Chọn hồ sơ", new { @class = "form-control", id = "SelectedHoSoId" })
+                    @if (Model.HoSoXinViecList != null && Model.HoSoXinViecList.Count > 0)
+                    {
+                        @Html.DropDownListFor(model => model.SelectedHoSoId, new SelectList(Model.HoSoXinViecList, "Id_HSXV", "Ten_HSXV"), "Chọn hồ sơ", new { @class = "form-control", id = "SelectedHoSoId" })
+                    }
+                    else
+                    {
+                        <p>Không có hồ sơ xin việc để chọn.</p>
+                    }
                 </div>
             </div>
         </div>
@@ -76,12 +79,17 @@
 }
 
 <script>
-    document.getElementById("showHoSoBtn").addEventListener("click", function () {
-        var hoSoSection = document.getElementById("hoSoSection");
-        if (hoSoSection.style.display === "none") {
-            hoSoSection.style.display = "block";
-        } else {
-            hoSoSection.style.display = "none";
+    document.getElementById("SelectionMethod").addEventListener("change", function () {
+        var selectedMethod = this.value;
+        var uploadCVSection = document.getElementById("uploadCVSection");
+        var selectHoSoSection = document.getElementById("selectHoSoSection");
+
+        if (selectedMethod === "upload") {
+            uploadCVSection.style.display = "block";
+            selectHoSoSection.style.display = "none";
+        } else if (selectedMethod === "select") {
+            uploadCVSection.style.display = "none";
+            selectHoSoSection.style.display = "block";
         }
     });
 </script>

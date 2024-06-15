@@ -19,7 +19,6 @@
                     <th style="width: 15%;">Tên doanh nghiệp</th>
                     <th style="width: 18%;">Số điện thoại Nhà Tuyển Dụng</th>
                     <th style="width: 20%;">Tên tài khoản ứng viên</th>
-                    <th style="width: 15%;">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,15 +42,7 @@
                             @Html.ActionLink(item.DoanhNghiep.Ten_DN, "DetailsCompany", "Admin", new { id = item.DoanhNghiep.Id_DN }, null)
                         </td>
                         <td style="width: 18%;" class="align-middle">@Html.DisplayFor(modelItem => item.SoDienThoai_NTD)</td>
-                        <td style="width: 20%;" class="align-middle">@Html.DisplayFor(modelItem => item.TenTK)</td>
-                        <td style="width: 15%;" class="text-center align-middle">
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <a href="@Url.Action("Details", new { id = item.Id_NTD })" class="btn btn-info btn-sm">
-                                    <i class="fas fa-info-circle"></i>
-                                </a>
-                            </div>
-
-                        </td>
+                        <td style="width: 20%;" class="align-middle">@Html.DisplayFor(modelItem => item.TenTK)</td>                    
                     </tr>
                 }
             </tbody>

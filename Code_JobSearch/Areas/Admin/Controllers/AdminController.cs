@@ -314,6 +314,28 @@ namespace Code_JobSearch.Areas.Admin.Controllers
         }
         #endregion
 
+        public ActionResult Feedback(int page = 1)
+        {
+            ViewBag.PendingJobCount = GetPendingJobCount();
+            if (Session["AD"] == null)
+            {
+                return RedirectToAction("Login", "Auth", new { area = "" });
+            }
+            TaiKhoan ac = Session["AD"] as TaiKhoan;
+
+            List<GopY> gopy = db.Gopies.ToList();
+
+            //paging
+            int NoOfRecordPerPage = 10;
+            int NoOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(gopy.Count) / Convert.ToDouble(NoOfRecordPerPage)));
+            int NoOfRecordSkip = (page - 1) * NoOfRecordPerPage;
+            ViewBag.Page = page;
+            ViewBag.NoOfPage = NoOfPages;
+            gopy = gopy.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage).ToList();
+
+            ViewBag.CurrentPage = "UserProfilePortal";
+            return View(gopy);
+        }
         public ActionResult Logout()
         {
             Session.Clear();
