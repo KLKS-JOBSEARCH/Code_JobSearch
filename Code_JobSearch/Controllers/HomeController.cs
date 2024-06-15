@@ -36,21 +36,26 @@ namespace Code_JobSearch.Controllers
         #region Job
         public ActionResult Index(int page = 1)
         {
-            //List<TinTuyenDung> tinTuyenDungs = db.TinTuyenDungs.ToList();
+            // Lấy danh sách các tin tuyển dụng đã duyệt và còn hạn tuyển dụng
             List<TinTuyenDung> tinTuyenDungs = db.TinTuyenDungs
-                                            .Where(t => t.HanTuyenDung.HasValue && t.HanTuyenDung > DateTime.Now)
-                                            .OrderByDescending(t => t.HanTuyenDung)
-                                            .ToList();
+                                                .Where(t => t.HanTuyenDung.HasValue
+                                                            && t.HanTuyenDung > DateTime.Now
+                                                            && t.XetDuyet == "Duyệt thành công")
+                                                .OrderByDescending(t => t.HanTuyenDung)
+                                                .ToList();
 
-            //paging
+            // Thực hiện phân trang
             int NoOfRecordPerPage = 6;
             int NoOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(tinTuyenDungs.Count) / Convert.ToDouble(NoOfRecordPerPage)));
             int NoOfRecordSkip = (page - 1) * NoOfRecordPerPage;
             ViewBag.Page = page;
             ViewBag.NoOfPage = NoOfPages;
             tinTuyenDungs = tinTuyenDungs.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage).ToList();
+
+            // Trả về view với danh sách tin tuyển dụng đã phân trang
             return View(tinTuyenDungs);
         }
+
 
         public ActionResult DetailsJob(int id)
         {

@@ -397,7 +397,7 @@ namespace Code_JobSearch.Controllers
             db.UV_TTDs.InsertOnSubmit(uv_ttd);
             db.SubmitChanges();
 
-            return RedirectToAction("Index", "Home"); // Chuyển hướng đến trang thành công hoặc trang khác
+            return RedirectToAction("HistoryofCVApply", "User"); // Chuyển hướng đến trang thành công hoặc trang khác
         }
         #endregion
 

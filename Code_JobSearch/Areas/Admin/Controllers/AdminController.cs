@@ -127,8 +127,7 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             {
                 return RedirectToAction("Login", "Auth", new { area = "" });
             }
-            TaiKhoan ac = Session["AD"] as TaiKhoan; ;
-
+            TaiKhoan ac = Session["AD"] as TaiKhoan;
 
             var viewModel = new CompanyDetailsViewModel();
 
@@ -141,13 +140,17 @@ namespace Code_JobSearch.Areas.Admin.Controllers
 
                 // Lấy danh sách tin tuyển dụng từ Id_NTD và sắp xếp theo ngày hạn tuyển dụng mới nhất đến cũ nhất
                 viewModel.TinTuyenDung = db.TinTuyenDungs
-                                            .Where(ttd => ttd.Id_NTD == id && ttd.HanTuyenDung.HasValue && ttd.HanTuyenDung > DateTime.Now)
+                                            .Where(ttd => ttd.Id_NTD == id
+                                                        && ttd.HanTuyenDung.HasValue
+                                                        && ttd.HanTuyenDung > DateTime.Now
+                                                        && ttd.XetDuyet == "Duyệt thành công")
                                             .OrderByDescending(ttd => ttd.HanTuyenDung)
                                             .ToList();
             }
 
             return View(viewModel);
         }
+
 
 
         #region JOBS PORTAL
@@ -226,6 +229,53 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             return View(tinTuyenDungPaged);
         }
 
+        public ActionResult DetailJobPortal(int id)
+        {
+            ViewBag.PendingJobCount = GetPendingJobCount();
+            if (Session["AD"] == null)
+            {
+                return RedirectToAction("Login", "Auth", new { area = "" });
+            }
+            TaiKhoan ac = Session["AD"] as TaiKhoan;
+            var viewModel = (from ttd in db.TinTuyenDungs
+                             join ntd in db.NhaTuyenDungs on ttd.Id_NTD equals ntd.Id_NTD
+                             join dn in db.DoanhNghieps on ntd.Id_DN equals dn.Id_DN
+                             where ttd.Id_TTD == id
+                             select new JobDetailsViewModel
+                             {
+                                 TinTuyenDung = ttd,
+                                 DoanhNghiep = dn,
+                                 NhaTuyenDung = ntd
+                             }).SingleOrDefault();
+
+            if (viewModel == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.Title = "Thông tin tuyển dụng";
+            ViewBag.ProductName = viewModel.TinTuyenDung.TieuDe_TTD;
+
+            return View(viewModel);
+        }
+
+        public ActionResult ConfirmJob(int id)
+        {
+            TinTuyenDung ttd = db.TinTuyenDungs.Single(o => o.Id_TTD == id);
+
+            ttd.XetDuyet = "Duyệt thành công";
+            db.SubmitChanges();
+            return RedirectToAction("JobPortalWait");
+        }
+
+        public ActionResult RejectJob(int id)
+        {
+            TinTuyenDung ttd = db.TinTuyenDungs.Single(o => o.Id_TTD == id);
+
+            ttd.XetDuyet = "Duyệt không thành công";
+            db.SubmitChanges();
+            return RedirectToAction("JobPortalWait");
+        }
         #endregion
 
         public ActionResult Logout()

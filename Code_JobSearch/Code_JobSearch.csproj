@@ -215,7 +215,6 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
-    <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\UngvienController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
@@ -2020,6 +2019,7 @@
     <Content Include="Areas\Admin\Views\Admin\JobPortal.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\JobPortalWait.cshtml" />
     <Content Include="Areas\Admin\Views\Ungvien\UngvienDetails.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\DetailJobPortal.cshtml" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>

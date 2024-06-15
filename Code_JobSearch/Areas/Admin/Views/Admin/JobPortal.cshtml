@@ -50,11 +50,8 @@
                         <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.DiaDiem_TTD)</td>
                         <td class="text-center align-middle">
                             <div class="btn-group" role="group" aria-label="Basic example">
-                                <a href="@Url.Action("Details", new { id = item.Id_TTD })" class="btn btn-info btn-sm">
+                                <a href="@Url.Action("DetailJobPortal", new { id = item.Id_TTD })" class="btn btn-info btn-sm">
                                     <i class="fas fa-info-circle"></i> 
-                                </a>
-                                <a href="@Url.Action("Delete", new { id = item.Id_TTD })" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-trash-alt"></i> 
                                 </a>
                             </div>
 

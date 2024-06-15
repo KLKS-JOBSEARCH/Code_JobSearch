@@ -68,6 +68,7 @@ namespace Code_JobSearch.Controllers
             var rematkhau = f["ReMatkhau"];
             var email = f["email"];
             var sdt = f["sdt"];
+            var validPrefixes = new List<string> { "09", "03", "07", "08", "05" };
 
             // Lưu trữ dữ liệu đã nhập vào ViewBag để hiển thị lại trong input nếu có lỗi
             ViewBag.HotenKH = hoten;
@@ -141,6 +142,13 @@ namespace Code_JobSearch.Controllers
 
 
 
+            // Kiểm tra định dạng số điện thoại
+            if (!validPrefixes.Any(prefix => sdt.StartsWith(prefix)))
+            {
+                ViewData["Loi5"] = "Số điện thoại không hợp lệ";
+                return View();
+            }
+
             // Kiểm tra sự tồn tại của số điện thoại
             if (db.UngViens.Any(t => t.SoDienThoai_TKUV == sdt))
             {
@@ -151,7 +159,7 @@ namespace Code_JobSearch.Controllers
             // Kiểm tra số điện thoại có đúng 10 chữ số
             if (sdt.Length != 10)
             {
-                ViewData["Loi5"] = "Số điện thoại phải có đúng 10 chữ số!";
+                ViewData["Loi5"] = "Số điện thoại không hợp lệ";
                 return View();
             }
             //code update

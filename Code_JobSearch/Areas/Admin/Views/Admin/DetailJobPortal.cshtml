@@ -1,0 +1,145 @@
+﻿@model Code_JobSearch.Models.JobDetailsViewModel
+
+@{
+    ViewBag.Title = "Chi tiết tuyển dụng";
+    Layout = "~/Areas/Admin/Views/Shared/admin.cshtml";
+}
+<style>
+    .rounded-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 0 0 2px #28a745;
+    }
+
+        .rounded-circle img {
+            position: absolute;
+            width: auto;
+            height: 70%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div>
+                <!-- Đặt kích thước cố định cho card -->
+                <h3 class="card-title">@Html.DisplayFor(model => model.TinTuyenDung.TieuDe_TTD)</h3>
+                <dl class="row">
+                    <dt class="col-sm-4"><i class="bi bi-calendar"></i> Hạn nộp hồ sơ</dt>
+                    <dd class="col-sm-8">@Model.TinTuyenDung.HanTuyenDung.Value.ToString("dd/MM/yyyy")</dd>
+                    <dt class="col-sm-4"><i class="bi bi-cash"></i> Mức lương</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.MucLuongTD)</dd>
+                    <dt class="col-sm-4"><i class="bi bi-geo-alt-fill"></i> Địa điểm</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.DiaDiem_TTD)</dd>
+                    <dt class="col-sm-4"><i class="bi bi-calendar3-event-fill"></i> Yêu cầu kinh nghiệm</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.KinhNghiemLam)</dd>
+                </dl>
+            </div>
+
+            @if (Model.TinTuyenDung.XetDuyet != "Duyệt thành công" && Model.TinTuyenDung.XetDuyet != "Duyệt không thành công")
+            {
+        <div class="d-flex justify-content-left">
+            <button class="btn btn-icon btn-primary me-3" onclick="confirmAction('@Url.Action("ConfirmJob", new { id = Model.TinTuyenDung.Id_TTD })', 'Bạn có chắc chắn muốn duyệt tin này không?')">
+                <i class="fas fa-check"></i> Duyệt tin
+            </button>
+            <button class="btn btn-icon btn-danger me-3" onclick="confirmAction('@Url.Action("RejectJob", new { id = Model.TinTuyenDung.Id_TTD })', 'Bạn có chắc chắn muốn từ chối duyệt tin này không?')">
+                <i class="fas fa-times"></i> Từ chối duyệt tin
+            </button>
+        </div>            }
+
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-primary" style="min-height: 100px;">
+                <!-- Đặt kích thước cố định cho card -->
+                <div class="card-body">
+                    <h3 class="card-title text-right">Thông tin doanh nghiệp</h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="rounded-circle">
+                                <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(Model.DoanhNghiep.Logo_DN)" class="img-fluid" alt="Logo Doanh Nghiệp" />
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="company-info">
+                                <p class="card-text" style="font-size: smaller;"><strong>@Html.DisplayFor(model => model.DoanhNghiep.Ten_DN)</strong></p>
+                                <p class="card-text">Website: <a href="@Html.DisplayFor(model => model.DoanhNghiep.LinkWeb_DN)">@Html.DisplayFor(model => model.DoanhNghiep.LinkWeb_DN)</a></p>
+                                <p class="card-text"><i class="bi bi-geo-alt-fill"></i> @Html.DisplayFor(model => model.DoanhNghiep.DiaDiem_DN)</p>
+                                <a class="card-text" href="@Url.Action("DetailsCompany", "Admin", new { @id = Model.DoanhNghiep.Id_DN }, null)"><strong>Đến trang công ty</strong></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Mô tả công việc</h3>
+            <ul>
+                @{
+                    var lines = Model.TinTuyenDung.MoTa_TTD.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var line in lines)
+                    {
+                        string[] words = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        for (int i = 0; i < words.Length; i++)
+                        {
+                            if (words[i].Contains("Vị Trí:") || words[i].Contains("Liên hệ:") || words[i].Contains("Mô Tả Công Việc:") || words[i].Contains("Yêu Cầu:") || words[i].Contains("Quyền Lợi:"))
+                            {
+                                <strong>@words[i]</strong>
+                            }
+                            else
+                            {
+                                @words[i]
+                            }
+                            if (i < words.Length - 1)
+                            {
+                                <text> </text> <!-- Thêm khoảng trắng giữa các từ -->
+                            }
+                        }
+                        <br />
+                    }
+                }
+            </ul>
+
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: green;">Thông tin công việc</h5>
+                    <dl class="row">
+                        <dt class="col-7"><i class="bi bi-person-badge-fill"></i> Cấp bậc</dt>
+                        <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.CapBacTD)</dd>
+                        <dt class="col-7"><i class="bi bi-briefcase-fill"></i> Hình thức làm việc</dt>
+                        <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.HinhThucLamViec)</dd>
+                        <dt class="col-7"><i class="bi bi-gender-fill"></i> Giới tính</dt>
+                        <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.YeuCauGioiTinh)</dd>
+                        <dt class="col-7"><i class="bi bi-people-fill"></i> Số lượng</dt>
+                        <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.SoLuongTuyen)</dd>
+                        <dt class="col-7"><i class="bi bi-calendar3-event-fill"></i> Kinh nghiệm</dt>
+                        <dd class="col-5">@Html.DisplayFor(model => model.TinTuyenDung.KinhNghiemLam)</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function confirmAction(url, message) {
+        if (confirm(message)) {
+            window.location.href = url;
+        }
+    }
+</script>
