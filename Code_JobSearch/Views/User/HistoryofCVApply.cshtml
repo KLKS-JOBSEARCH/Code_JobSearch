@@ -16,55 +16,62 @@
         padding: 2px 4px;
         border-radius: 3px;
     }
+
+    .status-rejected {
+        background-color: red;
+        color: white;
+        padding: 2px 4px;
+        border-radius: 3px;
+    }
 </style>
+
 
 <div class="container mt-4">
     <h2 class="mb-4">Lịch sử ứng tuyển</h2>
 
     @if (!Model.Any())
     {
-        <p>Bạn chưa ứng tuyển công việc nào, <a href="@Url.Action("Index", "Home")" style="color:green">Ứng tuyển ngay</a></p>
-    }
-    else
-    {
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Tiêu đề công việc</th>
-                    <th scope="col">Thời gian ứng tuyển</th>
-                    <th scope="col">Tình trạng ứng tuyển</th>
-                    <th scope="col">File CV</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    foreach (var uv_ttd in item.UV_TTD)
-                    {
-                        var statusClass = uv_ttd.TinhTrangUngTuyen == "Đang xét duyệt" ? "status-pending" :
-                                          uv_ttd.TinhTrangUngTuyen == "Đậu" ? "status-approved" : "";
+<p>Bạn chưa ứng tuyển công việc nào, <a href="@Url.Action("Index", "Home")" style="color:green">Ứng tuyển ngay</a></p> }
+            else
+            {
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Tiêu đề công việc</th>
+            <th scope="col">Thời gian ứng tuyển</th>
+            <th scope="col">Tình trạng ứng tuyển</th>
+            <th scope="col">File CV</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            foreach (var uv_ttd in item.UV_TTD)
+            {
+                var statusClass = uv_ttd.TinhTrangUngTuyen == "Đang xét duyệt" ? "status-pending" :
+                                  uv_ttd.TinhTrangUngTuyen == "Đậu" ? "status-approved" :
+                                  uv_ttd.TinhTrangUngTuyen == "Rớt" ? "status-rejected" : "";
 
-                        <tr>
-                            <td>
-                                @Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailsJob", "Home", new { id = item.TinTuyenDung.Id_TTD }, null)
-                            </td>
-                            <td>@uv_ttd.ThoiGianUngTuyen.Value.ToString("dd/MM/yyyy")</td>
-                            <td><span class="@statusClass">@uv_ttd.TinhTrangUngTuyen</span></td>
-                            <td>
-                                <div class="btn-group" role="group" aria-label="File actions">
-                                    <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" download style="margin-right:20px" title="Tải xuống">
-                                        <i class="bi bi-download"></i>Tải xuống
-                                    </a>
-                                    <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" target="_blank" title="Xem">
-                                        Xem CV
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-    }
+                <tr>
+                    <td>
+                        @Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailsJob", "Home", new { id = item.TinTuyenDung.Id_TTD }, null)
+                    </td>
+                    <td>@uv_ttd.ThoiGianUngTuyen.Value.ToString("dd/MM/yyyy")</td>
+                    <td><span class="@statusClass">@uv_ttd.TinhTrangUngTuyen</span></td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="File actions">
+                            <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" download style="margin-right:20px" title="Tải xuống">
+                                <i class="bi bi-download"></i>Tải xuống
+                            </a>
+                            <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" target="_blank" title="Xem">
+                                Xem CV
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+               }
+        }
+    </tbody>
+</table>}
 </div>
