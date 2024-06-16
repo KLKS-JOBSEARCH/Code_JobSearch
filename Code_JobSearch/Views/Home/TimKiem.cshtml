@@ -2,8 +2,6 @@
 @{
     ViewBag.Title = "TimKiem";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    int startPage = Math.Max(1, ViewBag.Page - 2);
-    int endPage = Math.Min(ViewBag.NoOfPage, ViewBag.Page + 2);
 }
 
 <style>
@@ -84,7 +82,7 @@
         {
             foreach (var p in Model)
             {
-                <div class="col-lg-12 mb-4">
+                <div class="col-lg-4 col-md-6 mb-4">
                     <div class="card">
                         <div class="row no-gutters">
                             <div class="col-md-4">
@@ -138,54 +136,7 @@
             </div>
         }
     </div>
-
-    <!-- Phân trang -->
-    <ul class="pagination justify-content-center">
-        <li class="page-item">
-            @if (ViewBag.Page > 1)
-            {
-                <a class="page-link" href="/Home/TimKiem?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=1">
-                    &lt;&lt;
-                </a>
-            }
-        </li>
-        <li class="page-item">
-            @if (ViewBag.Page > 1)
-            {
-                <a class="page-link" href="/Home/TimKiem?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page - 1)">
-                    &lt;
-                </a>
-            }
-        </li>
-
-        @for (int i = startPage; i <= endPage; i++)
-        {
-            <li class="page-item @(i == ViewBag.Page ? "active" : "")">
-                <a class="page-link" href="/Home/TimKiem?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@i">
-                    @i
-                </a>
-            </li>
-        }
-
-        <li class="page-item">
-            @if (ViewBag.Page < ViewBag.NoOfPage)
-            {
-                <a class="page-link" href="/Home/TimKiem?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@(ViewBag.Page + 1)">
-                    &gt;
-                </a>
-            }
-        </li>
-        <li class="page-item">
-            @if (ViewBag.Page < ViewBag.NoOfPage)
-            {
-                <a class="page-link" href="/Home/TimKiem?SortColumn=@ViewBag.SortColumn&IconClass=@ViewBag.IconClass&page=@ViewBag.NoOfPage">
-                    &gt;&gt;
-                </a>
-            }
-        </li>
-    </ul>
 </div>
-
 
 <script>
     function submitSearch() {

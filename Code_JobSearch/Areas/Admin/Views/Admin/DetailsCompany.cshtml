@@ -4,7 +4,14 @@
     ViewBag.Title = "Thông tin chi tiết doanh nghiệp";
     Layout = "~/Areas/Admin/Views/Shared/admin.cshtml";
 }
-
+<style>
+    .dynamic-width th, .dynamic-width td {
+        white-space: nowrap;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
 <h3 class="card-title text-right" style="color:green">Thông tin doanh nghiệp</h3>
 <div class="col-md-4 mb-4">
     <div class="card border-primary" style="min-height: 100px; width:500px">

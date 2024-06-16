@@ -6,7 +6,14 @@
     int startPage = Math.Max(1, ViewBag.Page - 2);
     int endPage = Math.Min(ViewBag.NoOfPage, ViewBag.Page + 2);
 }
-
+<style>
+    .dynamic-width th, .dynamic-width td {
+        white-space: nowrap;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
 <div class="container mt-5">
     <h2 class="mb-4 text-success">Danh sách doanh nghiệp trên hệ thống JobStar</h2>
     <div class="table-responsive">

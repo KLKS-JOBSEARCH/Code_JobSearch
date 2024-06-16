@@ -2021,6 +2021,8 @@
     <Content Include="Areas\Admin\Views\Ungvien\UngvienDetails.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\DetailJobPortal.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\Feedback.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\postingfee.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\CreateFee.cshtml" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>

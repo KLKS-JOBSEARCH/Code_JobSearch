@@ -10,4 +10,5 @@ namespace Code_JobSearch.Models
         public TinTuyenDung TinTuyenDung { get; set; }
         public List<UV_TTD> UV_TTD { get; set; }
     }
+
 }

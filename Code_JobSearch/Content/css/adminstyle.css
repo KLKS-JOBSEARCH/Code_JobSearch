@@ -103,10 +103,42 @@
     margin-right: 5px;
 }
 
+/* Custom styling for btn-primary to make it green */
+.btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+    .btn-primary:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .btn-primary:focus, .btn-primary.focus {
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+    }
+
+    .btn-primary:disabled {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+    .show > .btn-primary.dropdown-toggle {
+        background-color: #1e7e34;
+        border-color: #1c7430;
+    }
+
+        .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
+        .show > .btn-primary.dropdown-toggle:focus {
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+        }
+
 /* Additional styling for the table to fit within the container */
 .table-responsive > .table {
     margin-bottom: 0;
 }
+
 .sub-menu {
     display: none;
     padding-left: 40px; /* Optional: for indentation */

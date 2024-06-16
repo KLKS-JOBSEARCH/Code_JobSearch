@@ -472,18 +472,19 @@ namespace Code_JobSearch.Controllers
 
             UngVien kh = Session["KH"] as UngVien;
 
-            var history = from uv_ttd in db.UV_TTDs
-                          join ttd in db.TinTuyenDungs on uv_ttd.Id_TTD equals ttd.Id_TTD
-                          where uv_ttd.Id_UV == kh.Id_UV
-                          select new HistoryOfCVApplyViewModel
-                          {
-                              TinTuyenDung = ttd,
-                              UV_TTD = db.UV_TTDs.Where(u => u.Id_TTD == uv_ttd.Id_TTD).ToList()
-                          };
+            var history = (from uv_ttd in db.UV_TTDs
+                           join ttd in db.TinTuyenDungs on uv_ttd.Id_TTD equals ttd.Id_TTD
+                           where uv_ttd.Id_UV == kh.Id_UV
+                           orderby uv_ttd.ThoiGianUngTuyen descending
+                           group uv_ttd by ttd into g
+                           select new HistoryOfCVApplyViewModel
+                           {
+                               TinTuyenDung = g.Key,
+                               UV_TTD = g.ToList()
+                           }).ToList();
 
-            return View(history.ToList());
+            return View(history);
         }
-
 
         #endregion
 

@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Code_JobSearch.Models.PhiTinTuyenDung>
+
+@{
+    ViewBag.Title = "Phí đăng tin";
+    Layout = "~/Areas/Admin/Views/Shared/admin.cshtml";
+}
+
+<style>
+    .dynamic-width th, .dynamic-width td {
+        white-space: nowrap;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .btn-custom {
+        margin: 10px 0;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-success">Phí đăng tin tuyển dụng</h2>
+    <div class="table-responsive">
+        <p>
+            @Html.ActionLink("Thêm phí đăng tin", "CreateFee", null, new { @class = "btn btn-primary btn-custom" })
+        </p>
+        @if (Model.Any())
+        {
+            <table class="table table-striped table-bordered mt-3 dynamic-width">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th style="width: 50%;">Giá phí đăng tin tuyển dụng</th>
+                        <th style="width: 30%;">Trạng thái</th>
+                        <th style="width: 20%;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="align-middle text-center">@String.Format("{0:0,0} VND", item.Gia_PTTD)</td>
+                            <td class="align-middle text-center">
+                                @Html.CheckBox("ApDungPhi", item.ApDungPhi.GetValueOrDefault(), new { disabled = "disabled" })
+                            </td>
+                            <td class="text-center align-middle">
+                                @using (Html.BeginForm("postingfee", "Admin", FormMethod.Post))
+                                {
+                                    @Html.Hidden("id", item.Id_PTTD)
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-success" onclick="return confirm('Lưu thay đổi?');">
+                                            <i class="fas fa-check"></i> Áp dụng
+                                        </button>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                Hiện không có phí đăng tin nào.
+            </div>
+        }
+    </div>
+</div>

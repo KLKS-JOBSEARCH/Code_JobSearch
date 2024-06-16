@@ -75,6 +75,7 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             return View(ungvien);
         }
 
+
         public ActionResult EmployerProfilePortal(int page = 1)
         {
             ViewBag.PendingJobCount = GetPendingJobCount();
@@ -98,6 +99,8 @@ namespace Code_JobSearch.Areas.Admin.Controllers
         }
 
 
+
+        #region Company
         public ActionResult CompanyPortal(int page = 1)
         {
             ViewBag.PendingJobCount = GetPendingJobCount();
@@ -150,7 +153,7 @@ namespace Code_JobSearch.Areas.Admin.Controllers
 
             return View(viewModel);
         }
-
+        #endregion
 
 
         #region JOBS PORTAL
@@ -312,6 +315,110 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             db.SubmitChanges();
             return RedirectToAction("JobPortalWait");
         }
+        #endregion
+
+        #region ApDungPhi
+        [HttpGet]
+        public ActionResult postingfee()
+        {
+            ViewBag.PendingJobCount = GetPendingJobCount();
+
+            if (Session["AD"] == null)
+            {
+                return RedirectToAction("Login", "Auth", new { area = "" });
+            }
+
+            TaiKhoan ac = Session["AD"] as TaiKhoan;
+
+            // Lấy danh sách các phí đăng tin và sắp xếp theo giá từ thấp nhất đến cao nhất
+            var fees = db.PhiTinTuyenDungs.OrderBy(f => f.Gia_PTTD).ToList();
+
+            return View(fees);
+        }
+
+
+        [HttpPost]
+        public ActionResult postingfee(int id)
+        {
+            // Lấy mục được chọn và đặt ApDungPhi = true
+            var selectedFee = db.PhiTinTuyenDungs.SingleOrDefault(p => p.Id_PTTD == id);
+            if (selectedFee != null)
+            {
+                selectedFee.ApDungPhi = true;
+
+                // Đặt ApDungPhi của tất cả các mục khác thành false
+                var otherFees = db.PhiTinTuyenDungs.Where(p => p.Id_PTTD != id).ToList();
+                foreach (var fee in otherFees)
+                {
+                    fee.ApDungPhi = false;
+                }
+
+                // Submit thay đổi vào cơ sở dữ liệu
+                db.SubmitChanges();
+            }
+
+            return RedirectToAction("postingfee");
+        }
+
+
+        public ActionResult CreateFee()
+        {
+            ViewBag.PendingJobCount = GetPendingJobCount();
+            if (Session["AD"] == null)
+            {
+                return RedirectToAction("Login", "Auth", new { area = "" });
+            }
+            TaiKhoan ac = Session["AD"] as TaiKhoan;
+            return View();
+        }
+
+        // POST: /Admin/CreateFee
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateFee(int? Gia_PTTD, bool? ApDungPhi)
+        {
+            if (Gia_PTTD == null)
+            {
+                ModelState.AddModelError("Gia_PTTD", "Vui lòng nhập giá phí đăng tin.");
+            }
+            else if (Gia_PTTD < 20000)
+            {
+                ModelState.AddModelError("Gia_PTTD", "Giá phí đăng tin phải lớn hơn 20,000.");
+            }
+            else if (db.PhiTinTuyenDungs.Any(f => f.Gia_PTTD == Gia_PTTD))
+            {
+                ModelState.AddModelError("Gia_PTTD", "Giá phí đăng tin này đã tồn tại.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Kiểm tra và cập nhật ApDungPhi
+                if (ApDungPhi == true)
+                {
+                    // Lấy ra tất cả các bản ghi trong bảng và đặt ApDungPhi về false
+                    var existingFees = db.PhiTinTuyenDungs.ToList();
+                    foreach (var fee in existingFees)
+                    {
+                        fee.ApDungPhi = false;
+                    }
+                }
+
+                // Tạo mới đối tượng PhiTinTuyenDung và thêm vào DB
+                var newFee = new PhiTinTuyenDung
+                {
+                    Gia_PTTD = Gia_PTTD.Value,
+                    ApDungPhi = ApDungPhi.GetValueOrDefault()
+                };
+
+                db.PhiTinTuyenDungs.InsertOnSubmit(newFee);
+                db.SubmitChanges();
+
+                return RedirectToAction("PostingFee", "Admin");
+            }
+
+            return View();
+        }
+
         #endregion
 
         public ActionResult Feedback(int page = 1)

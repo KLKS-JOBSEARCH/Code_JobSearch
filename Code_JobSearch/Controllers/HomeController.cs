@@ -259,6 +259,7 @@ namespace Code_JobSearch.Controllers
         public ActionResult TimKiem(string tenTTD, string thanhPho, string hinhThucLamViec, string capBac, int page = 1)
         {
             var dsTTD = from ttd in db.TinTuyenDungs
+                        where ttd.XetDuyet == "Duyệt thành công" && ttd.HanTuyenDung > DateTime.Now
                         select ttd;
 
             // Lọc theo tiêu đề và thành phố nếu có giá trị được nhập
@@ -278,13 +279,8 @@ namespace Code_JobSearch.Controllers
             {
                 dsTTD = dsTTD.Where(ttd => ttd.CapBacTD == capBac);
             }
-            // Phân trang
-            int NoOfRecordPerPage = 9;
-            int NoOfRecordSkip = (page - 1) * NoOfRecordPerPage;
-            List<TinTuyenDung> dsTTDPaged = dsTTD.Skip(NoOfRecordSkip).Take(NoOfRecordPerPage).ToList();
-            int NoOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(dsTTD.Count()) / Convert.ToDouble(NoOfRecordPerPage)));
-            ViewBag.Page = page;
-            ViewBag.NoOfPage = NoOfPages;
+
+            dsTTD = dsTTD.OrderByDescending(ttd => ttd.HanTuyenDung);
 
             // Danh sách các tỉnh thành để truyền vào dropdown
             var listOfCities = GetListOfCities();
@@ -296,7 +292,7 @@ namespace Code_JobSearch.Controllers
             var capbac = GetCapBac();
             ViewBag.Capbac = new SelectList(capbac);
 
-            return View("TimKiem", dsTTDPaged);
+            return View(dsTTD);
         }
 
 
