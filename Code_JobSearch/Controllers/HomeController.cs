@@ -41,8 +41,10 @@ namespace Code_JobSearch.Controllers
                                                 .Where(t => t.HanTuyenDung.HasValue
                                                             && t.HanTuyenDung > DateTime.Now
                                                             && t.XetDuyet == "Duyệt thành công")
-                                                .OrderByDescending(t => t.HanTuyenDung)
+                                                .OrderByDescending(t => t.TinhPhi_TTD)  // Sắp xếp giảm dần theo TinhPhi_TTD (true sẽ lên đầu)
+                                                .ThenByDescending(t => t.HanTuyenDung)  // Sau đó sắp xếp giảm dần theo HanTuyenDung
                                                 .ToList();
+
 
             // Thực hiện phân trang
             int NoOfRecordPerPage = 6;

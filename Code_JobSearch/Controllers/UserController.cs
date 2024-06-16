@@ -274,6 +274,12 @@ namespace Code_JobSearch.Controllers
         [HttpGet]
         public ActionResult GopY()
         {
+            if (Session["KH"] == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            UngVien kh = Session["KH"] as UngVien;
             return View();
         }
         [HttpPost]

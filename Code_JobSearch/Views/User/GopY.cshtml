@@ -45,11 +45,6 @@
         }
 </style>
 
-<script>
-    function showAlert() {
-        alert("Gửi góp ý thành công!");
-    }
-</script>
 
 <div class="container">
     <div class="row justify-content-center">
@@ -87,7 +82,7 @@
 
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <input type="submit" value="Gửi" class="btn btn-primary" />
+                                    <input type="submit" value="Gửi" class="btn btn-primary" onclick="return confirm('Bạn muốn gửi góp ý này?');"/>
                                 </div>
                             </div>
                         </div>

@@ -6,13 +6,13 @@
     int startPage = Math.Max(1, ViewBag.Page - 2);
     int endPage = Math.Min(ViewBag.NoOfPage, ViewBag.Page + 2);
 }
-
 <style>
     .card {
         border: 1px solid #ddd;
         border-radius: 10px;
         transition: transform 0.2s;
         margin-bottom: 20px;
+        overflow: hidden;
     }
 
         .card:hover {
@@ -20,16 +20,17 @@
         }
 
     .card-img-top {
-        width: 50%; /* Kích thước của hình ảnh là 50% của card */
-        height: auto;
+        width: 100%; /* Kích thước của hình ảnh là 100% của card */
+        height: 200px; /* Đặt chiều cao cố định cho hình ảnh (thay đổi theo nhu cầu của bạn) */
         overflow: hidden;
         display: flex;
-        justify-content: flex-start; /* Đặt hình ảnh ở giữa bên trái */
+        justify-content: center; /* Đặt hình ảnh ở giữa */
+        align-items: center; /* Đặt hình ảnh ở giữa */
     }
 
         .card-img-top img {
             width: 100%;
-            height: auto;
+            height: 100%;
             object-fit: cover;
         }
 
@@ -76,11 +77,11 @@
     }
 
         .carousel-item img {
-            width: auto; 
-            height: 100%; /
-            max-width: 100%; 
-            object-fit: cover; 
-            margin: 0 auto; 
+            width: auto;
+            height: 100%;
+            max-width: 100%;
+            object-fit: cover;
+            margin: 0 auto;
         }
 
     .card-text i {
@@ -92,7 +93,12 @@
         height: auto;
         margin-bottom: 10px;
     }
+
+    .border-success {
+        border-color: #28a745 !important;
+    }
 </style>
+
 
 
 <div class="container mt-4">
@@ -123,7 +129,6 @@
     </div>
     <!-- End of Slider -->
     <h1 class="text-center text-success mb-4">Các công việc đang được tuyển dụng tại JOBSTAR</h1>
-    <br />
     <div class="row">
         <div class="col-lg-8">
             <!-- Job Listings -->
@@ -132,11 +137,11 @@
                     @foreach (var p in Model)
                     {
                         <div class="col-lg-12 mb-4">
-                            <div class="card">
+                            <div class="card @(p.TinhPhi_TTD.GetValueOrDefault() ? "border-success" : "")">
                                 <div class="row no-gutters">
                                     <div class="col-md-4">
                                         <a href="@Url.Action("DetailsJob", "Home", new { id = p.Id_TTD })">
-                                            <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(p.Logo_DN_TTD)" alt="Logo" class="card-img">
+                                            <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(p.Logo_DN_TTD)" alt="Logo" class="card-img-top">
                                         </a>
                                     </div>
                                     <div class="col-md-8">
@@ -153,35 +158,29 @@
                                                     if (remainingHours > 24 * 7) // If more than 7 days
                                                     {
                                                         var remainingWeeks = Math.Floor(remainingHours / (24 * 7)); // Remaining weeks
-                                                        <text>Còn @remainingWeeks tuần</text>
-                                                    }
+                                                        <text>Còn @remainingWeeks tuần</text> }
                                                     else if (remainingHours > 24) // If more than 24 hours
                                                     {
                                                         var remainingDays = Math.Floor(remainingHours / 24); // Remaining days
-                                                        <text>Còn @remainingDays ngày</text>
-                                                    }
+                                                        <text>Còn @remainingDays ngày</text> }
                                                     else
                                                     {
-                                                        <text>Còn @remainingHours giờ</text>
-                                                    }
+                                                        <text>Còn @remainingHours giờ</text> }
                                                 }
                                                 else
                                                 {
-                                                    <text>Đã hết hạn</text>
-                                                }
+                                                    <text>Đã hết hạn</text>}
                                             </p>
                                             <p class="card-text"><i class="bi bi-geo-alt-fill"></i>@p.DiaDiem_TTD</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        </div>}
                 </div>
             </section>
             <!-- End of Job Listings -->
         </div>
-
 
 
 

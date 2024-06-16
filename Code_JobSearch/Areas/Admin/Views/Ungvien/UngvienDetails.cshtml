@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Code_JobSearch.Models.HistoryOfCVApplyViewModel>
 
 @{
-    ViewBag.Title = "UngvienDetails";
+    ViewBag.Title = "Lịch sử ứng tuyển ứng viên";
     Layout = "~/Areas/Admin/Views/Shared/admin.cshtml";
 }
 
@@ -30,7 +30,7 @@
                     {
                         <tr>
                             <td>
-                                @Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailsJob", "Home", new { id = item.TinTuyenDung.Id_TTD }, null)
+                                @Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailJobPortal", "Admin", new { id = item.TinTuyenDung.Id_TTD }, null)
                             </td>
                             <td>@uv_ttd.ThoiGianUngTuyen.Value.ToString("dd/MM/yyyy")</td>
                             <td>@uv_ttd.TinhTrangUngTuyen</td>
