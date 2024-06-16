@@ -401,11 +401,11 @@ namespace Code_JobSearch.Controllers
                 if (hoSo != null)
                 {
                     // Sao chép thông tin từ HoSoXinViec sang UV_TTD
-                    uv_ttd.DiaChiUV = hoSo.DiaChiUV;
-                    uv_ttd.HocVan = hoSo.HocVan;
-                    uv_ttd.KyNang = hoSo.KyNang;
-                    uv_ttd.DuAnThamGia = hoSo.DuAnThamGia;
-                    uv_ttd.MoTaBanThan = hoSo.MoTaBanThan;
+                    uv_ttd.DiaChiUV = string.IsNullOrEmpty(hoSo.DiaChiUV) ? "Không có thông tin" : hoSo.DiaChiUV;
+                    uv_ttd.HocVan = string.IsNullOrEmpty(hoSo.HocVan) ? "Không có thông tin" : hoSo.HocVan;
+                    uv_ttd.KyNang = string.IsNullOrEmpty(hoSo.KyNang) ? "Không có thông tin" : hoSo.KyNang;
+                    uv_ttd.DuAnThamGia = string.IsNullOrEmpty(hoSo.DuAnThamGia) ? "Không có thông tin" : hoSo.DuAnThamGia;
+                    uv_ttd.MoTaBanThan = string.IsNullOrEmpty(hoSo.MoTaBanThan) ? "Không có thông tin" : hoSo.MoTaBanThan;
                     uv_ttd.File_CV = hoSo.File_HSXV;
                 }
             }
@@ -438,11 +438,11 @@ namespace Code_JobSearch.Controllers
                     uv_ttd.File_CV = fileName;
 
                     // Lấy các thông tin nhập từ người dùng
-                    uv_ttd.DiaChiUV = model.DiaChiUV;
-                    uv_ttd.HocVan = model.HocVan;
-                    uv_ttd.KyNang = model.KyNang;
-                    uv_ttd.DuAnThamGia = model.DuAnThamGia;
-                    uv_ttd.MoTaBanThan = model.MoTaBanThan;
+                    uv_ttd.DiaChiUV = string.IsNullOrEmpty(model.DiaChiUV) ? "Không có thông tin" : model.DiaChiUV;
+                    uv_ttd.HocVan = string.IsNullOrEmpty(model.HocVan) ? "Không có thông tin" : model.HocVan;
+                    uv_ttd.KyNang = string.IsNullOrEmpty(model.KyNang) ? "Không có thông tin" : model.KyNang;
+                    uv_ttd.DuAnThamGia = string.IsNullOrEmpty(model.DuAnThamGia) ? "Không có thông tin" : model.DuAnThamGia;
+                    uv_ttd.MoTaBanThan = string.IsNullOrEmpty(model.MoTaBanThan) ? "Không có thông tin" : model.MoTaBanThan;
                 }
                 else // Nếu không có tệp được chọn
                 {

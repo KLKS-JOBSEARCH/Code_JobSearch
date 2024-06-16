@@ -3,6 +3,20 @@
     ViewBag.Title = "Lịch sử ứng tuyển";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .status-pending {
+        background-color: yellow;
+        padding: 2px 4px;
+        border-radius: 3px;
+    }
+
+    .status-approved {
+        background-color: green;
+        color: white;
+        padding: 2px 4px;
+        border-radius: 3px;
+    }
+</style>
 
 <div class="container mt-4">
     <h2 class="mb-4">Lịch sử ứng tuyển</h2>
@@ -27,12 +41,15 @@
                 {
                     foreach (var uv_ttd in item.UV_TTD)
                     {
+                        var statusClass = uv_ttd.TinhTrangUngTuyen == "Đang xét duyệt" ? "status-pending" :
+                                          uv_ttd.TinhTrangUngTuyen == "Đậu" ? "status-approved" : "";
+
                         <tr>
                             <td>
                                 @Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailsJob", "Home", new { id = item.TinTuyenDung.Id_TTD }, null)
                             </td>
                             <td>@uv_ttd.ThoiGianUngTuyen.Value.ToString("dd/MM/yyyy")</td>
-                            <td>@uv_ttd.TinhTrangUngTuyen</td>
+                            <td><span class="@statusClass">@uv_ttd.TinhTrangUngTuyen</span></td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="File actions">
                                     <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" download style="margin-right:20px" title="Tải xuống">
