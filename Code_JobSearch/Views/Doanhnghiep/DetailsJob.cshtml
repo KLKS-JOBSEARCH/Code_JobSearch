@@ -32,14 +32,32 @@
                 <!-- Đặt kích thước cố định cho card -->
                 <h3 class="card-title">@Html.DisplayFor(model => model.TinTuyenDung.TieuDe_TTD)</h3>
                 <dl class="row">
-                    <dt class="col-sm-4"><i class="bi bi-calendar"></i> Hạn nộp hồ sơ</dt>
-                    <dd class="col-sm-8">@Model.TinTuyenDung.HanTuyenDung.Value.ToString("dd/MM/yyyy")</dd>
+
+                    @if (Model.TinTuyenDung.ThoiGianDangTuyen.HasValue)
+                    {
+                        <dt class="col-sm-4"><i class="bi bi-calendar-check"></i> Thời gian đăng</dt>
+                        <dd class="col-sm-8">@Model.TinTuyenDung.ThoiGianDangTuyen.Value.ToString("dd/MM/yyyy")</dd>
+                        <dt class="col-sm-4"><i class="bi bi-calendar"></i> Hạn nộp hồ sơ</dt>
+                        <dd class="col-sm-8">@Model.TinTuyenDung.HanTuyenDung.Value.ToString("dd/MM/yyyy")</dd>
+                    }
                     <dt class="col-sm-4"><i class="bi bi-cash"></i> Mức lương</dt>
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.MucLuongTD)</dd>
                     <dt class="col-sm-4"><i class="bi bi-geo-alt-fill"></i> Địa điểm</dt>
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.DiaDiem_TTD)</dd>
                     <dt class="col-sm-4"><i class="bi bi-calendar3-event-fill"></i> Yêu cầu kinh nghiệm</dt>
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.TinTuyenDung.KinhNghiemLam)</dd>
+                    @if (Model.TinTuyenDung.ThoiGianDangTuyen.HasValue)
+                    {
+                        <dt class="col-sm-4"><i class="bi bi-cash"></i> Loại tin đăng</dt>
+                        if (Model.TinTuyenDung.Id_PTTD.HasValue)
+                        {
+                            <dd class="col-sm-8">Mất phí</dd>
+                        }
+                        else
+                        {
+                            <dd class="col-sm-8">Không mất phí</dd>
+                        }
+                    }
                     <dt class="col-sm-4"><i class="bi bi-info-square-fill"></i> Trạng thái</dt>
                     <dd class="col-sm-8">
 

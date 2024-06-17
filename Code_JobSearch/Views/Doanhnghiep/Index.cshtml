@@ -39,6 +39,21 @@
 
 <script>
     $(document).ready(function () {
+
+        var today = new Date();
+        var currentMonth = today.getMonth() + 1;
+        var currentYear = today.getFullYear();
+
+        $("#month").val(currentMonth);
+        $("#year").val(currentYear);
+
+        //// Sự kiện khi thay đổi dropdown "Chọn tháng" hoặc "Chọn năm"
+        //$("#month, #year").change(function () {
+        //    var selectedMonth = $("#month").val();
+        //    var selectedYear = $("#year").val();
+        //    filterChartData(selectedMonth, selectedYear);
+        //});
+
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(init);
 

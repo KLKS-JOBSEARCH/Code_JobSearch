@@ -19,7 +19,12 @@
         font-weight: bold;
     }
 
-    .status-accepted {
+    .status-rot {
+        color: red;
+        font-weight: bold;
+    }
+
+    .status-dau {
         color: lightseagreen;
         font-weight: bold;
     }
@@ -51,6 +56,8 @@
 </style>
 
 <div class="row">
+
+
     @if (Model != null && Model.Count > 0)
     {
         <div class="col-12">
@@ -77,17 +84,33 @@
                                     {
                                         <tr>
                                             <td style="text-align: center; vertical-align: middle;">@stt</td>
-                                            <td style="text-align: center; vertical-align: middle;">@uv.HoTenUV_TD</td>
+
+                                            <td style="text-align: center; vertical-align: middle;">
+                                                <a title="Xem CV" style="text-decoration: underline;
+                                                   cursor:pointer; color: darkblue;"
+                                                   target="_blank"
+                                                   href="@Url.Action("ViewFile_DSUV", new { id = uv.Id_UT })">
+                                                    @uv.HoTenUV_TD
+                                                </a>
+                                            </td>
                                             <td style="text-align: center; vertical-align: middle;">@uv.EmailUV_TD</td>
                                             <td style="text-align: center; vertical-align: middle;">@uv.SoDienThoaiUV_TD</td>
                                             <td style="text-align: center; vertical-align: middle;">
-                                                @if (uv.TinhTrangUngTuyen == "Đã ứng tuyển")
+                                                @if (uv.TinhTrangUngTuyen == "Đậu")
                                                 {
-                                                    <span class="status-pending">Đang xét duyệt</span>
+                                                    <span class="status-dau">@uv.TinhTrangUngTuyen</span>
                                                 }
                                                 else
                                                 {
-                                                    <span class="status-accepted">@uv.TinhTrangUngTuyen</span>
+                                                    if (uv.TinhTrangUngTuyen == "Rớt")
+                                                    {
+                                                        <span class="status-rot">@uv.TinhTrangUngTuyen</span>
+                                                    }
+                                                    else
+                                                    {
+
+                                                        <span class="status-pending">@uv.TinhTrangUngTuyen</span>
+                                                    }
                                                 }
                                             </td>
                                             <td style="text-align: center; vertical-align: middle;">
@@ -95,8 +118,11 @@
                                                     <button title="Xem chi tiết" class="btn btn-icon btn-primary me-3" onclick="window.location.href='@Url.Action("XemChiTiet", new { id = uv.Id_UT })'">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    <button title="Nhận ứng viên" class="btn btn-icon btn-primary  me-3" onclick="confirmAction('@Url.Action("UpdateTTUT", new { id = uv.Id_UT })')">
+                                                    <button title="Nhận ứng viên" class="btn btn-icon btn-primary  me-3" @*onclick="confirmAction_Dau('@Url.Action("UpdateTTUT_Dau", new { id = uv.Id_UT })')"*@ onclick="confirmAndOpenEmailModal(@uv.Id_UT, 'Đậu')">
                                                         <i class="bi bi-check-circle-fill"></i>
+                                                    </button>
+                                                    <button title="Không nhận ứng viên" class="btn btn-icon btn-primary  me-3" @*onclick="confirmAction_Rot('@Url.Action("UpdateTTUT_Rot", new { id = uv.Id_UT })')"*@ onclick="confirmAndOpenEmailModal(@uv.Id_UT, 'Rớt')">
+                                                        <i class="bi bi-x-circle-fill"></i>
                                                     </button>
                                                     <button title="Download hồ sơ" class="btn btn-icon btn-primary" onclick="window.location.href='@Url.Action("DownloadFile", new { fileName = uv.File_CV })'">
                                                         <i class="bi bi-download"></i>
@@ -169,16 +195,103 @@
     }
 
 </div>
+
+<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">Gửi thông báo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="emailForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="emailSubject" class="form-label">Tiêu đề</label>
+                        <input type="text" class="form-control" id="emailSubject" name="subject" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emailBody" class="form-label">Nội dung</label>
+                        <textarea class="form-control" id="emailBody" name="body" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emailFile" class="form-label">Tệp đính kèm</label>
+                        <input type="file" class="form-control" id="emailFile" name="file">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Gửi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 
     function changePageSize() {
     var pageSize = document.getElementById("pageSize").value;
     var url = '/DoanhNghiep/Listut/@idttd?page=1&pageSize=' + pageSize;
     window.location.assign(url);
-}
-    function confirmAction(url) {
-        if (confirm('Bạn có chắc chắn muốn nhận ứng viên này không?')) {
-            window.location.href = url;
+    }
+    function confirmAndOpenEmailModal(id, status) {
+        var message = status === 'Đậu' ? 'Bạn có chắc nhận ứng viên này không?' : 'Bạn có chắc không nhận ứng viên này không?';
+        if (confirm(message)) {
+            $.ajax({
+                url: '@Url.Action("Check_TTUV")',
+                type: 'GET',
+                data: { id: id },
+                success: function (response) {
+                    if (response.canProceed) {
+                        openEmailModal(id, status);
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error occurred while checking the status.');
+                }
+            });
         }
     }
+    //function validateEmailForm() {
+    //    var subject = document.getElementById("emailSubject").value;
+    //    var body = document.getElementById("emailBody").value;
+    //    if (subject.trim() === "" || body.trim() === "") {
+    //        alert("Vui lòng nhập đầy đủ các trường trong thông báo");
+    //        return false;
+    //    }
+    //    return true;
+    //}
+    function openEmailModal(id, status) {
+        $('#emailModal').modal('show');
+        $('#emailForm').off('submit').on('submit', function (e) {
+            e.preventDefault();
+            sendEmail(id, status);
+        });
+    }
+    function sendEmail(id, status) {
+    var formData = new FormData($('#emailForm')[0]);
+    formData.append('id', id);
+    formData.append('status', status);
+
+    $.ajax({
+        url: '@Url.Action("SendEmail")',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            if (response.success) {
+                alert('Email sent successfully!');
+                $('#emailModal').modal('hide');
+                $('#emailForm')[0].reset();
+                location.reload();
+            } else {
+                alert('Failed to send email.');
+            }
+        },
+        error: function () {
+            alert('Error occurred while sending email.');
+        }
+    });
+}
+
 </script>

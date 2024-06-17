@@ -254,7 +254,7 @@ namespace Code_JobSearch.Controllers
                         }
 
                         // Kiểm tra nếu tài khoản là admin
-                        TaiKhoan ad = db.TaiKhoans.SingleOrDefault(t => t.TenTK == tendn);
+                        TaiKhoan ad = db.TaiKhoans.SingleOrDefault(t => t.TenTK == tendn && t.TenTK == "admin");
                         if (ad != null)
                         {
                             ViewBag.TB = "Đăng nhập thành công!";

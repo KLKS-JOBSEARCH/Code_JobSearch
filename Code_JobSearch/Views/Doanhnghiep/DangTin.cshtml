@@ -2,7 +2,8 @@
 @{
     ViewBag.Title = "DangTin";
     Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
-    var formattedPhiTin = string.Format("{0:#,0} VND", ViewBag.PhiTin);
+    var phiTin = ViewBag.PhiTin != null ? ViewBag.PhiTin : ViewBag.PhiTin01;
+    var formattedPhiTin = phiTin != null ? string.Format("{0:#,0} VND", phiTin) : "N/A";
 }
 
 <h2>Đăng tin</h2>
@@ -18,13 +19,13 @@
     <div class="form-check">
         <!-- Hiển thị các radio button -->
         <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="phitin" value="0" checked>
+            <input type="radio" class="form-check-input" name="idphitin" value="0" checked>
             Đăng tin không phí
         </label>
     </div>
     <div class="form-check">
         <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="phitin" value="@ViewBag.IdPhiTin">
+            <input type="radio" class="form-check-input" name="idphitin" value="@ViewBag.IdPhiTin">
             Đăng tin với phí @formattedPhiTin
         </label>
     </div>

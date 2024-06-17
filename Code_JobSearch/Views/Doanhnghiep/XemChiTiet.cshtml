@@ -12,18 +12,26 @@
         <h5 class="card-title">Họ tên: @Model.HoTenUV_TD</h5>
         <p class="card-text">Email: @Model.EmailUV_TD</p>
         <p class="card-text">Số điện thoại: @Model.SoDienThoaiUV_TD</p>
+        <p class="card-text"> Trạng thái: @Model.TinhTrangUngTuyen </p>
         <p class="card-text">
-            Trạng thái:
-            @if (Model.TinhTrangUngTuyen == "Đã ứng tuyển")
-            {
-
-
-                @:Đang xét duyệt
-            }
-            else
-            {
-                @Model.TinhTrangUngTuyen
-            }
+            <label for="diaChi">Địa chỉ:</label>
+            <textarea id="diaChi" class="form-control" rows="10" readonly>@Model.DiaChiUV</textarea>
+        </p>
+        <p class="card-text">
+            <label for="hocVan">Thông tin học vấn:</label>
+            <textarea id="hocVan" class="form-control" rows="10" readonly>@Model.HocVan</textarea>
+        </p>
+        <p class="card-text">
+            <label for="kyNang">Thông tin kỹ năng:</label>
+            <textarea id="kyNang" class="form-control" rows="10" readonly>@Model.KyNang</textarea>
+        </p>
+        <p class="card-text">
+            <label for="duAn">Thông tin dự án tham gia:</label>
+            <textarea id="duAn" class="form-control" rows="10" readonly>@Model.DuAnThamGia</textarea>
+        </p>
+        <p class="card-text">
+            <label for="moTaBanThan">Thông tin khái quát ứng viên:</label>
+            <textarea id="moTaBanThan" class="form-control" rows="10" readonly>@Model.MoTaBanThan</textarea>
         </p>
         <p class="card-text">
             <label for="thuGioiThieu">Thư giới thiệu:</label>
@@ -37,4 +45,8 @@
 </div>
 
 <a href="@Url.Action("ListUT", new {id=Model.Id_TTD})" class="btn btn-primary mt-3">Quay lại danh sách</a>
+<script>
+
+
+</script>
 

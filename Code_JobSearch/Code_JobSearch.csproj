@@ -234,6 +234,9 @@
     <Compile Include="Models\HistoryOfCVApplyViewModel.cs" />
     <Compile Include="Models\HoSoXinViecViewModel.cs" />
     <Compile Include="Models\JobDetailsViewModel.cs" />
+    <Compile Include="Models\MoMoSecurity.cs" />
+    <Compile Include="Models\PaymentRequest.cs" />
+    <Compile Include="Models\Result.cs" />
     <Compile Include="Models\UngtuyenViewmodel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

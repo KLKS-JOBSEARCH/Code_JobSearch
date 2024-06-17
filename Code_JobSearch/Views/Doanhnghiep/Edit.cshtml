@@ -3,8 +3,14 @@
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
     var danhSachTP = ViewBag.DSThanhPho as List<string>;
+    var TGDT = ViewBag.TGDT as DateTime?;
 }
-
+<style>
+    .col-md-10 {
+        margin-top: 7px;
+        margin-bottom: 7px;
+    }
+</style>
 <h2>Cập nhật</h2>
 @using (Html.BeginForm())
 {
@@ -25,7 +31,24 @@
                     <span class="text-danger">@ViewData["Loi1"]</span>
                 }
             </div>
+            @if (Model.ThoiGianDangTuyen != null || TGDT != null)
+            {
+                <span>Ngày đăng</span>
+                <div class="col-md-10">
+                    <p>@(Model.ThoiGianDangTuyen != null ? Model.ThoiGianDangTuyen.Value.ToString("dd/MM/yyyy") : TGDT.Value.ToString("dd/MM/yyyy"))</p>
+                </div>
 
+                <span>Ngày hết hạn</span>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.HanTuyenDung, "{0:yyyy-MM-dd}", new { htmlAttributes = new { @class = "form-control", type = "date" } })
+
+                    @Html.ValidationMessageFor(model => model.HanTuyenDung, "", new { @class = "text-danger" })
+                    @if (ViewData["Loi2"] != null)
+                    {
+                        <span class="text-danger">@ViewData["Loi2"]</span>
+                    }
+                </div>
+            }
             <span>Mức lương tuyển</span>
             <div class="col-md-10">
                 @Html.EditorFor(model => model.MucLuongTD, new { htmlAttributes = new { @class = "form-control" } })
@@ -79,7 +102,7 @@
                     <p>Danh sách địa điểm không có hoặc bị rỗng.</p>
                 }
             </div>
-            <span>Mô tả</span> @*Thực hiện textarea*@
+            <span>Mô tả</span>
             <div class="col-md-10">
                 @Html.TextAreaFor(model => model.MoTa_TTD, new { @class = "form-control", rows = 5 })
                 @Html.ValidationMessageFor(model => model.MoTa_TTD, "", new { @class = "text-danger" })

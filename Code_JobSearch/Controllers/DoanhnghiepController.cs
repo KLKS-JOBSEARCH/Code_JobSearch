@@ -1,13 +1,17 @@
 ﻿using Code_JobSearch.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.WebPages;
+using static Code_JobSearch.Controllers.AuthController;
 using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace Code_JobSearch.Controllers
@@ -15,8 +19,28 @@ namespace Code_JobSearch.Controllers
     public class DoanhNghiepController : Controller
     {
         DatabaseDataContext db = new DatabaseDataContext();
-        // GET: DoanhNghiep
 
+
+        // Danh sách vị trí công tác
+        private List<string> danhSachViTriCongTac = new List<string>
+        {
+            "Nhân viên", "Phó phòng","Trưởng phòng", "Phó giám đốc", "Giám đốc", "Tổng giám đốc"
+        };
+
+        // Danh sách thành phố
+        private List<string> danhSachThanhPho = new List<string>
+        {
+            "Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Hải Phòng", "Cần Thơ", "Hải Dương", "Hưng Yên", "Bắc Ninh", "Hà Nam",
+            "Nam Định", "Ninh Bình", "Thái Bình", "Vĩnh Phúc", "Phú Thọ", "Bắc Giang", "Bắc Kạn", "Cao Bằng", "Hà Giang",
+            "Lạng Sơn", "Lào Cai", "Tuyên Quang", "Yên Bái", "Thái Nguyên", "Lai Châu", "Sơn La", "Điện Biên", "Hòa Bình",
+            "Quảng Ninh", "Bắc Ninh", "Hà Nam", "Ninh Bình", "Thanh Hóa", "Nghệ An", "Hà Tĩnh", "Quảng Bình", "Quảng Trị",
+            "Thừa Thiên Huế", "Quảng Nam", "Quảng Ngãi", "Bình Định", "Phú Yên", "Khánh Hòa", "Ninh Thuận", "Bình Thuận",
+            "Kon Tum", "Gia Lai", "Đắk Lắk", "Đắk Nông", "Lâm Đồng", "Bình Phước", "Bình Dương", "Đồng Nai", "Tây Ninh",
+            "Bà Rịa - Vũng Tàu", "Long An", "Tiền Giang", "Bến Tre", "Trà Vinh", "Vĩnh Long", "Đồng Tháp", "An Giang",
+            "Kiên Giang", "Cần Thơ", "Hậu Giang", "Sóc Trăng", "Bạc Liêu", "Cà Mau"
+        };
+
+        #region Màn hình chính
         public ActionResult Index()
         {
 
@@ -25,13 +49,7 @@ namespace Code_JobSearch.Controllers
         }
         public ActionResult FilterPosts(int? month, int? year)
         {
-            if (month == null || year == null)
-            {
-                // Nếu không có tháng hoặc năm được truyền vào, lấy tháng và năm hiện tại
-                var currentDate = DateTime.Now;
-                month = currentDate.Month;
-                year = currentDate.Year;
-            }
+
 
             var postCounts = db.TinTuyenDungs
                                 .Where(o => o.ThoiGianDangTuyen.Value.Month == month &&
@@ -47,7 +65,8 @@ namespace Code_JobSearch.Controllers
                                                 o.ThoiGianUngTuyen.Value.Year == year &&
                                                 o.TinhTrangUngTuyen == "Đã ứng tuyển"
                                                 || o.TinhTrangUngTuyen == "Đậu"
-                                                || o.TinhTrangUngTuyen == "Rớt")
+                                                || o.TinhTrangUngTuyen == "Rớt"
+                                                || o.TinhTrangUngTuyen == "Đang xét duyệt")
                                     .GroupBy(o => o.ThoiGianUngTuyen.Value.Day)
                                     .Select(g => new { day = g.Key, candidateCount = g.Count() })
                                     .OrderBy(x => x.day)
@@ -64,9 +83,35 @@ namespace Code_JobSearch.Controllers
 
             return Json(new { posts = postCounts, candidates = candidateCounts, passedCandidates = passedCandidateCounts }, JsonRequestBehavior.AllowGet);
         }
+        #endregion
 
+        #region Chi tiết tin tuyển dụng
+        public ActionResult DetailsJob(int id)
+        {
+            var viewModel = (from ttd in db.TinTuyenDungs
+                             join ntd in db.NhaTuyenDungs on ttd.Id_NTD equals ntd.Id_NTD
+                             join dn in db.DoanhNghieps on ntd.Id_DN equals dn.Id_DN
+                             where ttd.Id_TTD == id
+                             select new JobDetailsViewModel
+                             {
+                                 TinTuyenDung = ttd,
+                                 DoanhNghiep = dn,
+                                 NhaTuyenDung = ntd
+                             }).SingleOrDefault();
 
+            if (viewModel == null)
+            {
+                return HttpNotFound();
+            }
 
+            ViewBag.Title = "Thông tin tuyển dụng";
+            ViewBag.ProductName = viewModel.TinTuyenDung.TieuDe_TTD;
+            ViewBag.isDangTin = TempData["isDangTin"];
+            return View(viewModel);
+        }
+        #endregion
+
+        #region Danh sách tin tuyển dụng
         public ActionResult ListTTD(int? id, int page = 1, int pageSize = 5)
         {
             if (id.HasValue)
@@ -75,7 +120,7 @@ namespace Code_JobSearch.Controllers
 
                 var listttd = db.TinTuyenDungs
                                 .Where(o => o.Id_NTD == id)
-                                .OrderByDescending(o => o.ThoiGianDangTuyen)
+                                .OrderByDescending(o => o.Id_TTD)
                                 .ToList();
 
                 int totalItems = listttd.Count;
@@ -86,7 +131,7 @@ namespace Code_JobSearch.Controllers
                 ViewBag.TotalItems = totalItems;
                 ViewBag.Page = page;
                 ViewBag.PageSize = pageSize;
-                ViewBag.TotalPages = totalPages; // Add this line to pass the total number of pages to the view
+                ViewBag.TotalPages = totalPages;
                 ViewBag.isDel = TempData["isDel"];
                 ViewBag.isEdit = TempData["isEdit"];
 
@@ -98,7 +143,7 @@ namespace Code_JobSearch.Controllers
             }
         }
 
-
+        #endregion
 
         #region Góp ý
         [HttpGet]
@@ -161,7 +206,8 @@ namespace Code_JobSearch.Controllers
             }
         }
         #endregion
-        #region Doanh nghiệp info
+
+        #region Thông tin doanh nghiệp
         public ActionResult DoanhNghiepInfo(string id)
         {
 
@@ -179,17 +225,9 @@ namespace Code_JobSearch.Controllers
                 return RedirectToAction("Login_DoanhNghiep", "Auth");
             }
         }
-        private List<string> danhSachThanhPho = new List<string>
-        {
-            "Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Hải Phòng", "Cần Thơ", "Hải Dương", "Hưng Yên", "Bắc Ninh", "Hà Nam",
-            "Nam Định", "Ninh Bình", "Thái Bình", "Vĩnh Phúc", "Phú Thọ", "Bắc Giang", "Bắc Kạn", "Cao Bằng", "Hà Giang",
-            "Lạng Sơn", "Lào Cai", "Tuyên Quang", "Yên Bái", "Thái Nguyên", "Lai Châu", "Sơn La", "Điện Biên", "Hòa Bình",
-            "Quảng Ninh", "Bắc Ninh", "Hà Nam", "Ninh Bình", "Thanh Hóa", "Nghệ An", "Hà Tĩnh", "Quảng Bình", "Quảng Trị",
-            "Thừa Thiên Huế", "Quảng Nam", "Quảng Ngãi", "Bình Định", "Phú Yên", "Khánh Hòa", "Ninh Thuận", "Bình Thuận",
-            "Kon Tum", "Gia Lai", "Đắk Lắk", "Đắk Nông", "Lâm Đồng", "Bình Phước", "Bình Dương", "Đồng Nai", "Tây Ninh",
-            "Bà Rịa - Vũng Tàu", "Long An", "Tiền Giang", "Bến Tre", "Trà Vinh", "Vĩnh Long", "Đồng Tháp", "An Giang",
-            "Kiên Giang", "Cần Thơ", "Hậu Giang", "Sóc Trăng", "Bạc Liêu", "Cà Mau"
-        };
+        #endregion
+
+        #region Sửa thông tin doanh nghiệp
         [HttpGet]
         public ActionResult EditDN(int id)
         {
@@ -266,21 +304,12 @@ namespace Code_JobSearch.Controllers
                             ViewData["Loi2"] = "Mã số thuế không bỏ trống";
                             return View(emp);
                         }
-                        if (emp.MaSoThue_DN.All(char.IsDigit) || emp.MaSoThue_DN.Length > 10 || emp.MaSoThue_DN.Length < 10)
+                        if (!emp.MaSoThue_DN.All(char.IsDigit) || emp.MaSoThue_DN.Length > 10 || emp.MaSoThue_DN.Length < 10)
                         {
                             ViewData["Loi2"] = "Mã số thuế là 10 chữ số";
                             return View(emp);
                         }
-                        //if (string.IsNullOrEmpty(emp.LinkWeb_DN))
-                        //{
-                        //    ViewData["Loi3"] = "Website không bỏ trống";
-                        //    return View(emp);
-                        //}
-                        //if (string.IsNullOrEmpty(emp.MoTa_DN))
-                        //{
-                        //    ViewData["Loi4"] = "Mô tả không bỏ trống";
-                        //    return View(emp);
-                        //}
+
 
                         db.SubmitChanges();
 
@@ -297,47 +326,8 @@ namespace Code_JobSearch.Controllers
             return View(emp);
         }
         #endregion
-        //code update
-        #region NhaTuyenDung profile
-        public ActionResult ProfileNhaTuyenDung()
-        {
 
-            if (Session["NTD"] != null)
-            {
-                NhaTuyenDung ntd = Session["NTD"] as NhaTuyenDung;
-
-
-
-                // Truy vấn để lấy thông tin tài khoản của người dùng từ khóa ngoại
-                var taiKhoan = (from tk in db.TaiKhoans
-                                where tk.TenTK == ntd.TenTK
-                                select tk).FirstOrDefault();
-
-                if (taiKhoan != null)
-                {
-                    // Hiển thị thông tin tài khoản
-                    ViewBag.TenTaiKhoan = taiKhoan.TenTK;
-                    ViewBag.MatKhau = taiKhoan.MatKhau;
-                }
-                else
-                {
-                    // Xử lý trường hợp không tìm thấy thông tin tài khoản
-                    ViewBag.TenTaiKhoan = "Không có thông tin";
-                    ViewBag.MatKhau = "Không có thông tin";
-                }
-
-                return View(ntd);
-            }
-            else
-            {
-                return RedirectToAction("Login_DoanhNghiep", "Auth");
-            }
-        }
-        private List<string> danhSachViTriCongTac = new List<string>
-        {
-            "Nhân viên", "Phó phòng","Trưởng phòng", "Phó giám đốc", "Giám đốc", "Tổng giám đốc"
-        };
-
+        #region Sửa thông tin nhà tuyển dụng
         [HttpGet]
         public ActionResult EditNTD(int id)
         {
@@ -358,6 +348,7 @@ namespace Code_JobSearch.Controllers
             {
                 try
                 {
+                    var validPrefixes = new List<string> { "09", "03", "07", "08", "05" };
                     using (DatabaseDataContext db = new DatabaseDataContext())
                     {
                         // Lấy thông tin người dùng cần chỉnh sửa từ cơ sở dữ liệu
@@ -372,11 +363,17 @@ namespace Code_JobSearch.Controllers
                             ViewData["Loi_SDTNTD"] = "Số điện thoại không bỏ trống";
                             return View(emp);
                         }
-                        if (!emp.SoDienThoai_NTD.All(char.IsDigit) || emp.SoDienThoai_NTD.Length < 10 || emp.SoDienThoai_NTD.Length > 10)
+                        if (!emp.SoDienThoai_NTD.All(char.IsDigit) || emp.SoDienThoai_NTD.Length != 10)
                         {
                             ViewData["Loi_SDTNTD"] = "Số điện thoại gồm 10 chữ số";
                             return View(emp);
                         }
+                        if (!validPrefixes.Any(prefix => emp.SoDienThoai_NTD.StartsWith(prefix)))
+                        {
+                            ViewData["Loi_SDTNTD"] = "Số điện thoại không hợp lệ";
+                            return View(emp);
+                        }
+
                         // Cập nhật thông tin từ form chỉnh sửa
                         ntds.HoTen_NTD = emp.HoTen_NTD;
                         ntds.Email_NTD = emp.Email_NTD;
@@ -434,32 +431,50 @@ namespace Code_JobSearch.Controllers
             }
             return View(emp);
         }
-        public ActionResult DetailsJob(int id)
-        {
-            var viewModel = (from ttd in db.TinTuyenDungs
-                             join ntd in db.NhaTuyenDungs on ttd.Id_NTD equals ntd.Id_NTD
-                             join dn in db.DoanhNghieps on ntd.Id_DN equals dn.Id_DN
-                             where ttd.Id_TTD == id
-                             select new JobDetailsViewModel
-                             {
-                                 TinTuyenDung = ttd,
-                                 DoanhNghiep = dn,
-                                 NhaTuyenDung = ntd
-                             }).SingleOrDefault();
-
-            if (viewModel == null)
-            {
-                return HttpNotFound();
-            }
-
-            ViewBag.Title = "Thông tin tuyển dụng";
-            ViewBag.ProductName = viewModel.TinTuyenDung.TieuDe_TTD;
-            ViewBag.isDangTin = TempData["isDangTin"];
-            return View(viewModel);
-        }
         #endregion
-        //--------------------
-        #region #region CREATE, EDIT, DELETE
+
+        #region Xem thông tin nhà tuyển dụng
+        public ActionResult ProfileNhaTuyenDung()
+        {
+
+            if (Session["NTD"] != null)
+            {
+                NhaTuyenDung ntd = Session["NTD"] as NhaTuyenDung;
+
+
+
+                // Truy vấn để lấy thông tin tài khoản của người dùng từ khóa ngoại
+                var taiKhoan = (from tk in db.TaiKhoans
+                                where tk.TenTK == ntd.TenTK
+                                select tk).FirstOrDefault();
+
+                if (taiKhoan != null)
+                {
+                    // Hiển thị thông tin tài khoản
+                    ViewBag.TenTaiKhoan = taiKhoan.TenTK;
+                    ViewBag.MatKhau = taiKhoan.MatKhau;
+                }
+                else
+                {
+                    // Xử lý trường hợp không tìm thấy thông tin tài khoản
+                    ViewBag.TenTaiKhoan = "Không có thông tin";
+                    ViewBag.MatKhau = "Không có thông tin";
+                }
+
+                return View(ntd);
+            }
+            else
+            {
+                return RedirectToAction("Login_DoanhNghiep", "Auth");
+            }
+        }
+
+
+
+
+        #endregion
+
+        #region Thêm tin tuyển dụng
         public ActionResult Create()
         {
 
@@ -516,6 +531,7 @@ namespace Code_JobSearch.Controllers
                     ViewBag.ErrorLogo = "Logo doanh nghiệp chưa có, vui lòng vào thông tin doanh nghiệp để cập nhật";
                     return View();
                 }
+
                 ttd.Logo_DN_TTD = logoDN;
                 db.TinTuyenDungs.InsertOnSubmit(ttd);
                 db.SubmitChanges();
@@ -525,6 +541,9 @@ namespace Code_JobSearch.Controllers
 
             return View(ttd);
         }
+        #endregion
+
+        #region Sửa tin tuyển dụng
         [HttpGet]
         public ActionResult Edit(int id)
         {
@@ -536,9 +555,9 @@ namespace Code_JobSearch.Controllers
             {
                 return HttpNotFound();
             }
-            if (tinTuyenDung.XetDuyet == "Duyệt thành công")
+            if (tinTuyenDung.XetDuyet != "Đang xét duyệt")
             {
-                TempData["isEdit"] = "Không thể sửa do công việc đã duyệt thành công";
+                TempData["isEdit"] = "Không thể sửa do công việc đã được duyệt";
                 return RedirectToAction("ListTTD", new { id = idnts.ToString() });
             }
             var logoDN = (from ttdung in db.TinTuyenDungs
@@ -548,7 +567,7 @@ namespace Code_JobSearch.Controllers
                           select dn.Logo_DN).FirstOrDefault();
 
             ViewBag.LogoDN = logoDN;
-
+            TempData["isEdit"] = null;
             return View(tinTuyenDung);
         }
 
@@ -571,7 +590,21 @@ namespace Code_JobSearch.Controllers
                     ViewData["Loi1"] = "Tiêu đề không bỏ trống";
                     return View(ttd);
                 }
-
+                var thoigiandang = db.TinTuyenDungs.FirstOrDefault(o => o.Id_TTD == id).ThoiGianDangTuyen;
+                ViewBag.TGDT = thoigiandang;
+                if (thoigiandang.HasValue)
+                {
+                    if (ttd.HanTuyenDung == null)
+                    {
+                        ViewData["Loi2"] = "Hạn tuyển dụng không bỏ trống";
+                        return View(ttd);
+                    }
+                    if (ttd.HanTuyenDung.Value.Date.CompareTo(thoigiandang.Value.Date.AddDays(8)) > 0)
+                    {
+                        ViewData["Loi2"] = "Hạn tuyển dụng cách ngày đăng ít nhất 8 ngày";
+                        return View(ttd);
+                    }
+                }
                 if (string.IsNullOrEmpty(ttd.MucLuongTD))
                 {
                     ViewData["Loi3"] = "Mức lương không bỏ trống";
@@ -608,7 +641,10 @@ namespace Code_JobSearch.Controllers
                 }
                 ttds.TieuDe_TTD = ttd.TieuDe_TTD;
 
-
+                if (ttd.ThoiGianDangTuyen.HasValue)
+                {
+                    ttds.HanTuyenDung = ttd.HanTuyenDung;
+                }
                 ttds.MucLuongTD = ttd.MucLuongTD;
                 ttds.YeuCauGioiTinh = ttd.YeuCauGioiTinh;
                 ttds.CapBacTD = ttd.CapBacTD;
@@ -625,7 +661,9 @@ namespace Code_JobSearch.Controllers
 
             return View(ttd);
         }
+        #endregion
 
+        #region Xóa tin tuyển dụng
         public ActionResult Delete(int id)
         {
             var tinTuyenDung = db.TinTuyenDungs.SingleOrDefault(t => t.Id_TTD == id);
@@ -649,42 +687,117 @@ namespace Code_JobSearch.Controllers
 
             db.TinTuyenDungs.DeleteOnSubmit(tinTuyenDung);
             db.SubmitChanges();
-
+            TempData["isDel"] = null;
             return RedirectToAction("ListTTD", new { id = idnts.ToString() });
+        }
+        #endregion
+
+        #region Kiểm tra trạng thái ứng viên
+        public JsonResult Check_TTUV(int id)
+        {
+            UV_TTD uvs = db.UV_TTDs.Single(o => o.Id_UT == id);
+            bool canProceed = uvs.TinhTrangUngTuyen == "Đã ứng tuyển" || uvs.TinhTrangUngTuyen == "Đang xét duyệt";
+            return Json(new { canProceed = canProceed, message = canProceed ? "" : "Trạng thái ứng tuyển đã được xét" }, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
+
+        #region Gửi thông báo cho ứng viên
+        public static bool SendMessageDau_Rot(string email, string tieudeTin, string dn, string title, string text, string status, string filePath)
+        {
+            try
+            {
+                var client = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587,
+                    Credentials = new NetworkCredential("jobstarvn@gmail.com", "jxtt juxf gbqy nbdp"),
+                    EnableSsl = true,
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress("jobstarvn@gmail.com"),
+                    Subject = title,
+                    Body = $@"<html>
+                <head>
+                    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css' rel='stylesheet'>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='content'>
+                            <h3>Thân gửi bạn! Đây là thông báo {status} ứng tuyển</h3>
+                            <h4>Tin ứng tuyển: {tieudeTin}</h4>
+                            <h4>Doanh nghiệp: {dn}<h4>
+                            <h4>Nội dung</h4>
+                            <p>{text}</p>
+                        </div>
+                    </div>
+                </body>
+            </html>",
+                    IsBodyHtml = true,
+                };
+
+                mailMessage.To.Add(email);
+
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    mailMessage.Attachments.Add(new Attachment(filePath));
+                }
+
+                client.Send(mailMessage);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        [HttpPost]
+        public ActionResult SendEmail(int id, string subject, string body, string status, HttpPostedFileBase file)
+        {
+            try
+            {
+
+                string filePath = null;
+                if (file != null && file.ContentLength > 0)
+                {
+                    var fileName = Path.GetFileName(file.FileName);
+                    var path = Path.Combine(Server.MapPath("~/Content/CvUser/"), fileName);
+                    file.SaveAs(path);
+                    filePath = path;
+                }
+                var ut = db.UV_TTDs.FirstOrDefault(o => o.Id_UT.Equals(id));
+                string tieudeTTD = db.TinTuyenDungs.FirstOrDefault(o => o.Id_TTD.Equals(ut.Id_TTD)).TieuDe_TTD;
+                var idntd = db.TinTuyenDungs.FirstOrDefault(o => o.Id_TTD.Equals(ut.Id_TTD)).Id_NTD;
+                var iddn = db.NhaTuyenDungs.FirstOrDefault(o => o.Id_NTD.Equals(idntd)).Id_DN;
+                string tendn = db.DoanhNghieps.FirstOrDefault(o => o.Id_DN.Equals(iddn)).Ten_DN;
+
+                bool isSent = SendMessageDau_Rot(ut.EmailUV_TD, tieudeTTD, tendn, subject, body, status, filePath);
+
+                if (isSent)
+                {
+                    UV_TTD uvs = db.UV_TTDs.Single(o => o.Id_UT == id);
+                    if (uvs.TinhTrangUngTuyen == "Đã ứng tuyển" || uvs.TinhTrangUngTuyen == "Đang xét duyệt")
+                    {
+                        uvs.TinhTrangUngTuyen = status;
+                        db.SubmitChanges();
+                        //return RedirectToAction("ListUT", new { id = uvs.Id_TTD });
+                    }
+                }
+                return Json(new { success = isSent });
+
+
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
         }
 
 
         #endregion
-        #region list ứng tuyển
-        public ActionResult ListUT(int id, int page = 1, int pageSize = 5)
-        {
-            var uvs = db.UV_TTDs.Where(u => u.Id_TTD == id)
-                                 .OrderByDescending(u => u.Id_UT)
-                                 .Skip((page - 1) * pageSize)
-                                 .Take(pageSize)
-                                 .ToList();
 
-            int totalItems = db.UV_TTDs.Count(u => u.Id_TTD == id);
-            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-            ViewBag.TotalItems = totalItems;
-            ViewBag.Page = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalPages = totalPages;
-            ViewBag.IdTTD = id;
-
-            return View(uvs);
-        }
-
-        public ActionResult UpdateTTUT(int id)
-        {
-            UV_TTD uvs = db.UV_TTDs.Single(o => o.Id_UT == id);
-
-            uvs.TinhTrangUngTuyen = "Đậu";
-            db.SubmitChanges();
-            return RedirectToAction("ListUT", new { id = uvs.Id_TTD });
-        }
-
+        #region Chi tiết ứng viên ứng tuyển
         public ActionResult XemChiTiet(int id)
         {
             var uvttd = db.UV_TTDs.SingleOrDefault(o => o.Id_UT == id);
@@ -696,6 +809,9 @@ namespace Code_JobSearch.Controllers
             return View(uvttd);
 
         }
+        #endregion
+
+        #region Tải file CV của ứng viên
         public ActionResult DownloadFile(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -714,6 +830,9 @@ namespace Code_JobSearch.Controllers
             string fileType = MimeMapping.GetMimeMapping(filePath);
             return File(fileBytes, fileType, fileName);
         }
+        #endregion
+
+        #region Xem CV ứng viên trên website
         public ActionResult ViewFile(string fileName)
         {
             string filePath = Path.Combine(Server.MapPath("~/Content/CvUser/"), fileName);
@@ -724,6 +843,120 @@ namespace Code_JobSearch.Controllers
             }
 
             return File(filePath, "application/pdf");
+        }
+        #endregion
+
+        #region Xem CV ứng viên bên danh sách ứng tuyển
+        public ActionResult ViewFile_DSUV(int id)
+        {
+            var ut = db.UV_TTDs.SingleOrDefault(o => o.Id_UT == id);
+            string fileName = ut.File_CV;
+            string filePath = Path.Combine(Server.MapPath("~/Content/CvUser/"), fileName);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return HttpNotFound();
+            }
+
+            return File(filePath, "application/pdf");
+        }
+        #endregion
+
+        #region Danh sách ứng viên ứng tuyển
+        public ActionResult ListUT(int id, int page = 1, int pageSize = 5)
+        {
+            var uvs = db.UV_TTDs.Where(u => u.Id_TTD == id)
+                                 .OrderByDescending(u => u.Id_UT)
+                                 .Skip((page - 1) * pageSize)
+                                 .Take(pageSize)
+                                 .ToList();
+
+            int totalItems = db.UV_TTDs.Count(u => u.Id_TTD == id);
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            ViewBag.TotalItems = totalItems;
+            ViewBag.Page = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.IdTTD = id;
+            return View(uvs);
+        }
+        #endregion
+
+        #region Thanh toán MoMo
+        public ActionResult Payment(string giatien)
+        {
+            //request params need to request to MoMo system
+            string endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor";
+            string partnerCode = "MOMOOJOI20210710";
+            string accessKey = "iPXneGmrJH0G8FOP";
+            string serectkey = "sFcbSGRSJjwGxwhhcEktCHWYUuTuPNDB";
+            string orderInfo = "Thanh toán JobStar";
+            string returnUrl = "https://localhost:44354/DoanhNghiep/ListTTD/7?page=1&pageSize=5";
+            string notifyurl = "https://4c8d-2001-ee0-5045-50-58c1-b2ec-3123-740d.ap.ngrok.io/DoanhNghiep/SavePayment"; //lưu ý: notifyurl không được sử dụng localhost, có thể sử dụng ngrok để public localhost trong quá trình test
+
+            string amount = giatien;
+            string orderid = DateTime.Now.Ticks.ToString(); //mã đơn hàng
+            string requestId = DateTime.Now.Ticks.ToString();
+            string extraData = "";
+
+            //Before sign HMAC SHA256 signature
+            string rawHash = "partnerCode=" +
+                partnerCode + "&accessKey=" +
+                accessKey + "&requestId=" +
+                requestId + "&amount=" +
+                amount + "&orderId=" +
+                orderid + "&orderInfo=" +
+                orderInfo + "&returnUrl=" +
+                returnUrl + "&notifyUrl=" +
+                notifyurl + "&extraData=" +
+                extraData;
+
+            MoMoSecurity crypto = new MoMoSecurity();
+            //sign signature SHA256
+            string signature = crypto.signSHA256(rawHash, serectkey);
+
+            //build body json request
+            JObject message = new JObject
+            {
+                { "partnerCode", partnerCode },
+                { "accessKey", accessKey },
+                { "requestId", requestId },
+                { "amount", amount },
+                { "orderId", orderid },
+                { "orderInfo", orderInfo },
+                { "returnUrl", returnUrl },
+                { "notifyUrl", notifyurl },
+                { "extraData", extraData },
+                { "requestType", "captureMoMoWallet" },
+                { "signature", signature }
+
+            };
+
+            string responseFromMomo = PaymentRequest.sendPaymentRequest(endpoint, message.ToString());
+
+            JObject jmessage = JObject.Parse(responseFromMomo);
+
+            return Redirect(jmessage.GetValue("payUrl").ToString());
+        }
+
+        //Khi thanh toán xong ở cổng thanh toán Momo, Momo sẽ trả về một số thông tin, trong đó có errorCode để check thông tin thanh toán
+        //errorCode = 0 : thanh toán thành công (Request.QueryString["errorCode"])
+        //Tham khảo bảng mã lỗi tại: https://developers.momo.vn/#/docs/aio/?id=b%e1%ba%a3ng-m%c3%a3-l%e1%bb%97i
+        public ActionResult ConfirmPaymentClient(Result result)
+        {
+            //lấy kết quả Momo trả về và hiển thị thông báo cho người dùng (có thể lấy dữ liệu ở đây cập nhật xuống db)
+            string rMessage = result.message;
+            string rOrderId = result.orderId;
+            string rErrorCode = result.errorCode; // = 0: thanh toán thành công
+            return View();
+        }
+
+        [HttpPost]
+        public void SavePayment(int id)
+        {
+            //cập nhật dữ liệu vào db
+            String a = "";
         }
         #endregion
 
@@ -746,23 +979,24 @@ namespace Code_JobSearch.Controllers
             return View(ttd);
         }
         [HttpPost]
-        public ActionResult DangTin(int idttd, int phitin, DateTime? htd)
+        public ActionResult DangTin(int idttd, int idphitin, DateTime? htd)
         {
             var ttd = db.TinTuyenDungs.SingleOrDefault(o => o.Id_TTD == idttd);
-            ViewBag.PhiTin = db.PhiTinTuyenDungs.SingleOrDefault(o => o.Id_PTTD == phitin)?.Gia_PTTD;
+            var phitin = db.PhiTinTuyenDungs.SingleOrDefault(o => o.ApDungPhi == true);
+            ViewBag.PhiTin01 = phitin.Gia_PTTD;
             if (!htd.HasValue)
             {
                 ViewData["LoiHTD"] = "Hạn tuyển dụng bắt buộc nhập";
-                return View();
+                return View(ttd);
             }
             if (ttd.TrangThaiDang == false)
             {
-                if (htd < DateTime.Now.Date.AddDays(10))
+                if (htd.Value.Date < DateTime.Now.Date.AddDays(8))
                 {
-                    ViewData["LoiHTD"] = "Hạn tuyển dụng cần ít nhất 10 ngày";
-                    return View();
+                    ViewData["LoiHTD"] = "Hạn tuyển dụng cần ít nhất 8 ngày";
+                    return View(ttd);
                 }
-                if (phitin == 0)
+                if (idphitin == 0)
                 {
                     ttd.TrangThaiDang = true;
                     ttd.ThoiGianDangTuyen = DateTime.Now;
@@ -770,10 +1004,12 @@ namespace Code_JobSearch.Controllers
                 }
                 else
                 {
-                    ttd.Id_PTTD = phitin;
-                    ttd.TrangThaiDang = true;
-                    ttd.ThoiGianDangTuyen = DateTime.Now;
-                    ttd.HanTuyenDung = htd;
+                    string gt = phitin.Gia_PTTD.ToString();
+                    return RedirectToAction("Payment", new { giatien = gt });
+                    //ttd.Id_PTTD = idphitin;
+                    //ttd.TrangThaiDang = true;
+                    //ttd.ThoiGianDangTuyen = DateTime.Now;
+                    //ttd.HanTuyenDung = htd;
 
                 }
                 db.SubmitChanges();
@@ -781,7 +1017,7 @@ namespace Code_JobSearch.Controllers
             else
             {
                 ViewBag.LoiDangTin = "Tin tuyển dụng đã đăng";
-                return View();
+                return View(ttd);
             }
             return RedirectToAction("ListTTD", new { id = ttd.Id_NTD, page = 1, pageSize = 5 });
         }

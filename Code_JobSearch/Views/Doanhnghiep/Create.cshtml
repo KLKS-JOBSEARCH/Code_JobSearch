@@ -4,7 +4,12 @@
     Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
     var danhSachTP = ViewBag.DSThanhPho as List<string>;
 }
-
+<style>
+    .col-md-10 {
+        margin-top: 7px;
+        margin-bottom: 7px;
+    }
+</style>
 <h2>Thêm mới</h2>
 @using (Html.BeginForm())
 {
@@ -18,7 +23,7 @@
         <div class="form-group">
             <span>Tiêu đề</span>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.TieuDe_TTD, "{0:yyyy-MM-dd}", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.TieuDe_TTD, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.TieuDe_TTD, "", new { @class = "text-danger" })
                 @if (ViewData["Loi1"] != null)
                 {
@@ -93,6 +98,8 @@
                     <span class="text-danger">@ViewData["Loi6"]</span>
                 }
             </div>
+
+
             @if (ViewBag.Error != null)
             {
                 <div class="alert alert-danger" role="alert">
@@ -110,4 +117,5 @@
         </div>
     </div>
 }
+
 
