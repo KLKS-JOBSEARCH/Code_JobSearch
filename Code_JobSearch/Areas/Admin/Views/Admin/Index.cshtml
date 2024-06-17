@@ -3,15 +3,18 @@
     Layout = "~/Areas/Admin/Views/Shared/admin.cshtml";
     string today = DateTime.Now.ToString("yyyy-MM-dd");
 }
-
-<h2 class="text-center mt-5 mb-4">Chào mừng đến Với trang quản trị!</h2>
+<header>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</header>
+<h2 class="text-center mt-5 mb-4">Chào mừng đến với trang quản trị!</h2>
 <p style="text-align:center;">Dưới đây là thống kê số lượng ứng viên, nhà tuyển dụng và bài viết có trên hệ thống</p>
 <div class="container">
     <div class="row">
         <div class="col-md-3">
             <div class="card">
                 <div class="card-header bg-dark">
-                    <h3 class="card-title">Lọc số lượng tin đăng tuyển</h3>
+                    <h3 class="card-title">Lọc tin đăng tuyển còn hoạt động</h3>
                 </div>
                 <div class="card-body">
                     @using (Html.BeginForm("Index", "Admin", FormMethod.Get, new { @id = "filterForm", @class = "form-inline" }))
@@ -30,43 +33,70 @@
         </div>
         <div class="col-md-9">
             <div class="row">
-                <div class="col-md-3">
-                    <div class="card bg-primary text-white fixed-height">
+                <div class="col-md-4">
+                    <div class="card bg-success text-white fixed-height">
                         <div class="card-header">
                             <h3 class="card-title">Ứng viên</h3>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body d-flex justify-content-center align-items-center">
                             <h4 class="card-text">@ViewBag.SoLuongUngVien</h4>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card bg-success text-white fixed-height">
                         <div class="card-header">
                             <h3 class="card-title">Nhà tuyển dụng</h3>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body d-flex justify-content-center align-items-center">
                             <h4 class="card-text">@ViewBag.SoLuongNhaTuyenDung</h4>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card bg-info text-white fixed-height">
+                <div class="col-md-4">
+                    <div class="card bg-success text-white fixed-height">
                         <div class="card-header">
-                            <h3 class="card-title">tin tuyển dụng</h3>
+                            <h3 class="card-title">Tin tuyển dụng</h3>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body d-flex justify-content-center align-items-center">
                             <h4 class="card-text">@ViewBag.SoLuongBaiViet</h4>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card bg-warning text-white fixed-height">
-                        <div class="card-header">
-                            <h3 class="card-title">Hến hạn tuyển</h3>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success">
+                    <h2 class="card-title text-white text-center mb-4">Biểu đồ tin tuyển dụng đã đăng</h2>
+                </div>
+                <div class="card-body">
+                    <div id="chartContainer" class="chart-container" style="height: 370px;"></div>
+                    <div class="row mb-3" id="filterForm">
+                        <div class="col d-flex align-items-center">
+                            <label for="month" class="mr-2">Chọn tháng:</label>
+                            <select id="month" name="month" class="form-control mr-1">
+                                @for (int i = 1; i <= 12; i++)
+                                {
+                                    <option value="@i">Tháng @i</option>
+                                }
+                            </select>
                         </div>
-                        <div class="card-body">
-                            <h4 class="card-text">@ViewBag.SoLuongTinHetHan</h4>
+                        <div class="col d-flex align-items-center">
+                            <label for="year" class="mr-2">Chọn năm:</label>
+                            <select id="year" name="year" class="form-control mr-1">
+                                @for (int i = 1950; i <= DateTime.Now.Year + 125; i++)
+                                {
+                                    <option value="@i">@i</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col d-flex align-items-center">
+                            <button id="filterButton" type="button" class="btn btn-icon btn-primary">
+                                Lọc <i class="bi bi-filter"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -79,6 +109,96 @@
     function submitForm() {
         document.getElementById('filterForm').submit();
     }
+    $(document).ready(function () {
+        var today = new Date();
+        var currentMonth = today.getMonth() + 1;
+        var currentYear = today.getFullYear();
+
+        $("#month").val(currentMonth);
+        $("#year").val(currentYear);
+
+        // Sự kiện khi thay đổi dropdown "Chọn tháng" hoặc "Chọn năm"
+        $("#month, #year").change(function () {
+            var selectedMonth = $("#month").val();
+            var selectedYear = $("#year").val();
+            filterChartData(selectedMonth, selectedYear);
+        });
+
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(init);
+
+        function init() {
+            loadChartData();
+        }
+
+        function loadChartData() {
+            $.get("@Url.Action("FilterPosts")")
+                .done(function (data) {
+                    if (data.posts.length === 0) {
+                        $("#chartContainer").html('<div class="alert alert-warning" role="alert">Không có dữ liệu cho tháng và năm hiện tại.</div>');
+                    } else {
+                        var today = new Date();
+                        drawColumnChart(data.posts, today.getMonth() + 1, today.getFullYear());
+                    }
+                })
+                .fail(function () {
+                    $("#chartContainer").html('<div class="alert alert-danger" role="alert">Lỗi khi tải dữ liệu</div>');
+                });
+        }
+
+        $("#filterButton").click(function () {
+            var selectedMonth = $("#month").val();
+            var selectedYear = $("#year").val();
+            filterChartData(selectedMonth, selectedYear);
+        });
+
+        function filterChartData(selectedMonth, selectedYear) {
+            $.get("@Url.Action("FilterPosts")", { month: selectedMonth, year: selectedYear })
+                .done(function (data) {
+                    if (data.posts.length === 0) {
+                        $("#chartContainer").html('<div class="alert alert-warning" role="alert">Không có dữ liệu cho tháng và năm đã chọn.</div>');
+                    } else {
+                        drawColumnChart(data.posts, selectedMonth, selectedYear);
+                    }
+                })
+                .fail(function () {
+                    $("#chartContainer").html('<div class="alert alert-danger" role="alert">Lỗi khi tải dữ liệu</div>');
+                });
+        }
+
+        function drawColumnChart(postData, selectedMonth, selectedYear) {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Ngày');
+            data.addColumn({ type: 'string', role: 'tooltip', p: { html: true } });
+            data.addColumn('number', 'Số tin tuyển dụng');
+
+            var days = [...new Set([...postData.map(item => item.day)])];
+            days.sort((a, b) => a - b);
+
+            days.forEach(function(day) {
+                var postCount = postData.find(item => item.day == day)?.postCount || 0;
+                data.addRow([
+                    day.toString(),
+                    `Ngày ${day}`,
+                    postCount
+                ]);
+            });
+
+            var options = {
+                title: 'Biểu đồ số tin tuyển dụng đã đăng tháng ' + ('0' + selectedMonth).slice(-2) + '/' + selectedYear,
+                hAxis: { title: 'Ngày' },
+                vAxis: { title: 'Số lượng' },
+                seriesType: 'bars',
+                series: { 0: { color: 'green' } },
+                width: '100%',
+                height: 370,
+                tooltip: { isHtml: true }
+            };
+
+            var chart = new google.visualization.ComboChart(document.getElementById('chartContainer'));
+            chart.draw(data, options);
+        }
+    });
 </script>
 
 <style>
@@ -88,7 +208,7 @@
 
         .card .card-title {
             font-size: 1rem;
-            color:white
+            color: white;
         }
 
         .card .card-text {
@@ -117,5 +237,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .chart-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-inline {
+        white-space: nowrap;
     }
 </style>

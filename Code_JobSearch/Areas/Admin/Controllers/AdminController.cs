@@ -10,7 +10,7 @@ namespace Code_JobSearch.Areas.Admin.Controllers
     public class AdminController : Controller
     {
         DatabaseDataContext db = new DatabaseDataContext();
-       
+
         // GET: Admin/Admin
         public ActionResult Index(DateTime? fromDate, DateTime? toDate)
         {
@@ -23,7 +23,7 @@ namespace Code_JobSearch.Areas.Admin.Controllers
 
             int soLuongUngVien = db.UngViens.Count();
             int soLuongNhaTuyenDung = db.NhaTuyenDungs.Count();
-
+            int soluongdoanhnghiep = db.DoanhNghieps.Count();
             IQueryable<TinTuyenDung> tinTuyenDungsQuery = db.TinTuyenDungs;
 
             // Lấy ngày hiện tại
@@ -46,12 +46,27 @@ namespace Code_JobSearch.Areas.Admin.Controllers
             ViewBag.SoLuongNhaTuyenDung = soLuongNhaTuyenDung;
             ViewBag.SoLuongBaiViet = soLuongBaiViet;
             ViewBag.SoLuongTinHetHan = soLuongTinHetHan;
-
+            ViewBag.SoLuongDoanhNghiep = soluongdoanhnghiep;
 
             ViewBag.CurrentPage = "Index";
             return View();
         }
+        public ActionResult FilterPosts(int? month, int? year)
+        {
 
+
+            var postCounts = db.TinTuyenDungs
+                                .Where(o => o.ThoiGianDangTuyen.Value.Month == month &&
+                                            o.ThoiGianDangTuyen.Value.Year == year)
+                                .GroupBy(o => o.ThoiGianDangTuyen.Value.Day)
+                                .Select(g => new { day = g.Key, postCount = g.Count() })
+                                .OrderBy(x => x.day)
+                                .ToList();
+
+
+
+            return Json(new { posts = postCounts }, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult UserProfilePortal(int page = 1)
         {
             ViewBag.PendingJobCount = GetPendingJobCount();
