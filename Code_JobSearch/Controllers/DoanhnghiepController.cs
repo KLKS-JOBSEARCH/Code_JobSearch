@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using System.Web.WebPages;
 using static Code_JobSearch.Controllers.AuthController;
 using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
@@ -134,6 +135,7 @@ namespace Code_JobSearch.Controllers
                 ViewBag.TotalPages = totalPages;
                 ViewBag.isDel = TempData["isDel"];
                 ViewBag.isEdit = TempData["isEdit"];
+                ViewBag.MessageMoMo = TempData["MessageMoMo"];
 
                 return View(paginatedPosts);
             }
@@ -599,7 +601,7 @@ namespace Code_JobSearch.Controllers
                         ViewData["Loi2"] = "Hạn tuyển dụng không bỏ trống";
                         return View(ttd);
                     }
-                    if (ttd.HanTuyenDung.Value.Date.CompareTo(thoigiandang.Value.Date.AddDays(8)) > 0)
+                    if (ttd.HanTuyenDung.Value.Date < thoigiandang.Value.Date.AddDays(8))
                     {
                         ViewData["Loi2"] = "Hạn tuyển dụng cách ngày đăng ít nhất 8 ngày";
                         return View(ttd);
@@ -645,6 +647,7 @@ namespace Code_JobSearch.Controllers
                 {
                     ttds.HanTuyenDung = ttd.HanTuyenDung;
                 }
+                ttds.HanTuyenDung = ttd.HanTuyenDung;
                 ttds.MucLuongTD = ttd.MucLuongTD;
                 ttds.YeuCauGioiTinh = ttd.YeuCauGioiTinh;
                 ttds.CapBacTD = ttd.CapBacTD;
@@ -884,19 +887,22 @@ namespace Code_JobSearch.Controllers
         #endregion
 
         #region Thanh toán MoMo
-        public ActionResult Payment(string giatien)
+        public ActionResult Payment(string giatien, int IdTTD, DateTime hantd)
         {
+            var ttd = db.TinTuyenDungs.SingleOrDefault(o => o.Id_TTD == IdTTD);
+            var ntd = db.NhaTuyenDungs.SingleOrDefault(o => o.Id_NTD == ttd.Id_NTD);
             //request params need to request to MoMo system
             string endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor";
             string partnerCode = "MOMOOJOI20210710";
             string accessKey = "iPXneGmrJH0G8FOP";
             string serectkey = "sFcbSGRSJjwGxwhhcEktCHWYUuTuPNDB";
-            string orderInfo = "Thanh toán JobStar";
-            string returnUrl = "https://localhost:44354/DoanhNghiep/ListTTD/7?page=1&pageSize=5";
-            string notifyurl = "https://4c8d-2001-ee0-5045-50-58c1-b2ec-3123-740d.ap.ngrok.io/DoanhNghiep/SavePayment"; //lưu ý: notifyurl không được sử dụng localhost, có thể sử dụng ngrok để public localhost trong quá trình test
+            string orderInfo = $"Đăng tin tuyển dụng có mã tin {IdTTD} của tài khoản {ntd.TenTK}";
+
+            string returnUrl = $"https://localhost:44354/DoanhNghiep/ConfirmPaymentClient?idttd={IdTTD}&htd={hantd}";
+            string notifyurl = $"https://4c8d-2001-ee0-5045-50-58c1-b2ec-3123-740d.ap.ngrok.io/DoanhNghiep/SavePayment";
 
             string amount = giatien;
-            string orderid = DateTime.Now.Ticks.ToString(); //mã đơn hàng
+            string orderid = DateTime.Now.Ticks.ToString();
             string requestId = DateTime.Now.Ticks.ToString();
             string extraData = "";
 
@@ -936,27 +942,49 @@ namespace Code_JobSearch.Controllers
             string responseFromMomo = PaymentRequest.sendPaymentRequest(endpoint, message.ToString());
 
             JObject jmessage = JObject.Parse(responseFromMomo);
-
+            string url = jmessage.GetValue("payUrl")?.ToString();
             return Redirect(jmessage.GetValue("payUrl").ToString());
         }
 
-        //Khi thanh toán xong ở cổng thanh toán Momo, Momo sẽ trả về một số thông tin, trong đó có errorCode để check thông tin thanh toán
-        //errorCode = 0 : thanh toán thành công (Request.QueryString["errorCode"])
-        //Tham khảo bảng mã lỗi tại: https://developers.momo.vn/#/docs/aio/?id=b%e1%ba%a3ng-m%c3%a3-l%e1%bb%97i
-        public ActionResult ConfirmPaymentClient(Result result)
+
+
+        public ActionResult ConfirmPaymentClient(int idttd, string htd)
         {
-            //lấy kết quả Momo trả về và hiển thị thông báo cho người dùng (có thể lấy dữ liệu ở đây cập nhật xuống db)
-            string rMessage = result.message;
-            string rOrderId = result.orderId;
-            string rErrorCode = result.errorCode; // = 0: thanh toán thành công
-            return View();
+
+            string errorCode = Request.QueryString["errorCode"];
+            string orderId = Request.QueryString["orderId"];
+            string requestId = Request.QueryString["requestId"];
+            string amount = Request.QueryString["amount"];
+            var ttd = db.TinTuyenDungs.SingleOrDefault(o => o.Id_TTD == idttd);
+            var phitin = db.PhiTinTuyenDungs.SingleOrDefault(o => o.Gia_PTTD.ToString() == amount);
+            DateTime hanTuyenDung;
+            if (!DateTime.TryParse(htd, out hanTuyenDung))
+            {
+                throw new ArgumentException("Invalid datetime format for htd");
+            }
+
+            if (errorCode == "0")
+            {
+                ttd.Id_PTTD = phitin.Id_PTTD;
+                ttd.TrangThaiDang = true;
+                ttd.ThoiGianDangTuyen = DateTime.Now;
+                ttd.HanTuyenDung = hanTuyenDung;
+                ttd.TinhPhi_TTD = true;
+                db.SubmitChanges();
+                TempData["MessageMoMo"] = "Thanh toán thành công!";
+
+            }
+            else
+            {
+                TempData["MessageMoMo"] = "Thanh toán thất bại!";
+            }
+            return RedirectToAction("ListTTD", new { id = ttd.Id_NTD, page = 1, pageSize = 5 });
         }
 
-        [HttpPost]
-        public void SavePayment(int id)
+        public void SavePayment()
         {
-            //cập nhật dữ liệu vào db
-            String a = "";
+
+
         }
         #endregion
 
@@ -976,6 +1004,7 @@ namespace Code_JobSearch.Controllers
                 TempData["isDangTin"] = "Không thể đăng do tin đã được đăng";
                 return RedirectToAction("DetailsJob", new { id = idttd });
             }
+            TempData["isDangTin"] = null;
             return View(ttd);
         }
         [HttpPost]
@@ -983,7 +1012,8 @@ namespace Code_JobSearch.Controllers
         {
             var ttd = db.TinTuyenDungs.SingleOrDefault(o => o.Id_TTD == idttd);
             var phitin = db.PhiTinTuyenDungs.SingleOrDefault(o => o.ApDungPhi == true);
-            ViewBag.PhiTin01 = phitin.Gia_PTTD;
+            ViewBag.PhiTin = phitin.Gia_PTTD;
+            ViewBag.IdPhiTin = phitin.Id_PTTD;
             if (!htd.HasValue)
             {
                 ViewData["LoiHTD"] = "Hạn tuyển dụng bắt buộc nhập";
@@ -1001,15 +1031,13 @@ namespace Code_JobSearch.Controllers
                     ttd.TrangThaiDang = true;
                     ttd.ThoiGianDangTuyen = DateTime.Now;
                     ttd.HanTuyenDung = htd;
+                    ttd.TinhPhi_TTD = false;
                 }
                 else
                 {
                     string gt = phitin.Gia_PTTD.ToString();
-                    return RedirectToAction("Payment", new { giatien = gt });
-                    //ttd.Id_PTTD = idphitin;
-                    //ttd.TrangThaiDang = true;
-                    //ttd.ThoiGianDangTuyen = DateTime.Now;
-                    //ttd.HanTuyenDung = htd;
+                    return RedirectToAction("Payment", new { giatien = gt, IdTTD = idttd, hantd = htd });
+
 
                 }
                 db.SubmitChanges();

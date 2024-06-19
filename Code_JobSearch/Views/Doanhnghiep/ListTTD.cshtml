@@ -218,6 +218,10 @@ else
     function confirmDelete() {
         return confirm('Bạn có chắc chắn muốn xóa mục này?');
     }
+    var messMomo = '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.MessageMoMo))';
+    if (messMomo) {
+        alert(messMomo);
+    }
     var isDel = '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.isDel))';
     if (isDel) {
         alert(isDel);

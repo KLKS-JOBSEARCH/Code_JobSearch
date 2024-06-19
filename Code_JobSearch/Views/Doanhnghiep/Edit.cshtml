@@ -40,7 +40,7 @@
 
                 <span>Ngày hết hạn</span>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.HanTuyenDung, "{0:yyyy-MM-dd}", new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                    @Html.TextBoxFor(model => model.HanTuyenDung, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
 
                     @Html.ValidationMessageFor(model => model.HanTuyenDung, "", new { @class = "text-danger" })
                     @if (ViewData["Loi2"] != null)

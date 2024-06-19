@@ -2,8 +2,8 @@
 @{
     ViewBag.Title = "DangTin";
     Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
-    var phiTin = ViewBag.PhiTin != null ? ViewBag.PhiTin : ViewBag.PhiTin01;
-    var formattedPhiTin = phiTin != null ? string.Format("{0:#,0} VND", phiTin) : "N/A";
+    var phiTin = ViewBag.PhiTin;
+    var formattedPhiTin = string.Format("{0:#,0} VND", phiTin);
 }
 
 <h2>Đăng tin</h2>
