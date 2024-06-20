@@ -51,7 +51,7 @@
             }
             <span>Mức lương tuyển</span>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.MucLuongTD, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.MucLuongTD, new { htmlAttributes = new { @class = "form-control salary-input" } })
                 @Html.ValidationMessageFor(model => model.MucLuongTD, "", new { @class = "text-danger" })
                 @if (ViewData["Loi3"] != null)
                 {
@@ -134,3 +134,38 @@
         </div>
     </div>
 }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const salaryInput = document.querySelector(".salary-input");
+
+        function formatNumberWithDots(value) {
+            return value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+        }
+
+        salaryInput.addEventListener("input", function (event) {
+            // Lưu vị trí con trỏ hiện tại
+            const cursorPosition = event.target.selectionStart;
+            const oldValue = event.target.value;
+
+            // Tìm các chuỗi số trong giá trị
+            let newValue = oldValue.replace(/(\d[\d.,]*)/g, function (match) {
+                // Loại bỏ các ký tự không phải là số và dấu thập phân
+                let number = match.replace(/[^\d]/g, '');
+                // Định dạng lại số với dấu chấm phân cách hàng nghìn
+                return formatNumberWithDots(number);
+            });
+
+            // Cập nhật lại giá trị của trường nhập liệu
+            event.target.value = newValue;
+
+            // Điều chỉnh vị trí con trỏ
+            let position = cursorPosition;
+            if (newValue.length > oldValue.length) {
+                position += (newValue.length - oldValue.length);
+            } else if (newValue.length < oldValue.length) {
+                position -= (oldValue.length - newValue.length);
+            }
+            event.target.setSelectionRange(position, position);
+        });
+    });
+</script>

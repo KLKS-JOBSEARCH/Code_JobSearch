@@ -112,22 +112,42 @@ namespace Code_JobSearch.Controllers
         }
         #endregion
 
+
         #region Danh sách tin tuyển dụng
-        public ActionResult ListTTD(int? id, int page = 1, int pageSize = 5)
+        public ActionResult ListTTD(int? id, string searchTitle, string searchStatus, string searchApproval, int page = 1, int pageSize = 5)
         {
             if (id.HasValue)
             {
                 ViewBag.idntd = id.Value;
 
-                var listttd = db.TinTuyenDungs
-                                .Where(o => o.Id_NTD == id)
-                                .OrderByDescending(o => o.Id_TTD)
-                                .ToList();
+                var query = db.TinTuyenDungs.Where(o => o.Id_NTD == id);
 
-                int totalItems = listttd.Count;
+                // Tìm kiếm theo tiêu đề tin
+                if (!string.IsNullOrEmpty(searchTitle))
+                {
+                    query = query.Where(o => o.TieuDe_TTD.ToLower().Contains(searchTitle));
+                }
+
+                // Tìm kiếm theo trạng thái đăng
+                if (!string.IsNullOrEmpty(searchStatus))
+                {
+                    bool status = searchStatus == "1"; // Giả sử 1 là đã đăng, 0 là chưa đăng
+                    query = query.Where(o => o.TrangThaiDang == status);
+                }
+
+                // Tìm kiếm theo trạng thái xét duyệt
+                if (!string.IsNullOrEmpty(searchApproval))
+                {
+                    query = query.Where(o => o.XetDuyet == searchApproval);
+                }
+
+                int totalItems = query.Count();
                 int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-                var paginatedPosts = listttd.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                var paginatedPosts = query.OrderByDescending(o => o.Id_TTD)
+                                         .Skip((page - 1) * pageSize)
+                                         .Take(pageSize)
+                                         .ToList();
 
                 ViewBag.TotalItems = totalItems;
                 ViewBag.Page = page;
@@ -137,6 +157,11 @@ namespace Code_JobSearch.Controllers
                 ViewBag.isEdit = TempData["isEdit"];
                 ViewBag.MessageMoMo = TempData["MessageMoMo"];
 
+
+                ViewBag.SearchTitle = searchTitle;
+                ViewBag.SearchStatus = searchStatus;
+                ViewBag.SearchApproval = searchApproval;
+
                 return View(paginatedPosts);
             }
             else
@@ -144,7 +169,6 @@ namespace Code_JobSearch.Controllers
                 return RedirectToAction("Login_DoanhNghiep", "Auth");
             }
         }
-
         #endregion
 
         #region Góp ý
@@ -497,7 +521,7 @@ namespace Code_JobSearch.Controllers
                 ttd.Id_NTD = id;
 
                 ttd.TrangThaiDang = false;
-                ttd.XetDuyet = "Đang xét duyệt";
+
 
                 if (string.IsNullOrEmpty(ttd.TieuDe_TTD))
                 {
@@ -557,7 +581,7 @@ namespace Code_JobSearch.Controllers
             {
                 return HttpNotFound();
             }
-            if (tinTuyenDung.XetDuyet != "Đang xét duyệt")
+            if (tinTuyenDung.XetDuyet == "Duyệt thành công" || tinTuyenDung.XetDuyet == "Duyệt không thành công")
             {
                 TempData["isEdit"] = "Không thể sửa do công việc đã được duyệt";
                 return RedirectToAction("ListTTD", new { id = idnts.ToString() });
@@ -866,22 +890,47 @@ namespace Code_JobSearch.Controllers
         #endregion
 
         #region Danh sách ứng viên ứng tuyển
-        public ActionResult ListUT(int id, int page = 1, int pageSize = 5)
+        //public ActionResult ListUT(int id, int page = 1, int pageSize = 5)
+        //{
+        //    var uvs = db.UV_TTDs.Where(u => u.Id_TTD == id)
+        //                         .OrderByDescending(u => u.Id_UT)
+        //                         .Skip((page - 1) * pageSize)
+        //                         .Take(pageSize)
+        //                         .ToList();
+
+        //    int totalItems = db.UV_TTDs.Count(u => u.Id_TTD == id);
+        //    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+        //    ViewBag.TotalItems = totalItems;
+        //    ViewBag.Page = page;
+        //    ViewBag.PageSize = pageSize;
+        //    ViewBag.TotalPages = totalPages;
+        //    ViewBag.IdTTD = id;
+        //    return View(uvs);
+        //}
+
+        public ActionResult ListUT(int id, string searchStatusUV, int page = 1, int pageSize = 5)
         {
-            var uvs = db.UV_TTDs.Where(u => u.Id_TTD == id)
-                                 .OrderByDescending(u => u.Id_UT)
-                                 .Skip((page - 1) * pageSize)
-                                 .Take(pageSize)
-                                 .ToList();
+            var query = db.UV_TTDs.Where(o => o.Id_TTD == id);
+            // Tìm kiếm theo tình trạng ứng tuyển
+            if (!string.IsNullOrEmpty(searchStatusUV))
+            {
+                query = query.Where(o => o.TinhTrangUngTuyen == searchStatusUV);
+            }
 
-            int totalItems = db.UV_TTDs.Count(u => u.Id_TTD == id);
+
+            int totalItems = query.Count();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
+            var uvs = query.OrderByDescending(u => u.Id_UT)
+                                .Skip((page - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList();
             ViewBag.TotalItems = totalItems;
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalPages = totalPages;
             ViewBag.IdTTD = id;
+            ViewBag.SearchStatusUV = searchStatusUV;
             return View(uvs);
         }
         #endregion
@@ -970,6 +1019,7 @@ namespace Code_JobSearch.Controllers
                 ttd.ThoiGianDangTuyen = DateTime.Now;
                 ttd.HanTuyenDung = hanTuyenDung;
                 ttd.TinhPhi_TTD = true;
+                ttd.XetDuyet = "Đang xét duyệt";
                 db.SubmitChanges();
                 TempData["MessageMoMo"] = "Thanh toán thành công!";
 
@@ -1032,6 +1082,7 @@ namespace Code_JobSearch.Controllers
                     ttd.ThoiGianDangTuyen = DateTime.Now;
                     ttd.HanTuyenDung = htd;
                     ttd.TinhPhi_TTD = false;
+                    ttd.XetDuyet = "Đang xét duyệt";
                 }
                 else
                 {

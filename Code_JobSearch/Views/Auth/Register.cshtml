@@ -6,6 +6,8 @@
 <style>
     .custom-input-group {
         margin-bottom: 15px;
+        display: flex;
+        align-items: center;
     }
 
     .error-message {
@@ -16,6 +18,7 @@
     .btn-register {
         width: 100%;
     }
+
     /* CSS cho dialog loading */
     .loading-overlay {
         display: none;
@@ -45,7 +48,21 @@
         transition: transform 0.1s linear;
         color: #00B074;
     }
+
+    .input-group {
+        position: relative;
+    }
+
+    .btn-eye {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+    }
 </style>
+
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-message">
         <i class="fas fa-spinner loading-icon" id="loadingIcon"></i>
@@ -55,10 +72,10 @@
         </p>
     </div>
 </div>
+
 <div class="container centered-form">
     <div class="row">
         <div class="col-md-6 order-last" id="jobStarSection" style="padding:20px; position: relative;">
-
             <h2 style="color:green; position: relative; z-index: 1;">Giới thiệu về JobStar</h2>
             <p style="position: relative; z-index: 1;">JobStar là một nền tảng tìm việc làm hàng đầu, kết nối nhà tuyển dụng với ứng viên tiềm năng. Chúng tôi cung cấp các công cụ mạnh mẽ để bạn xây dựng hồ sơ cá nhân ấn tượng và tìm kiếm các cơ hội sự nghiệp lý tưởng.</p>
             <p style="position: relative; z-index: 1;">Hãy tham gia cùng chúng tôi và khám phá những cơ hội sự nghiệp mới!</p>
@@ -67,10 +84,6 @@
 
             <p class="mt-3" style="position: relative; z-index: 1;">Liên hệ: support@jobstar.com</p>
         </div>
-
-
-
-
 
         <div class="col-md-6" style="padding-left: 0px; padding-right: 24px; margin-top: 20px;">
             <h2 style="color:green">Chào mừng bạn đến với JobStar</h2>
@@ -105,30 +118,29 @@
                     </div>
                 </div>
 
-                <div class="row mb-3">
-                    @*code update*@
+                <div class="row mb-2">
                     <div class="col-md-6">
                         <label for="Matkhau" class="form-label"><i class="fa fa-lock"></i> Mật khẩu</label>
-                        @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Mật Khẩu" })
-                        <button class="btn btn-outline-success" type="button" id="togglePasswordVisibility" onmouseover="showPasswordIcon()" onmouseout="hidePasswordIcon()">
-                            <i id="eyeIcon" class="bi bi-eye-slash"></i>
-                        </button>
+                        <div class="input-group">
+                            @Html.Password("Matkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Mật Khẩu", @id = "Matkhau" })
+                            <button class="btn-eye" type="button" onmouseover="showPasswordIcon()" onmouseout="hidePasswordIcon()">
+                                <i id="eyeIcon1" class="bi bi-eye-slash"></i>
+                            </button>
+                        </div>
                         <h7 class="error-message">@ViewData["Loi4"]</h7>
                     </div>
 
                     <div class="col-md-6">
                         <label for="ReMatkhau" class="form-label"><i class="fa fa-lock"></i> Nhập lại mật khẩu</label>
-                        @Html.Password("ReMatkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Lại Mật Khẩu" })
-                        <button class="btn btn-outline-success" type="button" id="togglePasswordVisibility" onmouseover="showPasswordIconRe()" onmouseout="hidePasswordIconRe()">
-                            <i id="eyeIcon" class="bi bi-eye-slash"></i>
-                        </button>
+                        <div class="input-group">
+                            @Html.Password("ReMatkhau", "", new { @class = "form-control", type = "password", placeholder = "Nhập Lại Mật Khẩu", @id = "ReMatkhau" })
+                            <button class="btn-eye" type="button" onmouseover="showPasswordIconRe()" onmouseout="hidePasswordIconRe()">
+                                <i id="eyeIcon2" class="bi bi-eye-slash"></i>
+                            </button>
+                        </div>
                         <h7 class="error-message">@ViewData["Loi1"]</h7>
                     </div>
-
-
-                    @*--------------------*@
                 </div>
-
 
                 <div class="row">
                     <div class="col-sm-12">
@@ -148,31 +160,30 @@
                             </center>
                         </div>
                     </div>
-                </div>
-            }
+                </div>}
 
             @if (TempData["ErrorEmailMessageRegister"] != null)
             {
                 <div class="alert alert-danger" role="alert">
                     @TempData["ErrorEmailMessageRegister"]
-                </div>
-            }
-            @*code update*@
+                </div>      }
+
             @if (TempData["SuccessMessageRegister"] != null)
             {
                 <div class="alert alert-success" role="alert">
                     @TempData["SuccessMessageRegister"]
                 </div>
                 <script>
-                        // Hiển thị dialog loading và chuyển trang sau một khoảng thời gian
-                        document.addEventListener("DOMContentLoaded", function () {
-                            showLoading();
-                            setTimeout(function () {
-                                window.location.href = '@Url.Action("RegisterCodeVerify", "Auth")';
-                            }, 3000); // Chuyển trang sau 3 giây
-                        });
+                    // Hiển thị dialog loading và chuyển trang sau một khoảng thời gian
+                    document.addEventListener("DOMContentLoaded", function () {
+                        showLoading();
+                        setTimeout(function () {
+                            window.location.href = '@Url.Action("RegisterCodeVerify", "Auth")';
+                        }, 3000); // Chuyển trang sau 3 giây
+                    });
                 </script>
-            }
+}
+
             @if (TempData["ErrorMessageTDNUV"] != null)
             {
                 <script>
@@ -184,8 +195,8 @@
                         }
                     });
                 </script>
-            }
-            @*-----*@
+   }
+
             </br>
             <p>Yêu cầu tạo một mật khẩu mạnh</p>
             <div id="password-conditions">
@@ -196,12 +207,7 @@
                 <p id="special-char" style="color: red;">Ít nhất một ký tự đặc biệt</p>
             </div>
         </div>
-
-
-
-
     </div>
-
 </div>
 
 <script>
@@ -290,7 +296,7 @@
         // Return overall password validity
         return isPasswordValid;
     }
-// code update
+    // code update
     function showPassword() {
         var passwordInput = document.getElementById('Matkhau');
         passwordInput.setAttribute('type', 'text');
@@ -312,39 +318,39 @@
     }
 
     function showPasswordIcon() {
-        var eyeIcon = document.getElementById('eyeIcon');
+        var eyeIcon = document.getElementById('eyeIcon1');
         eyeIcon.classList.remove('bi-eye-slash');
         eyeIcon.classList.add('bi-eye');
         showPassword();
     }
 
     function hidePasswordIcon() {
-        var eyeIcon = document.getElementById('eyeIcon');
+        var eyeIcon = document.getElementById('eyeIcon1');
         eyeIcon.classList.remove('bi-eye');
         eyeIcon.classList.add('bi-eye-slash');
         hidePassword();
     }
 
     function showPasswordIconRe() {
-        var eyeIcon = document.getElementById('eyeIcon');
+        var eyeIcon = document.getElementById('eyeIcon2');
         eyeIcon.classList.remove('bi-eye-slash');
         eyeIcon.classList.add('bi-eye');
         showRePassword();
     }
 
     function hidePasswordIconRe() {
-        var eyeIcon = document.getElementById('eyeIcon');
+        var eyeIcon = document.getElementById('eyeIcon2');
         eyeIcon.classList.remove('bi-eye');
         eyeIcon.classList.add('bi-eye-slash');
         hideRePassword();
     }
-//-----
 
-// Add event listener to password input
-document.addEventListener("DOMContentLoaded", function () {
-    var passwordInput = document.getElementById("Matkhau");
-    passwordInput.addEventListener("input", showPasswordConditions);
-});
+    // Add event listener to password input
+    document.addEventListener("DOMContentLoaded", function () {
+        var passwordInput = document.getElementById("Matkhau");
+        passwordInput.addEventListener("input", showPasswordConditions);
+
+    });
 
 // Call showPasswordConditions on page load
 showPasswordConditions();

@@ -33,7 +33,7 @@
 
             <span>Mức lương tuyển</span>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.MucLuongTD, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.MucLuongTD, new { htmlAttributes = new { @class = "form-control salary-input" } })
                 @Html.ValidationMessageFor(model => model.MucLuongTD, "", new { @class = "text-danger" })
                 @if (ViewData["Loi3"] != null)
                 {
@@ -43,14 +43,11 @@
             <span>Yêu cầu giới tính</span>
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.YeuCauGioiTinh, new SelectList(new List<string> { "Nam", "Nữ", "Không yêu cầu" }), new { @class = "form-control" })
-
-
             </div>
             <span>Cấp bậc tuyển dụng</span>
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.CapBacTD, new SelectList(new List<string> { "Thực tập sinh", "Nhân viên", "Quản lý", "Phó phòng", "Trưởng phòng", "Phó giám đốc", "Giám đốc" }), new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.CapBacTD, "", new { @class = "text-danger" })
-
             </div>
             <span>Số lượng tuyển</span>
             <div class="col-md-10">
@@ -64,7 +61,6 @@
             <span>Hình thức làm việc</span>
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.HinhThucLamViec, new SelectList(new List<string> { "Toàn thời gian", "Bán thời gian" }), new { @class = "form-control" })
-
             </div>
             <span>Yêu cầu kinh nghiệm (Gợi ý: 1 năm, 1-2 năm, không yêu cầu)</span>
             <div class="col-md-10">
@@ -87,9 +83,8 @@
                 {
                     <p>Danh sách địa điểm không có hoặc bị rỗng.</p>
                 }
-
             </div>
-            <span>Mô tả</span> @*Thực hiện textarea*@
+            <span>Mô tả</span>
             <div class="col-md-10">
                 @Html.TextAreaFor(model => model.MoTa_TTD, new { @class = "form-control", rows = 5 })
                 @Html.ValidationMessageFor(model => model.MoTa_TTD, "", new { @class = "text-danger" })
@@ -98,7 +93,6 @@
                     <span class="text-danger">@ViewData["Loi6"]</span>
                 }
             </div>
-
 
             @if (ViewBag.Error != null)
             {
@@ -118,4 +112,38 @@
     </div>
 }
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const salaryInput = document.querySelector(".salary-input");
 
+        function formatNumberWithDots(value) {
+            return value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+        }
+
+        salaryInput.addEventListener("input", function (event) {
+            // Lưu vị trí con trỏ hiện tại
+            const cursorPosition = event.target.selectionStart;
+            const oldValue = event.target.value;
+
+            // Tìm các chuỗi số trong giá trị
+            let newValue = oldValue.replace(/(\d[\d.,]*)/g, function (match) {
+                // Loại bỏ các ký tự không phải là số và dấu thập phân
+                let number = match.replace(/[^\d]/g, '');
+                // Định dạng lại số với dấu chấm phân cách hàng nghìn
+                return formatNumberWithDots(number);
+            });
+
+            // Cập nhật lại giá trị của trường nhập liệu
+            event.target.value = newValue;
+
+            // Điều chỉnh vị trí con trỏ
+            let position = cursorPosition;
+            if (newValue.length > oldValue.length) {
+                position += (newValue.length - oldValue.length);
+            } else if (newValue.length < oldValue.length) {
+                position -= (oldValue.length - newValue.length);
+            }
+            event.target.setSelectionRange(position, position);
+        });
+    });
+</script>

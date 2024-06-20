@@ -47,6 +47,30 @@
     @Html.ActionLink("Thêm mới", "Create", new { @id = idntd }, new { @class = "btn btn-primary" })
 </p>
 <br />
+<div class="row mb-3">
+    <div class="col-md-4">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Tìm kiếm tiêu đề" value="@ViewBag.SearchTitle" id="searchTitle">
+            <button class="btn btn-outline-secondary" type="button" onclick="search()">Tìm kiếm</button>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <select class="form-select" id="searchStatus" onchange="search()">
+            <option value="">Trạng thái đăng</option>
+            <option value="1" @(ViewBag.SearchStatus == "1" ? "selected" : "")>Đã đăng</option>
+            <option value="0" @(ViewBag.SearchStatus == "0" ? "selected" : "")>Chưa đăng</option>
+        </select>
+    </div>
+    <div class="col-md-4">
+        <select class="form-select" id="searchApproval" onchange="search()">
+            <option value="">Trạng thái xét duyệt</option>
+            <option value="Đang xét duyệt" @(ViewBag.SearchApproval == "Đang xét duyệt" ? "selected" : "")>Đang xét duyệt</option>
+            <option value="Duyệt thành công" @(ViewBag.SearchApproval == "Duyệt thành công" ? "selected" : "")>Duyệt thành công</option>
+            <option value="Duyệt không thành công" @(ViewBag.SearchApproval == "Duyệt không thành công" ? "selected" : "")>Duyệt không thành công</option>
+        </select>
+    </div>
+</div>
+<br />
 @if (Model != null && Model.Count > 0)
 {
     <div class="card">
@@ -81,7 +105,7 @@
                                     </a>
                                 </td>
                                 <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="@p.TieuDe_TTD">@Html.ActionLink(p.TieuDe_TTD, "DetailsJob", "DoanhNghiep", new { id = p.Id_TTD }, null)</td>
-                                <td>@p.MucLuongTD</td>
+                                <td class="muc-luong">@p.MucLuongTD</td>
                                 <td class="text-center">@p.SoLuongTuyen</td>
                                 <td class="text-center">
                                     @if (p.TrangThaiDang == true)
@@ -208,14 +232,11 @@ else
 
 <script>
     function changePageSize() {
-    var pageSize = document.getElementById("pageSize").value;
-    var url = '/DoanhNghiep/ListTTD/@idntd?page=1&pageSize=' + pageSize;
-    window.location.assign(url);
-}
-
-
-
-    function confirmDelete() {
+        var pageSize = document.getElementById("pageSize").value;
+        var url = '/DoanhNghiep/ListTTD/@idntd?page=1&pageSize=' + pageSize;
+        window.location.assign(url);
+    }
+   function confirmDelete() {
         return confirm('Bạn có chắc chắn muốn xóa mục này?');
     }
     var messMomo = '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.MessageMoMo))';
@@ -230,4 +251,39 @@ else
     if (isEdit) {
         alert(isEdit);
     }
+    document.addEventListener("DOMContentLoaded", function () {
+        const salaryElements = document.querySelectorAll(".muc-luong");
+
+        function formatNumberWithDots(value) {
+            return value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+        }
+
+        salaryElements.forEach(function (element) {
+            let value = element.textContent.trim();
+            if (!isNaN(value.replace(/[^\d]/g, ''))) { // Kiểm tra xem chuỗi có chứa số không
+                element.textContent = formatNumberWithDots(value);
+            }
+        });
+    });
+
+    function search() {
+        var searchTitle = document.getElementById("searchTitle").value.trim();
+        var searchStatus = document.getElementById("searchStatus").value;
+        var searchApproval = document.getElementById("searchApproval").value;
+        var url = '@Url.Action("ListTTD", new { id = ViewBag.idntd, page = 1, pageSize = ViewBag.PageSize })';
+
+
+        if (searchTitle !== "") {
+            url += '&searchTitle=' + encodeURIComponent(searchTitle);
+        }
+        if (searchStatus !== "") {
+            url += '&searchStatus=' + encodeURIComponent(searchStatus);
+        }
+        if (searchApproval !== "") {
+            url += '&searchApproval=' + encodeURIComponent(searchApproval);
+        }
+
+        window.location.href = url;
+    }
+
 </script>

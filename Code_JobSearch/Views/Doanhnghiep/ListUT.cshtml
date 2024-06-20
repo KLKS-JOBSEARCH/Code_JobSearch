@@ -54,10 +54,18 @@
         z-index: 1; /* Đảm bảo tiêu đề cột hiển thị phía trên các dòng của bảng */
     }
 </style>
-
+<div class="row mb-3">
+    <div class="col-md-4">
+        <span>Tìm kiếm</span>
+        <select class="form-select" id="searchStatusUV" onchange="search()">
+            <option value="">Trạng thái xét duyệt</option>
+            <option value="Đang xét duyệt" @(ViewBag.searchStatusUV == "Đang xét duyệt" ? "selected" : "")>Đang xét duyệt</option>
+            <option value="Đậu" @(ViewBag.searchStatusUV == "Đậu" ? "selected" : "")>Đậu</option>
+            <option value="Rớt" @(ViewBag.searchStatusUV == "Rớt" ? "selected" : "")>Rớt</option>
+        </select>
+    </div>
+</div>
 <div class="row">
-
-
     @if (Model != null && Model.Count > 0)
     {
         <div class="col-12">
@@ -251,15 +259,7 @@
             });
         }
     }
-    //function validateEmailForm() {
-    //    var subject = document.getElementById("emailSubject").value;
-    //    var body = document.getElementById("emailBody").value;
-    //    if (subject.trim() === "" || body.trim() === "") {
-    //        alert("Vui lòng nhập đầy đủ các trường trong thông báo");
-    //        return false;
-    //    }
-    //    return true;
-    //}
+
     function openEmailModal(id, status) {
         $('#emailModal').modal('show');
         $('#emailForm').off('submit').on('submit', function (e) {
@@ -291,7 +291,17 @@
         error: function () {
             alert('Error occurred while sending email.');
         }
-    });
-}
+        });
+    }
+    function search() {
 
+        var searchStatusUV = document.getElementById("searchStatusUV").value;
+        var url = '@Url.Action("ListUT", new { id = ViewBag.IdTTD, page = 1, pageSize = ViewBag.PageSize })';
+
+        if (searchStatusUV !== "") {
+            url += '&searchStatusUV=' + encodeURIComponent(searchStatusUV);
+        }
+
+        window.location.href = url;
+    }
 </script>
