@@ -294,6 +294,11 @@ namespace Code_JobSearch.Controllers
             var capbac = GetCapBac();
             ViewBag.Capbac = new SelectList(capbac);
 
+            var linhvuc = GetLinhvuc();
+            {
+                ViewBag.Linhvuc = new SelectList(linhvuc);
+            }
+
             return View(dsTTD);
         }
 
@@ -330,6 +335,19 @@ namespace Code_JobSearch.Controllers
                     "Nhân Viên", "Trường phòng","Quản lý","Thực Tập Sinh"
             };
             return capbac;
+        }
+        private List<string> GetLinhvuc()
+        {
+            List<string> linhvuc = new List<string>
+            {
+                    "An toàn lao động","Bán hàng kỹ thuật","Bán lẻ / Bán sỉ", "Báo chí / Truyền hình", "Bảo hiểm", "Bảo trì / Sửa chữa", "Bất động sản",
+                    "Biên / Phiên dịch", "Bưu chính - Viễn thông", "Chứng khoáng / Vàng / Ngoại tệ", "Cơ khí / Chế tạo / Tự động hóa", "Công nghệ cao", 
+                    "Công nghệ Ô tô", "Công nghệ thông tin", "Dầu khí / Hóa chất", "Dệt may / Giày da","Địa chất / Khoáng sản", "Dịch vụ khách hàng",
+                    "Điện / Điện tử / Điện lạnh","Điện tử viễn thông", "Du lịch", "Dược phẩm / Công nghệ sinh học", "Giáo dục / Đào tạo", "Hành chỉnh / Văn phòng",
+                    "Hóa học / Sinh học", "IT phần cứng","IT phần mềm", "Kế toán / Kiểm toán", "Khách sạn / Nhà hàng","Kiến trúc", "Marketing / Truyền thông / Quảng cáo",
+                    "Ngành nghề khác","Thiết kế đồ họa / Thiết kế nội thất", "Xuất nhập khẩu", "Y tế / Dược", "Ngành nghề khác"
+            };
+            return linhvuc;
         }
         #endregion
 
