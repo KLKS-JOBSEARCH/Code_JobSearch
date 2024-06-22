@@ -71,6 +71,10 @@
                     <span class="input-group-text"><i class="fas fa-briefcase text-primary"></i></span>
                     @Html.DropDownList("hinhThucLamViec", ViewBag.Hinhthuc as SelectList, "Toàn bộ", new { @class = "form-select" })
                 </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-briefcase text-primary"></i></span>
+                    @Html.DropDownList("linhVuc", ViewBag.Linhvuc as SelectList, "Tất cả lĩnh vực", new { @class = "form-select" })
+                </div>
             </details>
             <button type="button" class="btn btn-primary" onclick="submitSearch()">Lọc</button>
         }

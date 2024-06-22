@@ -258,13 +258,13 @@ namespace Code_JobSearch.Controllers
 
         #region lọc nâng cao
         [HttpPost]
-        public ActionResult TimKiem(string tenTTD, string thanhPho, string hinhThucLamViec, string capBac, int page = 1)
+        public ActionResult TimKiem(string tenTTD, string thanhPho, string hinhThucLamViec, string capBac, string linhVuc, int page = 1)
         {
             var dsTTD = from ttd in db.TinTuyenDungs
                         where ttd.XetDuyet == "Duyệt thành công" && ttd.HanTuyenDung > DateTime.Now
                         select ttd;
 
-            // Lọc theo tiêu đề và thành phố nếu có giá trị được nhập
+            // Xử lý lọc
             if (!string.IsNullOrEmpty(tenTTD))
             {
                 dsTTD = dsTTD.Where(ttd => ttd.TieuDe_TTD.Contains(tenTTD));
@@ -281,6 +281,10 @@ namespace Code_JobSearch.Controllers
             {
                 dsTTD = dsTTD.Where(ttd => ttd.CapBacTD == capBac);
             }
+            //if (!string.IsNullOrEmpty(linhVuc) && linhVuc != "Chọn lĩnh vực")
+            //{
+            //    dsTTD = dsTTD.Where(ttd => ttd.YeuCauGioiTinh == linhVuc);
+            //}    chưa thêm cột lĩnh vực, sẽ cập nhật thêm
 
             dsTTD = dsTTD.OrderByDescending(ttd => ttd.HanTuyenDung);
 
