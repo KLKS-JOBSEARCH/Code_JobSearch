@@ -281,10 +281,11 @@ namespace Code_JobSearch.Controllers
             {
                 dsTTD = dsTTD.Where(ttd => ttd.CapBacTD == capBac);
             }
-            //if (!string.IsNullOrEmpty(linhVuc) && linhVuc != "Chọn lĩnh vực")
-            //{
-            //    dsTTD = dsTTD.Where(ttd => ttd.YeuCauGioiTinh == linhVuc);
-            //}    chưa thêm cột lĩnh vực, sẽ cập nhật thêm
+            if (!string.IsNullOrEmpty(linhVuc) && linhVuc != "Chọn lĩnh vực")
+            {
+                dsTTD = dsTTD.Where(ttd => ttd.LinhVuc == linhVuc);
+            }
+          
 
             dsTTD = dsTTD.OrderByDescending(ttd => ttd.HanTuyenDung);
 

@@ -10,52 +10,99 @@
 
     @if (!Model.Any())
     {
-        <p>Ứng viên chưa ứng tuyển công việc nào</p>
+        <div class="alert alert-info" role="alert">
+            Ứng viên chưa ứng tuyển công việc nào
+        </div>
     }
     else
     {
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Tiêu đề công việc</th>
-                    <th scope="col">Thời gian ứng tuyển</th>
-                    <th scope="col">Tình trạng ứng tuyển</th>
-                    <th scope="col">File CV</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    foreach (var uv_ttd in item.UV_TTD)
-                    {
+        <div class="card mb-4">
+            <div class="card-header">
+                Thông tin ứng tuyển
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>
-                                @Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailJobPortal", "Admin", new { id = item.TinTuyenDung.Id_TTD }, null)
-                            </td>
-                            <td>@uv_ttd.ThoiGianUngTuyen.Value.ToString("dd/MM/yyyy")</td>
-                            <td>@uv_ttd.TinhTrangUngTuyen</td>
-                            <td>
-                                <div class="btn-group" role="group" aria-label="File actions">
-                                    <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" download style="margin-right:20px" title="Tải xuống">
-                                        <i class="bi bi-download"></i>Tải xuống
-                                    </a>
-                                    <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" target="_blank" title="Xem">
-                                        Xem CV
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                </div>
-                            </td>
+                            <th scope="col">Tiêu đề công việc</th>
+                            <th scope="col">Thời gian ứng tuyển</th>
+                            <th scope="col">Tình trạng ứng tuyển</th>
+                            <th scope="col">File CV</th>
                         </tr>
-                    }
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            foreach (var uv_ttd in item.UV_TTD)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailJobPortal", "Admin", new { id = item.TinTuyenDung.Id_TTD }, null)
+                                    </td>
+                                    <td>@uv_ttd.ThoiGianUngTuyen.Value.ToString("dd/MM/yyyy")</td>
+                                    <td>@uv_ttd.TinhTrangUngTuyen</td>
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="File actions">
+                                            <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" download style="margin-right:20px" title="Tải xuống">
+                                                <i class="bi bi-download"></i>Tải xuống
+                                            </a>
+                                            <a href="@Url.Content("~/Content/CvUser/" + uv_ttd.File_CV)" target="_blank" title="Xem">
+                                                Xem CV
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                Đánh giá ứng viên
+            </div>
+            <div class="card-body">
+                @if (Model.SelectMany(m => m.DanhGia_UV).Any())
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nội dung</th>
+                                <th scope="col">Mức độ</th>
+                                <th scope="col">Thời gian</th>
+                                <th scope="col">Từ việc làm</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                foreach (var dg in item.DanhGia_UV)
+                                {
+                                    <tr>
+                                        <td>@dg.NoiDung_DG</td>
+                                        <td>@dg.MucDoDiem / 5 </td>
+                                        <td>@dg.ThoiGian_DG.Value.ToString("dd/MM/yyyy")</td>
+                                        <td>@Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailJobPortal", "Admin", new { id = item.TinTuyenDung.Id_TTD }, null)</td> 
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
                 }
-            </tbody>
-        </table>
+                else
+                {
+                    <div class="alert alert-warning" role="alert">
+                        Chưa có đánh giá
+                    </div>
+                }
+            </div>
+        </div>
     }
+
     <div class="mt-3">
         @Html.ActionLink("Quay lại", "UserProfilePortal", "Admin", null, new { @class = "btn btn-primary" })
     </div>
-
-
 </div>
-
-

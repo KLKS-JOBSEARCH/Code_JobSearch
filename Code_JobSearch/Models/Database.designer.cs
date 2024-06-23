@@ -30,12 +30,15 @@ namespace Code_JobSearch.Models
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
-    partial void InsertDoanhNghiep(DoanhNghiep instance);
-    partial void UpdateDoanhNghiep(DoanhNghiep instance);
-    partial void DeleteDoanhNghiep(DoanhNghiep instance);
+    partial void InsertDanhGia_UV(DanhGia_UV instance);
+    partial void UpdateDanhGia_UV(DanhGia_UV instance);
+    partial void DeleteDanhGia_UV(DanhGia_UV instance);
     partial void InsertUV_TTD(UV_TTD instance);
     partial void UpdateUV_TTD(UV_TTD instance);
     partial void DeleteUV_TTD(UV_TTD instance);
+    partial void InsertDoanhNghiep(DoanhNghiep instance);
+    partial void UpdateDoanhNghiep(DoanhNghiep instance);
+    partial void DeleteDoanhNghiep(DoanhNghiep instance);
     partial void InsertGopY(GopY instance);
     partial void UpdateGopY(GopY instance);
     partial void DeleteGopY(GopY instance);
@@ -89,11 +92,11 @@ namespace Code_JobSearch.Models
 			OnCreated();
 		}
 		
-		public System.Data.Linq.Table<DoanhNghiep> DoanhNghieps
+		public System.Data.Linq.Table<DanhGia_UV> DanhGia_UVs
 		{
 			get
 			{
-				return this.GetTable<DoanhNghiep>();
+				return this.GetTable<DanhGia_UV>();
 			}
 		}
 		
@@ -102,6 +105,14 @@ namespace Code_JobSearch.Models
 			get
 			{
 				return this.GetTable<UV_TTD>();
+			}
+		}
+		
+		public System.Data.Linq.Table<DoanhNghiep> DoanhNghieps
+		{
+			get
+			{
+				return this.GetTable<DoanhNghiep>();
 			}
 		}
 		
@@ -162,204 +173,311 @@ namespace Code_JobSearch.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DoanhNghiep")]
-	public partial class DoanhNghiep : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DanhGia_UV")]
+	public partial class DanhGia_UV : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private int _Id_DN;
+		private int _Id_DGUV;
 		
-		private string _Ten_DN;
+		private string _NoiDung_DG;
 		
-		private string _MaSoThue_DN;
+		private System.Nullable<short> _MucDoDiem;
 		
-		private string _LinkWeb_DN;
+		private System.Nullable<System.DateTime> _ThoiGian_DG;
 		
-		private string _Logo_DN;
+		private System.Nullable<int> _Id_TTD;
 		
-		private string _DiaDiem_DN;
+		private System.Nullable<int> _Id_UV;
 		
-		private string _MoTa_DN;
+		private System.Nullable<int> _Id_NTD;
 		
-		private EntitySet<NhaTuyenDung> _NhaTuyenDungs;
+		private EntityRef<NhaTuyenDung> _NhaTuyenDung;
+		
+		private EntityRef<TinTuyenDung> _TinTuyenDung;
+		
+		private EntityRef<UngVien> _UngVien;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnId_DNChanging(int value);
-    partial void OnId_DNChanged();
-    partial void OnTen_DNChanging(string value);
-    partial void OnTen_DNChanged();
-    partial void OnMaSoThue_DNChanging(string value);
-    partial void OnMaSoThue_DNChanged();
-    partial void OnLinkWeb_DNChanging(string value);
-    partial void OnLinkWeb_DNChanged();
-    partial void OnLogo_DNChanging(string value);
-    partial void OnLogo_DNChanged();
-    partial void OnDiaDiem_DNChanging(string value);
-    partial void OnDiaDiem_DNChanged();
-    partial void OnMoTa_DNChanging(string value);
-    partial void OnMoTa_DNChanged();
+    partial void OnId_DGUVChanging(int value);
+    partial void OnId_DGUVChanged();
+    partial void OnNoiDung_DGChanging(string value);
+    partial void OnNoiDung_DGChanged();
+    partial void OnMucDoDiemChanging(System.Nullable<short> value);
+    partial void OnMucDoDiemChanged();
+    partial void OnThoiGian_DGChanging(System.Nullable<System.DateTime> value);
+    partial void OnThoiGian_DGChanged();
+    partial void OnId_TTDChanging(System.Nullable<int> value);
+    partial void OnId_TTDChanged();
+    partial void OnId_UVChanging(System.Nullable<int> value);
+    partial void OnId_UVChanged();
+    partial void OnId_NTDChanging(System.Nullable<int> value);
+    partial void OnId_NTDChanged();
     #endregion
 		
-		public DoanhNghiep()
+		public DanhGia_UV()
 		{
-			this._NhaTuyenDungs = new EntitySet<NhaTuyenDung>(new Action<NhaTuyenDung>(this.attach_NhaTuyenDungs), new Action<NhaTuyenDung>(this.detach_NhaTuyenDungs));
+			this._NhaTuyenDung = default(EntityRef<NhaTuyenDung>);
+			this._TinTuyenDung = default(EntityRef<TinTuyenDung>);
+			this._UngVien = default(EntityRef<UngVien>);
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_DN", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id_DN
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_DGUV", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id_DGUV
 		{
 			get
 			{
-				return this._Id_DN;
+				return this._Id_DGUV;
 			}
 			set
 			{
-				if ((this._Id_DN != value))
+				if ((this._Id_DGUV != value))
 				{
-					this.OnId_DNChanging(value);
+					this.OnId_DGUVChanging(value);
 					this.SendPropertyChanging();
-					this._Id_DN = value;
-					this.SendPropertyChanged("Id_DN");
-					this.OnId_DNChanged();
+					this._Id_DGUV = value;
+					this.SendPropertyChanged("Id_DGUV");
+					this.OnId_DGUVChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Ten_DN", DbType="NVarChar(MAX)")]
-		public string Ten_DN
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NoiDung_DG", DbType="NVarChar(MAX)")]
+		public string NoiDung_DG
 		{
 			get
 			{
-				return this._Ten_DN;
+				return this._NoiDung_DG;
 			}
 			set
 			{
-				if ((this._Ten_DN != value))
+				if ((this._NoiDung_DG != value))
 				{
-					this.OnTen_DNChanging(value);
+					this.OnNoiDung_DGChanging(value);
 					this.SendPropertyChanging();
-					this._Ten_DN = value;
-					this.SendPropertyChanged("Ten_DN");
-					this.OnTen_DNChanged();
+					this._NoiDung_DG = value;
+					this.SendPropertyChanged("NoiDung_DG");
+					this.OnNoiDung_DGChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MaSoThue_DN", DbType="VarChar(30)")]
-		public string MaSoThue_DN
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MucDoDiem", DbType="SmallInt")]
+		public System.Nullable<short> MucDoDiem
 		{
 			get
 			{
-				return this._MaSoThue_DN;
+				return this._MucDoDiem;
 			}
 			set
 			{
-				if ((this._MaSoThue_DN != value))
+				if ((this._MucDoDiem != value))
 				{
-					this.OnMaSoThue_DNChanging(value);
+					this.OnMucDoDiemChanging(value);
 					this.SendPropertyChanging();
-					this._MaSoThue_DN = value;
-					this.SendPropertyChanged("MaSoThue_DN");
-					this.OnMaSoThue_DNChanged();
+					this._MucDoDiem = value;
+					this.SendPropertyChanged("MucDoDiem");
+					this.OnMucDoDiemChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LinkWeb_DN", DbType="VarChar(MAX)")]
-		public string LinkWeb_DN
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThoiGian_DG", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ThoiGian_DG
 		{
 			get
 			{
-				return this._LinkWeb_DN;
+				return this._ThoiGian_DG;
 			}
 			set
 			{
-				if ((this._LinkWeb_DN != value))
+				if ((this._ThoiGian_DG != value))
 				{
-					this.OnLinkWeb_DNChanging(value);
+					this.OnThoiGian_DGChanging(value);
 					this.SendPropertyChanging();
-					this._LinkWeb_DN = value;
-					this.SendPropertyChanged("LinkWeb_DN");
-					this.OnLinkWeb_DNChanged();
+					this._ThoiGian_DG = value;
+					this.SendPropertyChanged("ThoiGian_DG");
+					this.OnThoiGian_DGChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Logo_DN", DbType="NVarChar(MAX)")]
-		public string Logo_DN
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_TTD", DbType="Int")]
+		public System.Nullable<int> Id_TTD
 		{
 			get
 			{
-				return this._Logo_DN;
+				return this._Id_TTD;
 			}
 			set
 			{
-				if ((this._Logo_DN != value))
+				if ((this._Id_TTD != value))
 				{
-					this.OnLogo_DNChanging(value);
+					if (this._TinTuyenDung.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnId_TTDChanging(value);
 					this.SendPropertyChanging();
-					this._Logo_DN = value;
-					this.SendPropertyChanged("Logo_DN");
-					this.OnLogo_DNChanged();
+					this._Id_TTD = value;
+					this.SendPropertyChanged("Id_TTD");
+					this.OnId_TTDChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiaDiem_DN", DbType="NVarChar(200)")]
-		public string DiaDiem_DN
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_UV", DbType="Int")]
+		public System.Nullable<int> Id_UV
 		{
 			get
 			{
-				return this._DiaDiem_DN;
+				return this._Id_UV;
 			}
 			set
 			{
-				if ((this._DiaDiem_DN != value))
+				if ((this._Id_UV != value))
 				{
-					this.OnDiaDiem_DNChanging(value);
+					if (this._UngVien.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnId_UVChanging(value);
 					this.SendPropertyChanging();
-					this._DiaDiem_DN = value;
-					this.SendPropertyChanged("DiaDiem_DN");
-					this.OnDiaDiem_DNChanged();
+					this._Id_UV = value;
+					this.SendPropertyChanged("Id_UV");
+					this.OnId_UVChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MoTa_DN", DbType="NVarChar(MAX)")]
-		public string MoTa_DN
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_NTD", DbType="Int")]
+		public System.Nullable<int> Id_NTD
 		{
 			get
 			{
-				return this._MoTa_DN;
+				return this._Id_NTD;
 			}
 			set
 			{
-				if ((this._MoTa_DN != value))
+				if ((this._Id_NTD != value))
 				{
-					this.OnMoTa_DNChanging(value);
+					if (this._NhaTuyenDung.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnId_NTDChanging(value);
 					this.SendPropertyChanging();
-					this._MoTa_DN = value;
-					this.SendPropertyChanged("MoTa_DN");
-					this.OnMoTa_DNChanged();
+					this._Id_NTD = value;
+					this.SendPropertyChanged("Id_NTD");
+					this.OnId_NTDChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DoanhNghiep_NhaTuyenDung", Storage="_NhaTuyenDungs", ThisKey="Id_DN", OtherKey="Id_DN")]
-		public EntitySet<NhaTuyenDung> NhaTuyenDungs
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="NhaTuyenDung_DanhGia_UV", Storage="_NhaTuyenDung", ThisKey="Id_NTD", OtherKey="Id_NTD", IsForeignKey=true)]
+		public NhaTuyenDung NhaTuyenDung
 		{
 			get
 			{
-				return this._NhaTuyenDungs;
+				return this._NhaTuyenDung.Entity;
 			}
 			set
 			{
-				this._NhaTuyenDungs.Assign(value);
+				NhaTuyenDung previousValue = this._NhaTuyenDung.Entity;
+				if (((previousValue != value) 
+							|| (this._NhaTuyenDung.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._NhaTuyenDung.Entity = null;
+						previousValue.DanhGia_UVs.Remove(this);
+					}
+					this._NhaTuyenDung.Entity = value;
+					if ((value != null))
+					{
+						value.DanhGia_UVs.Add(this);
+						this._Id_NTD = value.Id_NTD;
+					}
+					else
+					{
+						this._Id_NTD = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("NhaTuyenDung");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TinTuyenDung_DanhGia_UV", Storage="_TinTuyenDung", ThisKey="Id_TTD", OtherKey="Id_TTD", IsForeignKey=true)]
+		public TinTuyenDung TinTuyenDung
+		{
+			get
+			{
+				return this._TinTuyenDung.Entity;
+			}
+			set
+			{
+				TinTuyenDung previousValue = this._TinTuyenDung.Entity;
+				if (((previousValue != value) 
+							|| (this._TinTuyenDung.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._TinTuyenDung.Entity = null;
+						previousValue.DanhGia_UVs.Remove(this);
+					}
+					this._TinTuyenDung.Entity = value;
+					if ((value != null))
+					{
+						value.DanhGia_UVs.Add(this);
+						this._Id_TTD = value.Id_TTD;
+					}
+					else
+					{
+						this._Id_TTD = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("TinTuyenDung");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="UngVien_DanhGia_UV", Storage="_UngVien", ThisKey="Id_UV", OtherKey="Id_UV", IsForeignKey=true)]
+		public UngVien UngVien
+		{
+			get
+			{
+				return this._UngVien.Entity;
+			}
+			set
+			{
+				UngVien previousValue = this._UngVien.Entity;
+				if (((previousValue != value) 
+							|| (this._UngVien.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._UngVien.Entity = null;
+						previousValue.DanhGia_UVs.Remove(this);
+					}
+					this._UngVien.Entity = value;
+					if ((value != null))
+					{
+						value.DanhGia_UVs.Add(this);
+						this._Id_UV = value.Id_UV;
+					}
+					else
+					{
+						this._Id_UV = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("UngVien");
+				}
 			}
 		}
 		
@@ -381,18 +499,6 @@ namespace Code_JobSearch.Models
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_NhaTuyenDungs(NhaTuyenDung entity)
-		{
-			this.SendPropertyChanging();
-			entity.DoanhNghiep = this;
-		}
-		
-		private void detach_NhaTuyenDungs(NhaTuyenDung entity)
-		{
-			this.SendPropertyChanging();
-			entity.DoanhNghiep = null;
 		}
 	}
 	
@@ -427,6 +533,8 @@ namespace Code_JobSearch.Models
 		private string _MoTaBanThan;
 		
 		private System.Nullable<System.DateTime> _ThoiGianUngTuyen;
+		
+		private System.Nullable<System.DateTime> _ThoiGianDaXetDuyet;
 		
 		private string _TinhTrangUngTuyen;
 		
@@ -470,6 +578,8 @@ namespace Code_JobSearch.Models
     partial void OnMoTaBanThanChanged();
     partial void OnThoiGianUngTuyenChanging(System.Nullable<System.DateTime> value);
     partial void OnThoiGianUngTuyenChanged();
+    partial void OnThoiGianDaXetDuyetChanging(System.Nullable<System.DateTime> value);
+    partial void OnThoiGianDaXetDuyetChanged();
     partial void OnTinhTrangUngTuyenChanging(string value);
     partial void OnTinhTrangUngTuyenChanged();
     partial void OnFile_CVChanging(string value);
@@ -758,6 +868,26 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThoiGianDaXetDuyet", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ThoiGianDaXetDuyet
+		{
+			get
+			{
+				return this._ThoiGianDaXetDuyet;
+			}
+			set
+			{
+				if ((this._ThoiGianDaXetDuyet != value))
+				{
+					this.OnThoiGianDaXetDuyetChanging(value);
+					this.SendPropertyChanging();
+					this._ThoiGianDaXetDuyet = value;
+					this.SendPropertyChanged("ThoiGianDaXetDuyet");
+					this.OnThoiGianDaXetDuyetChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TinhTrangUngTuyen", DbType="NVarChar(50)")]
 		public string TinhTrangUngTuyen
 		{
@@ -938,6 +1068,240 @@ namespace Code_JobSearch.Models
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DoanhNghiep")]
+	public partial class DoanhNghiep : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id_DN;
+		
+		private string _Ten_DN;
+		
+		private string _MaSoThue_DN;
+		
+		private string _LinkWeb_DN;
+		
+		private string _Logo_DN;
+		
+		private string _DiaDiem_DN;
+		
+		private string _MoTa_DN;
+		
+		private EntitySet<NhaTuyenDung> _NhaTuyenDungs;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnId_DNChanging(int value);
+    partial void OnId_DNChanged();
+    partial void OnTen_DNChanging(string value);
+    partial void OnTen_DNChanged();
+    partial void OnMaSoThue_DNChanging(string value);
+    partial void OnMaSoThue_DNChanged();
+    partial void OnLinkWeb_DNChanging(string value);
+    partial void OnLinkWeb_DNChanged();
+    partial void OnLogo_DNChanging(string value);
+    partial void OnLogo_DNChanged();
+    partial void OnDiaDiem_DNChanging(string value);
+    partial void OnDiaDiem_DNChanged();
+    partial void OnMoTa_DNChanging(string value);
+    partial void OnMoTa_DNChanged();
+    #endregion
+		
+		public DoanhNghiep()
+		{
+			this._NhaTuyenDungs = new EntitySet<NhaTuyenDung>(new Action<NhaTuyenDung>(this.attach_NhaTuyenDungs), new Action<NhaTuyenDung>(this.detach_NhaTuyenDungs));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_DN", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id_DN
+		{
+			get
+			{
+				return this._Id_DN;
+			}
+			set
+			{
+				if ((this._Id_DN != value))
+				{
+					this.OnId_DNChanging(value);
+					this.SendPropertyChanging();
+					this._Id_DN = value;
+					this.SendPropertyChanged("Id_DN");
+					this.OnId_DNChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Ten_DN", DbType="NVarChar(MAX)")]
+		public string Ten_DN
+		{
+			get
+			{
+				return this._Ten_DN;
+			}
+			set
+			{
+				if ((this._Ten_DN != value))
+				{
+					this.OnTen_DNChanging(value);
+					this.SendPropertyChanging();
+					this._Ten_DN = value;
+					this.SendPropertyChanged("Ten_DN");
+					this.OnTen_DNChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MaSoThue_DN", DbType="VarChar(30)")]
+		public string MaSoThue_DN
+		{
+			get
+			{
+				return this._MaSoThue_DN;
+			}
+			set
+			{
+				if ((this._MaSoThue_DN != value))
+				{
+					this.OnMaSoThue_DNChanging(value);
+					this.SendPropertyChanging();
+					this._MaSoThue_DN = value;
+					this.SendPropertyChanged("MaSoThue_DN");
+					this.OnMaSoThue_DNChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LinkWeb_DN", DbType="VarChar(MAX)")]
+		public string LinkWeb_DN
+		{
+			get
+			{
+				return this._LinkWeb_DN;
+			}
+			set
+			{
+				if ((this._LinkWeb_DN != value))
+				{
+					this.OnLinkWeb_DNChanging(value);
+					this.SendPropertyChanging();
+					this._LinkWeb_DN = value;
+					this.SendPropertyChanged("LinkWeb_DN");
+					this.OnLinkWeb_DNChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Logo_DN", DbType="NVarChar(MAX)")]
+		public string Logo_DN
+		{
+			get
+			{
+				return this._Logo_DN;
+			}
+			set
+			{
+				if ((this._Logo_DN != value))
+				{
+					this.OnLogo_DNChanging(value);
+					this.SendPropertyChanging();
+					this._Logo_DN = value;
+					this.SendPropertyChanged("Logo_DN");
+					this.OnLogo_DNChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiaDiem_DN", DbType="NVarChar(200)")]
+		public string DiaDiem_DN
+		{
+			get
+			{
+				return this._DiaDiem_DN;
+			}
+			set
+			{
+				if ((this._DiaDiem_DN != value))
+				{
+					this.OnDiaDiem_DNChanging(value);
+					this.SendPropertyChanging();
+					this._DiaDiem_DN = value;
+					this.SendPropertyChanged("DiaDiem_DN");
+					this.OnDiaDiem_DNChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MoTa_DN", DbType="NVarChar(MAX)")]
+		public string MoTa_DN
+		{
+			get
+			{
+				return this._MoTa_DN;
+			}
+			set
+			{
+				if ((this._MoTa_DN != value))
+				{
+					this.OnMoTa_DNChanging(value);
+					this.SendPropertyChanging();
+					this._MoTa_DN = value;
+					this.SendPropertyChanged("MoTa_DN");
+					this.OnMoTa_DNChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DoanhNghiep_NhaTuyenDung", Storage="_NhaTuyenDungs", ThisKey="Id_DN", OtherKey="Id_DN")]
+		public EntitySet<NhaTuyenDung> NhaTuyenDungs
+		{
+			get
+			{
+				return this._NhaTuyenDungs;
+			}
+			set
+			{
+				this._NhaTuyenDungs.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_NhaTuyenDungs(NhaTuyenDung entity)
+		{
+			this.SendPropertyChanging();
+			entity.DoanhNghiep = this;
+		}
+		
+		private void detach_NhaTuyenDungs(NhaTuyenDung entity)
+		{
+			this.SendPropertyChanging();
+			entity.DoanhNghiep = null;
 		}
 	}
 	
@@ -1670,6 +2034,8 @@ namespace Code_JobSearch.Models
 		
 		private string _TenTK;
 		
+		private EntitySet<DanhGia_UV> _DanhGia_UVs;
+		
 		private EntitySet<GopY> _Gopies;
 		
 		private EntitySet<TinTuyenDung> _TinTuyenDungs;
@@ -1702,6 +2068,7 @@ namespace Code_JobSearch.Models
 		
 		public NhaTuyenDung()
 		{
+			this._DanhGia_UVs = new EntitySet<DanhGia_UV>(new Action<DanhGia_UV>(this.attach_DanhGia_UVs), new Action<DanhGia_UV>(this.detach_DanhGia_UVs));
 			this._Gopies = new EntitySet<GopY>(new Action<GopY>(this.attach_Gopies), new Action<GopY>(this.detach_Gopies));
 			this._TinTuyenDungs = new EntitySet<TinTuyenDung>(new Action<TinTuyenDung>(this.attach_TinTuyenDungs), new Action<TinTuyenDung>(this.detach_TinTuyenDungs));
 			this._DoanhNghiep = default(EntityRef<DoanhNghiep>);
@@ -1877,6 +2244,19 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="NhaTuyenDung_DanhGia_UV", Storage="_DanhGia_UVs", ThisKey="Id_NTD", OtherKey="Id_NTD")]
+		public EntitySet<DanhGia_UV> DanhGia_UVs
+		{
+			get
+			{
+				return this._DanhGia_UVs;
+			}
+			set
+			{
+				this._DanhGia_UVs.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="NhaTuyenDung_GopY", Storage="_Gopies", ThisKey="Id_NTD", OtherKey="Id_NTD")]
 		public EntitySet<GopY> Gopies
 		{
@@ -1989,6 +2369,18 @@ namespace Code_JobSearch.Models
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_DanhGia_UVs(DanhGia_UV entity)
+		{
+			this.SendPropertyChanging();
+			entity.NhaTuyenDung = this;
+		}
+		
+		private void detach_DanhGia_UVs(DanhGia_UV entity)
+		{
+			this.SendPropertyChanging();
+			entity.NhaTuyenDung = null;
 		}
 		
 		private void attach_Gopies(GopY entity)
@@ -2334,9 +2726,13 @@ namespace Code_JobSearch.Models
 		
 		private string _KinhNghiemLam;
 		
+		private string _LinhVuc;
+		
 		private System.Nullable<int> _Id_NTD;
 		
 		private System.Nullable<int> _Id_PTTD;
+		
+		private EntitySet<DanhGia_UV> _DanhGia_UVs;
 		
 		private EntitySet<UV_TTD> _UV_TTDs;
 		
@@ -2380,6 +2776,8 @@ namespace Code_JobSearch.Models
     partial void OnXetDuyetChanged();
     partial void OnKinhNghiemLamChanging(string value);
     partial void OnKinhNghiemLamChanged();
+    partial void OnLinhVucChanging(string value);
+    partial void OnLinhVucChanged();
     partial void OnId_NTDChanging(System.Nullable<int> value);
     partial void OnId_NTDChanged();
     partial void OnId_PTTDChanging(System.Nullable<int> value);
@@ -2388,6 +2786,7 @@ namespace Code_JobSearch.Models
 		
 		public TinTuyenDung()
 		{
+			this._DanhGia_UVs = new EntitySet<DanhGia_UV>(new Action<DanhGia_UV>(this.attach_DanhGia_UVs), new Action<DanhGia_UV>(this.detach_DanhGia_UVs));
 			this._UV_TTDs = new EntitySet<UV_TTD>(new Action<UV_TTD>(this.attach_UV_TTDs), new Action<UV_TTD>(this.detach_UV_TTDs));
 			this._NhaTuyenDung = default(EntityRef<NhaTuyenDung>);
 			this._PhiTinTuyenDung = default(EntityRef<PhiTinTuyenDung>);
@@ -2714,6 +3113,26 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LinhVuc", DbType="NVarChar(100)")]
+		public string LinhVuc
+		{
+			get
+			{
+				return this._LinhVuc;
+			}
+			set
+			{
+				if ((this._LinhVuc != value))
+				{
+					this.OnLinhVucChanging(value);
+					this.SendPropertyChanging();
+					this._LinhVuc = value;
+					this.SendPropertyChanged("LinhVuc");
+					this.OnLinhVucChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id_NTD", DbType="Int")]
 		public System.Nullable<int> Id_NTD
 		{
@@ -2759,6 +3178,19 @@ namespace Code_JobSearch.Models
 					this.SendPropertyChanged("Id_PTTD");
 					this.OnId_PTTDChanged();
 				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TinTuyenDung_DanhGia_UV", Storage="_DanhGia_UVs", ThisKey="Id_TTD", OtherKey="Id_TTD")]
+		public EntitySet<DanhGia_UV> DanhGia_UVs
+		{
+			get
+			{
+				return this._DanhGia_UVs;
+			}
+			set
+			{
+				this._DanhGia_UVs.Assign(value);
 			}
 		}
 		
@@ -2863,6 +3295,18 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
+		private void attach_DanhGia_UVs(DanhGia_UV entity)
+		{
+			this.SendPropertyChanging();
+			entity.TinTuyenDung = this;
+		}
+		
+		private void detach_DanhGia_UVs(DanhGia_UV entity)
+		{
+			this.SendPropertyChanging();
+			entity.TinTuyenDung = null;
+		}
+		
 		private void attach_UV_TTDs(UV_TTD entity)
 		{
 			this.SendPropertyChanging();
@@ -2894,6 +3338,8 @@ namespace Code_JobSearch.Models
 		
 		private string _TenTK;
 		
+		private EntitySet<DanhGia_UV> _DanhGia_UVs;
+		
 		private EntitySet<UV_TTD> _UV_TTDs;
 		
 		private EntitySet<GopY> _Gopies;
@@ -2922,6 +3368,7 @@ namespace Code_JobSearch.Models
 		
 		public UngVien()
 		{
+			this._DanhGia_UVs = new EntitySet<DanhGia_UV>(new Action<DanhGia_UV>(this.attach_DanhGia_UVs), new Action<DanhGia_UV>(this.detach_DanhGia_UVs));
 			this._UV_TTDs = new EntitySet<UV_TTD>(new Action<UV_TTD>(this.attach_UV_TTDs), new Action<UV_TTD>(this.detach_UV_TTDs));
 			this._Gopies = new EntitySet<GopY>(new Action<GopY>(this.attach_Gopies), new Action<GopY>(this.detach_Gopies));
 			this._HoSoXinViecs = new EntitySet<HoSoXinViec>(new Action<HoSoXinViec>(this.attach_HoSoXinViecs), new Action<HoSoXinViec>(this.detach_HoSoXinViecs));
@@ -3053,6 +3500,19 @@ namespace Code_JobSearch.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="UngVien_DanhGia_UV", Storage="_DanhGia_UVs", ThisKey="Id_UV", OtherKey="Id_UV")]
+		public EntitySet<DanhGia_UV> DanhGia_UVs
+		{
+			get
+			{
+				return this._DanhGia_UVs;
+			}
+			set
+			{
+				this._DanhGia_UVs.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="UngVien_UV_TTD", Storage="_UV_TTDs", ThisKey="Id_UV", OtherKey="Id_UV")]
 		public EntitySet<UV_TTD> UV_TTDs
 		{
@@ -3144,6 +3604,18 @@ namespace Code_JobSearch.Models
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_DanhGia_UVs(DanhGia_UV entity)
+		{
+			this.SendPropertyChanging();
+			entity.UngVien = this;
+		}
+		
+		private void detach_DanhGia_UVs(DanhGia_UV entity)
+		{
+			this.SendPropertyChanging();
+			entity.UngVien = null;
 		}
 		
 		private void attach_UV_TTDs(UV_TTD entity)

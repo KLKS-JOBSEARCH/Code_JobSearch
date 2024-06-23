@@ -37,10 +37,12 @@ namespace Code_JobSearch.Areas.Admin.Controllers
                           select new HistoryOfCVApplyViewModel
                           {
                               TinTuyenDung = ttd,
-                              UV_TTD = db.UV_TTDs.Where(u => u.Id_TTD == uv_ttd.Id_TTD).ToList()
+                              UV_TTD = db.UV_TTDs.Where(u => u.Id_TTD == uv_ttd.Id_TTD).ToList(),
+                              DanhGia_UV = db.DanhGia_UVs.Where(dg => dg.Id_UV == uv_ttd.Id_UV && dg.Id_TTD == uv_ttd.Id_TTD).ToList()
                           };
 
             return View(history.ToList());
         }
+
     }
 }
