@@ -4,6 +4,7 @@
     ViewBag.Title = "Chi tiết tuyển dụng";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <style>
     .rounded-circle {
         width: 100px;
@@ -22,6 +23,53 @@
             top: 50%;
             transform: translate(-50%, -50%);
         }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: auto;
+        height: 236px;
+        color: #ffffff;
+        background-color: rgba(40, 167, 69, 0.5); 
+        border: none;
+        font-size: 1.5rem;
+        transition: background-color 0.3s ease;
+    }
+
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            background-color: rgba(40, 167, 69, 0.8);
+        }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-image: none;
+    }
+
+        .carousel-control-prev-icon::before {
+            content: '‹'; 
+        }
+
+        .carousel-control-next-icon::before {
+            content: '›'; 
+        }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        color: white;
+        font-size: 20px;
+    }
+
+        .carousel-control-prev-icon:hover,
+        .carousel-control-next-icon:hover {
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .card-body {
+        height: 235px; 
+        overflow: hidden; 
+    }
 </style>
 
 <div class="container">
@@ -31,7 +79,6 @@
     <div class="row">
         <div class="col-md-8">
             <div>
-                <!-- Đặt kích thước cố định cho card -->
                 <h3 class="card-title">@Html.DisplayFor(model => model.TinTuyenDung.TieuDe_TTD)</h3>
                 <dl class="row">
                     <dt class="col-sm-4"><i class="bi bi-calendar"></i> Hạn nộp hồ sơ</dt>
@@ -45,14 +92,10 @@
                 </dl>
             </div>
             <a href="@Url.Action("UngtuyenCV", "User", new { idTTD = Model.TinTuyenDung.Id_TTD })" class="btn btn-primary mb-4">Ứng tuyển ngay</a>
-
-
-
         </div>
 
         <div class="col-md-4">
             <div class="card border-primary" style="min-height: 100px;">
-                <!-- Đặt kích thước cố định cho card -->
                 <div class="card-body">
                     <h3 class="card-title text-right">Thông tin doanh nghiệp</h3>
                     <div class="row">
@@ -74,7 +117,6 @@
             </div>
         </div>
     </div>
-
 
     <hr />
 
@@ -99,7 +141,7 @@
                             }
                             if (i < words.Length - 1)
                             {
-                                <text> </text> <!-- Thêm khoảng trắng giữa các từ -->
+                                <text> </text>
                             }
                         }
                         <br />
@@ -128,5 +170,60 @@
         </div>
     </div>
 
-</div>
+    <hr />
 
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Công việc liên quan</h3>
+            <div id="relatedJobsCarousel" class="carousel slide" data-bs-ride="false">
+                <div class="carousel-inner">
+                    @if (ViewBag.RelatedJobs != null && ViewBag.RelatedJobs.Count > 0)
+                    {
+                        for (int i = 0; i < ViewBag.RelatedJobs.Count; i += 3)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <div class="row">
+                                    @for (int j = i; j < i + 3 && j < ViewBag.RelatedJobs.Count; j++)
+                                    {
+                                        if (DateTime.Now <= ViewBag.RelatedJobs[j].HanTuyenDung) 
+                                        {
+                                            <div class="col-md-4">
+                                                <div class="card mb-3">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">
+                                                            <a href="@Url.Action("DetailsJob", new { id = ViewBag.RelatedJobs[j].Id_TTD })">@ViewBag.RelatedJobs[j].TieuDe_TTD</a>
+                                                        </h5>
+                                                        <p class="card-text"><i class="bi bi-geo-alt-fill"></i> Địa điểm: @ViewBag.RelatedJobs[j].DiaDiem_TTD</p>
+                                                        <p class="card-text"><i class="bi bi-cash"></i> Mức lương: @ViewBag.RelatedJobs[j].MucLuongTD</p>
+                                                        <p class="card-text"><i class="bi bi-people-fill"></i> Số lượng tuyển: @ViewBag.RelatedJobs[j].SoLuongTuyen</p>
+                                                        <p class="card-text"><i class="bi bi-calendar"></i> Hạn nộp hồ sơ: @ViewBag.RelatedJobs[j].HanTuyenDung.ToString("dd/MM/yyyy")</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="carousel-item active">
+                            <p>No related jobs found.</p>
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#relatedJobsCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#relatedJobsCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+</div>

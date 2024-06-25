@@ -58,7 +58,6 @@ namespace Code_JobSearch.Controllers
             return View(tinTuyenDungs);
         }
 
-
         public ActionResult DetailsJob(int id)
         {
             var viewModel = (from ttd in db.TinTuyenDungs
@@ -77,11 +76,24 @@ namespace Code_JobSearch.Controllers
                 return HttpNotFound();
             }
 
+            // Lấy danh sách các công việc liên quan
+            var relatedJobs = GetRelatedJobs(viewModel.TinTuyenDung.LinhVuc, id);
+
             ViewBag.Title = "Thông tin tuyển dụng";
             ViewBag.ProductName = viewModel.TinTuyenDung.TieuDe_TTD;
+            ViewBag.RelatedJobs = relatedJobs;
 
             return View(viewModel);
         }
+
+        private List<TinTuyenDung> GetRelatedJobs(string linhVuc, int excludeId)
+        {
+            return db.TinTuyenDungs
+                     .Where(ttd => ttd.LinhVuc == linhVuc && ttd.Id_TTD != excludeId)
+                     .ToList();
+        }
+
+
 
         #endregion
 
