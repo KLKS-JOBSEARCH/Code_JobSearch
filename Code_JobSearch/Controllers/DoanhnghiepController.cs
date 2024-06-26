@@ -1206,19 +1206,40 @@ namespace Code_JobSearch.Controllers
         {
             var query = db.UV_TTDs.Where(o => o.Id_TTD == id);
 
+
             // Tìm kiếm theo tình trạng ứng tuyển
             if (!string.IsNullOrEmpty(searchStatusUV))
             {
                 query = query.Where(o => o.TinhTrangUngTuyen == searchStatusUV);
             }
 
+            var allResults = query.OrderByDescending(u => u.Id_UT).ToList();
+            var filteredResults = new List<UV_TTD>();
+            var passedApplicants = new HashSet<int>();
 
-            int totalItems = query.Count();
+            foreach (var item in allResults)
+            {
+                if (item.TinhTrangUngTuyen == "Đậu")
+                {
+                    if (!passedApplicants.Contains(item.Id_UV.Value))
+                    {
+                        filteredResults.Add(item);
+                        passedApplicants.Add(item.Id_UV.Value);
+                    }
+                }
+                else if (!passedApplicants.Contains(item.Id_UV.Value))
+                {
+                    filteredResults.Add(item);
+                }
+            }
+
+            int totalItems = filteredResults.Count();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-            var uvs = query.OrderByDescending(u => u.Id_UT)
-                                .Skip((page - 1) * pageSize)
+            var uvs = filteredResults.Skip((page - 1) * pageSize)
                                 .Take(pageSize)
                                 .ToList();
+
+
             ViewBag.TotalItems = totalItems;
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
