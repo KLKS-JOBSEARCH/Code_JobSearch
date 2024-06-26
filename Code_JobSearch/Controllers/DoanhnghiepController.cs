@@ -1232,7 +1232,18 @@ namespace Code_JobSearch.Controllers
                     filteredResults.Add(item);
                 }
             }
-
+            for (int i = 0; i < filteredResults.Count; i++)
+            {
+                for (int j = 0; j < filteredResults.Count; j++)
+                {
+                    if (filteredResults[j].Id_UV == filteredResults[i].Id_UV
+                        && filteredResults[j].TinhTrangUngTuyen != filteredResults[i].TinhTrangUngTuyen
+                        && filteredResults[i].TinhTrangUngTuyen == "Đậu")
+                    {
+                        filteredResults.Remove(filteredResults[j]);
+                    }
+                }
+            }
             int totalItems = filteredResults.Count();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
             var uvs = filteredResults.Skip((page - 1) * pageSize)

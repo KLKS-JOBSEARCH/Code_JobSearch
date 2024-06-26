@@ -2028,6 +2028,7 @@
     <Content Include="Areas\Admin\Views\Admin\Feedback.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\postingfee.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\CreateFee.cshtml" />
+    <Content Include="Content\CvUser\2024_INTERNSHIP_REPORT.pdf" />
     <None Include="Models\Database.dbml.layout">
       <DependentUpon>Database.dbml</DependentUpon>
     </None>

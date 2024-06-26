@@ -7,15 +7,14 @@
 <div class="container mt-5">
     <h2 class="mb-4" style="color:green;">Thông tin hồ sơ của bạn</h2>
 
-    <div class="mb-3">
-        <a href="@Url.Action("Create", "User")" class="btn btn-success">
-            <i class="fas fa-plus"></i> Thêm CV vào hồ sơ của bạn
-        </a>
-    </div>
-
     @if (!Model.HoSoXinViec.Any())
     {
-        <p>Trống,<a href="@Url.Action("Create", "User")"> thêm CV của bạn vào hệ thống</a></p>
+        <div class="mb-3">
+            <a href="@Url.Action("Create", "User")" class="btn btn-success">
+                <i class="fas fa-plus"></i> Thêm CV vào hồ sơ của bạn
+            </a>
+        </div>
+        <p>Trống, <a href="@Url.Action("Create", "User")">thêm CV của bạn vào hệ thống</a></p>
     }
     else
     {
@@ -48,6 +47,5 @@
         </div>
     }
 </div>
-
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
