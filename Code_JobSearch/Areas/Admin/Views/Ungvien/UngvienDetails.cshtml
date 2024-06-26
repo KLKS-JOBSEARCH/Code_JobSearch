@@ -3,6 +3,11 @@
 @{
     ViewBag.Title = "Lịch sử ứng tuyển ứng viên";
     Layout = "~/Areas/Admin/Views/Shared/admin.cshtml";
+
+    double averageRating = ViewBag.AverageRating;
+    int fullStars = (int)Math.Floor(averageRating);
+    int emptyStars = 5 - fullStars;
+    double fractionalStar = averageRating - fullStars;
 }
 
 <div class="container mt-4">
@@ -62,7 +67,20 @@
 
         <div class="card mb-4">
             <div class="card-header">
-                Đánh giá ứng viên
+                Đánh giá ứng viên - Điểm trung bình: 
+                @for (int i = 0; i < fullStars; i++)
+                {
+                    <i class="fa fa-star text-warning"></i>
+                }
+                @if (fractionalStar >= 0.5)
+                {
+                    <i class="fa fa-star-half-alt text-warning"></i>
+                    emptyStars--;
+                }
+                @for (int i = 0; i < emptyStars; i++)
+                {
+                    <i class="fa fa-star-o text-warning"></i>
+                }
             </div>
             <div class="card-body">
                 @if (Model.SelectMany(m => m.DanhGia_UV).Any())
@@ -71,7 +89,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Nội dung</th>
-                                <th scope="col">Mức độ</th>
+                                <th scope="col">Đánh giá</th>
                                 <th scope="col">Thời gian</th>
                                 <th scope="col">Từ việc làm</th> 
                             </tr>
@@ -83,7 +101,19 @@
                                 {
                                     <tr>
                                         <td>@dg.NoiDung_DG</td>
-                                        <td>@dg.MucDoDiem / 5 </td>
+                                        <td>
+                                            @for (int i = 1; i <= 1; i++)
+                                            {
+                                                if (i <= dg.MucDoDiem)
+                                                {
+                                                   @dg.MucDoDiem<i class="fa fa-star text-warning"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa fa-star-o text-warning"></i>
+                                                }
+                                            }
+                                        </td>
                                         <td>@dg.ThoiGian_DG.Value.ToString("dd/MM/yyyy")</td>
                                         <td>@Html.ActionLink(item.TinTuyenDung.TieuDe_TTD, "DetailJobPortal", "Admin", new { id = item.TinTuyenDung.Id_TTD }, null)</td> 
                                     </tr>

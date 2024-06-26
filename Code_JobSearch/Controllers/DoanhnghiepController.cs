@@ -41,6 +41,21 @@ namespace Code_JobSearch.Controllers
             "Kiên Giang", "Cần Thơ", "Hậu Giang", "Sóc Trăng", "Bạc Liêu", "Cà Mau"
         };
 
+        // Danh sách lĩnh vực
+        private List<string> danhSachLinhVuc = new List<string>
+        {
+            "An toàn lao động","Bán hàng kỹ thuật","Bán lẻ / Bán sỉ", "Báo chí / Truyền hình", "Bảo hiểm",
+            "Bảo trì / Sửa chữa", "Bất động sản", "Biên / Phiên dịch", "Bưu chính - Viễn thông",
+            "Chứng khoáng / Vàng / Ngoại tệ", "Cơ khí / Chế tạo / Tự động hóa", "Công nghệ cao",
+            "Công nghệ Ô tô", "Công nghệ thông tin", "Dầu khí / Hóa chất", "Dệt may / Giày da",
+            "Địa chất / Khoáng sản", "Dịch vụ khách hàng",  "Điện / Điện tử / Điện lạnh",
+            "Điện tử viễn thông", "Du lịch", "Dược phẩm / Công nghệ sinh học",
+            "Giáo dục / Đào tạo", "Hành chỉnh / Văn phòng",  "Hóa học / Sinh học",
+            "IT phần cứng","IT phần mềm", "Kế toán / Kiểm toán", "Khách sạn / Nhà hàng","Kiến trúc",
+            "Marketing / Truyền thông / Quảng cáo","Thiết kế đồ họa / Thiết kế nội thất",
+            "Xuất nhập khẩu", "Y tế / Dược", "Ngành nghề khác"
+        };
+
         #region Màn hình chính
         public ActionResult Index()
         {
@@ -51,11 +66,12 @@ namespace Code_JobSearch.Controllers
         public ActionResult FilterPosts(int? month, int? year)
         {
 
+            NhaTuyenDung ntd = Session["NTD"] as NhaTuyenDung;
 
             var postCounts = db.TinTuyenDungs
                                 .Where(o => o.ThoiGianDangTuyen.Value.Month == month &&
                                             o.ThoiGianDangTuyen.Value.Year == year &&
-                                            o.XetDuyet == "Duyệt thành công")
+                                            o.XetDuyet == "Duyệt thành công" && o.Id_NTD == ntd.Id_NTD)
                                 .GroupBy(o => o.ThoiGianDangTuyen.Value.Day)
                                 .Select(g => new { day = g.Key, postCount = g.Count() })
                                 .OrderBy(x => x.day)
@@ -64,10 +80,11 @@ namespace Code_JobSearch.Controllers
             var candidateCounts = db.UV_TTDs
                                     .Where(o => o.ThoiGianUngTuyen.Value.Month == month &&
                                                 o.ThoiGianUngTuyen.Value.Year == year &&
-                                                o.TinhTrangUngTuyen == "Đã ứng tuyển"
+                                                (o.TinhTrangUngTuyen == "Đã ứng tuyển"
                                                 || o.TinhTrangUngTuyen == "Đậu"
                                                 || o.TinhTrangUngTuyen == "Rớt"
-                                                || o.TinhTrangUngTuyen == "Đang xét duyệt")
+                                                || o.TinhTrangUngTuyen == "Đang xét duyệt") &&
+                                                db.TinTuyenDungs.Any(ttd => ttd.Id_TTD == o.Id_TTD && ttd.Id_NTD == ntd.Id_NTD))
                                     .GroupBy(o => o.ThoiGianUngTuyen.Value.Day)
                                     .Select(g => new { day = g.Key, candidateCount = g.Count() })
                                     .OrderBy(x => x.day)
@@ -76,7 +93,8 @@ namespace Code_JobSearch.Controllers
             var passedCandidateCounts = db.UV_TTDs
                                           .Where(o => o.ThoiGianUngTuyen.Value.Month == month &&
                                                       o.ThoiGianUngTuyen.Value.Year == year &&
-                                                      o.TinhTrangUngTuyen == "Đậu")
+                                                      o.TinhTrangUngTuyen == "Đậu" &&
+                                                      db.TinTuyenDungs.Any(ttd => ttd.Id_TTD == o.Id_TTD && ttd.Id_NTD == ntd.Id_NTD))
                                           .GroupBy(o => o.ThoiGianUngTuyen.Value.Day)
                                           .Select(g => new { day = g.Key, passedCandidateCount = g.Count() })
                                           .OrderBy(x => x.day)
@@ -505,6 +523,7 @@ namespace Code_JobSearch.Controllers
         {
 
             ViewBag.DSThanhPho = danhSachThanhPho;
+            ViewBag.DSLinhVuc = danhSachLinhVuc;
             return View();
         }
         [HttpPost]
@@ -512,6 +531,7 @@ namespace Code_JobSearch.Controllers
         public ActionResult Create(int id, TinTuyenDung ttd)
         {
             ViewBag.DSThanhPho = danhSachThanhPho;
+            ViewBag.DSLinhVuc = danhSachLinhVuc;
             if (ModelState.IsValid)
             {
                 var logoDN = (from ntd in db.NhaTuyenDungs
@@ -575,6 +595,7 @@ namespace Code_JobSearch.Controllers
         {
 
             ViewBag.DSThanhPho = danhSachThanhPho;
+            ViewBag.DSLinhVuc = danhSachLinhVuc;
             var tinTuyenDung = db.TinTuyenDungs.FirstOrDefault(t => t.Id_TTD == id);
             var idnts = db.TinTuyenDungs.SingleOrDefault(o => o.Id_TTD == id)?.Id_NTD;
             if (tinTuyenDung == null)
@@ -602,7 +623,7 @@ namespace Code_JobSearch.Controllers
         public ActionResult Edit(int id, TinTuyenDung ttd)
         {
             ViewBag.DSThanhPho = danhSachThanhPho;
-
+            ViewBag.DSLinhVuc = danhSachLinhVuc;
             if (ModelState.IsValid)
             {
                 var logoDN = (from ttdung in db.TinTuyenDungs
@@ -678,6 +699,7 @@ namespace Code_JobSearch.Controllers
                 ttds.SoLuongTuyen = ttd.SoLuongTuyen;
                 ttds.HinhThucLamViec = ttd.HinhThucLamViec;
                 ttds.DiaDiem_TTD = ttd.DiaDiem_TTD;
+                ttds.LinhVuc = ttd.LinhVuc;
                 ttds.MoTa_TTD = ttd.MoTa_TTD;
                 ttds.KinhNghiemLam = ttd.KinhNghiemLam;
                 db.SubmitChanges();
@@ -728,8 +750,289 @@ namespace Code_JobSearch.Controllers
         }
         #endregion
 
+        //Tính trung bình cộng điểm thông qua id_UV
+        public double AverageMucDoDiem(int idUV)
+        {
+            var sum = db.DanhGia_UVs
+                            .Where(dg => dg.Id_UV == idUV)
+                            .Sum(dg => dg.MucDoDiem);
+            var count = db.DanhGia_UVs.Where(dg => dg.Id_UV == idUV).Count();
+            var average = sum / (double)count;
+            return average.HasValue ? Math.Round(average.Value, 2) : -1;
+        }
 
-        #region Gửi thông báo cho ứng viên
+
+
+        #region Danh sách ứng viên hệ thống
+
+        public ActionResult ListUV(int? id, int page = 1, int pageSize = 5)
+        {
+            if (id.HasValue)
+            {
+                ViewBag.IDNTD = id.Value;
+                var query = db.UngViens.ToList();
+                int totalItems = query.Count();
+                int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+                var paginatedPosts = query.Skip((page - 1) * pageSize)
+                                         .Take(pageSize).ToList();
+                //Danh sách điểm
+                List<double> ListDiemDG = new List<double>();
+                foreach (UngVien uv in db.UngViens)
+                {
+                    var dtb = AverageMucDoDiem(uv.Id_UV);
+                    ListDiemDG.Add(dtb);
+                }
+                ViewBag.DiemDanhGia = ListDiemDG.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                ViewBag.TotalItems = totalItems;
+                ViewBag.Page = page;
+                ViewBag.PageSize = pageSize;
+                ViewBag.TotalPages = totalPages;
+
+                return View(paginatedPosts);
+            }
+            else
+            {
+                return RedirectToAction("Login_DoanhNghiep", "Auth");
+            }
+        }
+        #endregion
+
+        #region Danh sách đánh giá ứng viên
+
+        public ActionResult ListDG(int? id, string searchLinhVuc, int page = 1, int pageSize = 5)
+        {
+            ViewBag.LinhVucList = danhSachLinhVuc;
+            if (id.HasValue)
+            {
+
+                var query = db.DanhGia_UVs.Where(o => o.Id_UV.Equals(id));
+                if (query.Count() > 0)
+                {
+
+
+                    int totalItems = query.Count();
+                    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+                    var paginatedPosts = query.OrderByDescending(o => o.Id_DGUV)
+                                            .Skip((page - 1) * pageSize)
+                                             .Take(pageSize).ToList();
+
+                    var transformedPosts = paginatedPosts.Select(dg_uv => new DanhGia_UV_NTD_TTD
+                    {
+                        uv = db.UngViens.FirstOrDefault(uv => uv.Id_UV == dg_uv.Id_UV),
+                        ntd = db.NhaTuyenDungs.FirstOrDefault(ntd => ntd.Id_NTD == dg_uv.Id_NTD),
+                        dn = (from dn in db.DoanhNghieps
+                              join ntd in db.NhaTuyenDungs
+                              on dn.Id_DN equals ntd.Id_DN
+                              where ntd.Id_NTD.Equals(dg_uv.Id_NTD)
+                              select dn).FirstOrDefault(),
+                        ttd = db.TinTuyenDungs.FirstOrDefault(ttd => ttd.Id_TTD == dg_uv.Id_TTD),
+                        dg = dg_uv
+                    });
+
+                    // Tìm kiếm theo lĩnh vực
+                    if (!string.IsNullOrEmpty(searchLinhVuc))
+                    {
+                        transformedPosts = transformedPosts.Where(o => o.ttd.LinhVuc == searchLinhVuc).ToList();
+                    }
+                    else
+                    {
+                        transformedPosts = transformedPosts.ToList();
+                    }
+                    var sum = transformedPosts.Where(o => o.uv.Id_UV.Equals(id)).Sum(o => o.dg.MucDoDiem);
+                    var count = transformedPosts.Where(o => o.uv.Id_UV.Equals(id)).Count();
+                    var average = sum / (double)count;
+                    double TongDiem = Math.Round(average.Value, 2);
+
+                    ViewBag.TongDiem = TongDiem;
+                    ViewBag.TotalItems = totalItems;
+                    ViewBag.Page = page;
+                    ViewBag.PageSize = pageSize;
+                    ViewBag.TotalPages = totalPages;
+                    ViewBag.idUV = id;
+                    ViewBag.SearchLinhVuc = searchLinhVuc;
+                    return View(transformedPosts);
+                }
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Login_DoanhNghiep", "Auth");
+            }
+        }
+        #endregion
+
+        #region Gửi lời nhắn đến ứng viên
+        public static bool SendMessageDN(string email, string dn, string title, string text, string filePath)
+        {
+            try
+            {
+                var client = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587,
+                    Credentials = new NetworkCredential("jobstarvn@gmail.com", "jxtt juxf gbqy nbdp"),
+                    EnableSsl = true,
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress("jobstarvn@gmail.com"),
+                    Subject = title,
+                    Body = $@"<html>
+                <head>
+                    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css' rel='stylesheet'>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='content'>
+                            <h3>Thân gửi bạn! Đây lời nhắn của doanh nghiệp {dn}</h3>
+                            <h4>Nội dung</h4>
+                            <p>{text}</p>
+                        </div>
+                    </div>
+                </body>
+            </html>",
+                    IsBodyHtml = true,
+                };
+
+                mailMessage.To.Add(email);
+
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    mailMessage.Attachments.Add(new Attachment(filePath));
+                }
+
+                client.Send(mailMessage);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        [HttpPost]
+        public ActionResult SendEmailDN(int id, int idNTD, string subject, string body, HttpPostedFileBase file)
+        {
+            try
+            {
+
+                string filePath = null;
+                if (file != null && file.ContentLength > 0)
+                {
+                    var fileName = Path.GetFileName(file.FileName);
+                    var path = Path.Combine(Server.MapPath("~/Content/CvUser/"), fileName);
+                    file.SaveAs(path);
+                    filePath = path;
+                }
+                var uv = db.UngViens.FirstOrDefault(o => o.Id_UV.Equals(id));
+
+                var iddn = db.NhaTuyenDungs.FirstOrDefault(o => o.Id_NTD.Equals(idNTD)).Id_DN;
+                string tendn = db.DoanhNghieps.FirstOrDefault(o => o.Id_DN.Equals(iddn)).Ten_DN;
+
+                bool isSent = SendMessageDN(uv.Email_TKUV, tendn, subject, body, filePath);
+
+
+                return Json(new { success = isSent });
+
+
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+        }
+
+
+        #endregion
+
+        #region Đánh giá ứng viên theo tin
+        [HttpGet]
+        public ActionResult DanhGiaUV(int? idut)
+        {
+            var ut = db.UV_TTDs.SingleOrDefault(o => o.Id_UT.Equals(idut));
+            var dguv = db.DanhGia_UVs.SingleOrDefault(o => o.Id_TTD.Equals(ut.Id_TTD) && o.Id_UV.Equals(ut.Id_UV));
+            ViewBag.idut = idut;
+            if (dguv != null)
+            {
+
+                TempData["isDanhGia"] = "Ứng viên đã được đánh giá trong tin tuyển dụng này!";
+                return RedirectToAction("XemChiTiet", new { id = idut });
+            }
+            else
+            {
+                if (ut.TinhTrangUngTuyen != "Đậu")
+                {
+                    TempData["isDanhGia"] = "Ứng viên chưa đậu không thể đánh giá!";
+                    return RedirectToAction("XemChiTiet", new { id = idut });
+                }
+                //Mở khóa chỗ này để xét thời gian đánh giá ứng viên tối thiểu cách ngày ứng viên đậu 21 ngày
+                //else
+                //{
+                //    if (ut.ThoiGianDaXetDuyet.Value.Date < DateTime.Now.Date.AddDays(21))
+                //    {
+                //        TempData["isDanhGia"] = "Thời gian đã xét duyệt tới hiện tại phải ít nhất 21 ngày mới có thể đánh giá!";
+                //        return RedirectToAction("XemChiTiet", new { id = idut });
+                //    }
+                //}
+            }
+            return View();
+        }
+        [HttpPost]
+        public ActionResult DanhGiaUV(int? idut, DanhGia_UV dg, FormCollection f)
+        {
+            var ut = db.UV_TTDs.SingleOrDefault(o => o.Id_UT.Equals(idut));
+            var dguv = db.DanhGia_UVs.SingleOrDefault(o => o.Id_TTD.Equals(ut.Id_TTD) && o.Id_UV.Equals(ut.Id_UV));
+            var ttd = db.TinTuyenDungs.SingleOrDefault(o => o.Id_TTD.Equals(ut.Id_TTD));
+            ViewBag.idut = idut;
+            if (dguv == null)
+            {
+                var noidung = f["NoiDungDG"];
+                var mucdodanhgia = f["MucDoDanhGia"];
+
+                ViewBag.NoiDungDG = noidung;
+
+                if (string.IsNullOrEmpty(noidung))
+                {
+                    ViewData["Loi1"] = "Vui lòng điền nội dung!";
+                    return View();
+                }
+
+                if (string.IsNullOrEmpty(mucdodanhgia) || !int.TryParse(mucdodanhgia, out int mucDo))
+                {
+                    ViewData["Loi2"] = "Vui lòng chọn mức độ đánh giá!";
+                    return View();
+                }
+
+                if (mucDo < 1 || mucDo > 5)
+                {
+                    ViewData["Loi2"] = "Mức độ đánh giá phải từ 1 đến 5!";
+                    return View();
+                }
+
+                dg.Id_NTD = ttd.Id_NTD;
+                dg.Id_UV = ut.Id_UV;
+                dg.Id_TTD = ut.Id_TTD;
+                dg.NoiDung_DG = noidung;
+                dg.MucDoDiem = Convert.ToInt16(mucdodanhgia);
+                dg.ThoiGian_DG = DateTime.Now;
+
+                db.DanhGia_UVs.InsertOnSubmit(dg);
+                db.SubmitChanges();
+
+                ViewBag.TB = "Thành công!";
+                return RedirectToAction("XemChiTiet", new { id = idut });
+            }
+            else
+            {
+                ViewBag.LoiDG = "Ứng viên đã được đánh giá trong tin tuyển dụng này";
+
+            }
+            return View();
+        }
+        #endregion
+
+        #region Gửi thông báo cho ứng viên Đậu hoặc Rớt
         public static bool SendMessageDau_Rot(string email, string tieudeTin, string dn, string title, string text, string status, string filePath)
         {
             try
@@ -807,8 +1110,9 @@ namespace Code_JobSearch.Controllers
                     if (uvs.TinhTrangUngTuyen == "Đã ứng tuyển" || uvs.TinhTrangUngTuyen == "Đang xét duyệt")
                     {
                         uvs.TinhTrangUngTuyen = status;
+                        uvs.ThoiGianDaXetDuyet = DateTime.Now;
                         db.SubmitChanges();
-                        //return RedirectToAction("ListUT", new { id = uvs.Id_TTD });
+
                     }
                 }
                 return Json(new { success = isSent });
@@ -828,11 +1132,18 @@ namespace Code_JobSearch.Controllers
         public ActionResult XemChiTiet(int id)
         {
             var uvttd = db.UV_TTDs.SingleOrDefault(o => o.Id_UT == id);
+            var dg = db.DanhGia_UVs.SingleOrDefault(o => o.Id_TTD == uvttd.Id_TTD && o.Id_UV == uvttd.Id_UV);
             if (uvttd == null)
             {
                 ViewBag.KoTimThay = "Không có hồ sơ";
                 return RedirectToAction("ListUT", new { id = uvttd.Id_TTD });
             }
+            if (dg != null)
+            {
+                ViewBag.NoiDungDG = dg.NoiDung_DG;
+                ViewBag.DiemDG = dg.MucDoDiem;
+            }
+            ViewBag.isDanhGia = TempData["isDanhGia"];
             return View(uvttd);
 
         }
@@ -890,28 +1201,11 @@ namespace Code_JobSearch.Controllers
         #endregion
 
         #region Danh sách ứng viên ứng tuyển
-        //public ActionResult ListUT(int id, int page = 1, int pageSize = 5)
-        //{
-        //    var uvs = db.UV_TTDs.Where(u => u.Id_TTD == id)
-        //                         .OrderByDescending(u => u.Id_UT)
-        //                         .Skip((page - 1) * pageSize)
-        //                         .Take(pageSize)
-        //                         .ToList();
-
-        //    int totalItems = db.UV_TTDs.Count(u => u.Id_TTD == id);
-        //    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-        //    ViewBag.TotalItems = totalItems;
-        //    ViewBag.Page = page;
-        //    ViewBag.PageSize = pageSize;
-        //    ViewBag.TotalPages = totalPages;
-        //    ViewBag.IdTTD = id;
-        //    return View(uvs);
-        //}
 
         public ActionResult ListUT(int id, string searchStatusUV, int page = 1, int pageSize = 5)
         {
             var query = db.UV_TTDs.Where(o => o.Id_TTD == id);
+
             // Tìm kiếm theo tình trạng ứng tuyển
             if (!string.IsNullOrEmpty(searchStatusUV))
             {

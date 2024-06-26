@@ -226,6 +226,8 @@
     </Compile>
     <Compile Include="Models\CompanyDetailsViewModel.cs" />
     <Compile Include="Models\CvUserModel.cs" />
+    <Compile Include="Models\DanhGia_UV_DiemDG.cs" />
+    <Compile Include="Models\DanhGia_UV_NTD_TTD.cs" />
     <Compile Include="Models\Database.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2091,6 +2093,9 @@
     <Content Include="Views\Doanhnghiep\XemChiTiet.cshtml" />
     <Content Include="Views\Doanhnghiep\Index.cshtml" />
     <Content Include="Views\Doanhnghiep\DangTin.cshtml" />
+    <Content Include="Views\Doanhnghiep\DanhGiaUV.cshtml" />
+    <Content Include="Views\Doanhnghiep\ListDG.cshtml" />
+    <Content Include="Views\Doanhnghiep\ListUV.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

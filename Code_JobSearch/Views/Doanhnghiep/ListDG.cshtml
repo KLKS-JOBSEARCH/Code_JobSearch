@@ -1,0 +1,180 @@
+﻿@model List<Code_JobSearch.Models.DanhGia_UV_NTD_TTD>
+@{
+    ViewBag.Title = "Danh sách đánh giá";
+    Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
+    int totalItems = ViewBag.TotalItems ?? 0;
+    int page = ViewBag.Page ?? 0;
+    int pageSize = ViewBag.PageSize ?? 0;
+    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+    int startItem = (page - 1) * pageSize + 1;
+    int endItem = Math.Min(page * pageSize, totalItems);
+    if (endItem == 0) { endItem = totalItems; }
+    int stt = startItem;
+    int iduv = ViewBag.idUV ?? 0;
+    double tongiem = ViewBag.TongDiem ?? 0;
+    var LinhVucList = ViewBag.LinhVucList;
+    var linhvucselected = ViewBag.SearchLinhVuc ?? "";
+}
+
+<style>
+    .img-thumbnail {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 3px;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    table tr {
+        vertical-align: middle;
+    }
+
+    .table-responsive thead {
+        position: sticky;
+        top: 0;
+        background-color: #fff;
+        z-index: 1;
+    }
+</style>
+<div class="row mb-3">
+    <div class="col-md-4">
+        <span>Tìm kiếm</span>
+        <select class="form-select" id="searchLinhVuc" onchange="search()">
+            <option value="">Lĩnh vực</option>
+            @foreach (var p in LinhVucList)
+            {
+                <option value="@p" @(linhvucselected == p ? "selected" : "")>@p</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="row">
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách đánh giá</h3>
+                <h6 class="card-title">Tổng điểm: @tongiem/5 <i class="bi bi-star-fill" style="color: yellow;"></i></h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped ">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center">STT</th>
+                                <th scope="col" class="text-center">Logo</th>
+                                <th scope="col" class="text-center">Doanh nghiệp</th>
+                                <th scope="col" class="text-center">Tin tuyển dụng</th>
+                                <th scope="col" class="text-center">Lĩnh vực</th>
+                                <th scope="col" class="text-center">Nội dung đánh giá</th>
+                                <th scope="col" class="text-center">Điểm đánh giá</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in Model)
+                            {
+                                <tr>
+                                    <td class="text-center">@stt</td>
+                                    <td class="text-center">
+                                        @if (string.IsNullOrEmpty(p.dn.Logo_DN))
+                                        {
+                                            <img src="~/Content/Logo_DoanhNghiep/basic.png" alt="Logo" class="img-thumbnail" style="width: 100px;">
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Content/Logo_DoanhNghiep/@Html.Raw(p.dn.Logo_DN)" alt="Logo" class="img-thumbnail" style="width: 100px;">
+                                        }
+
+                                    </td>
+                                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="@p.dn.Ten_DN">@p.dn.Ten_DN</td>
+                                    <td class="text-center" title="@p.ttd.TieuDe_TTD">@p.ttd.TieuDe_TTD</td>
+                                    <td class="text-center" title="@p.ttd.LinhVuc">@p.ttd.LinhVuc</td>
+                                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="@p.dg.NoiDung_DG">@p.dg.NoiDung_DG</td>
+                                    <td class="text-center">@p.dg.MucDoDiem/5 <i class="bi bi-star-fill" style="color: yellow;"></i></td>
+                                </tr>
+                                stt++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+                <span>
+                    @if (startItem != endItem)
+                    {
+                        <span>Hiển thị @startItem - @endItem trong tổng số @totalItems</span>
+                    }
+                    else
+                    {
+                        <span>Hiển thị 1 trong tổng số @totalItems</span>
+                    }
+                </span>
+            </div>
+            <div>
+                <span>Số lượng dòng: </span>
+                <select id="pageSize" class="form-select" style="width: auto; display: inline-block;" onchange="changePageSize()">
+                    <option value="5" @(pageSize == 5 ? "selected" : "")>5</option>
+                    <option value="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                    <option value="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                    <option value="40" @(pageSize == 40 ? "selected" : "")>40</option>
+                </select>
+                <nav aria-label="Page navigation example" style="display: inline-block;">
+                    <ul class="pagination mb-0">
+                        <li class="page-item @(page <= 1 ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("ListDG", new { id = iduv,searchLinhVuc=linhvucselected, page = page - 1, pageSize = pageSize })" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(page == i ? "active" : "")"><a class="page-link" href="@Url.Action("ListDG", new { id = iduv,searchLinhVuc=linhvucselected, page = i, pageSize = pageSize })">@i</a></li>
+                        }
+                        <li class="page-item @(page >= totalPages ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("ListDG", new { id = iduv,searchLinhVuc=linhvucselected, page = page + 1, pageSize = pageSize })" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">
+            Không có đánh giá nào.
+        </div>
+    }
+</div>
+
+<script>
+
+    function changePageSize() {
+        var pageSize = document.getElementById("pageSize").value;
+        var url = '/DoanhNghiep/ListDG/@iduv?page=1&pageSize=' + pageSize;
+        window.location.assign(url);
+    }
+    function search() {
+
+        var searchLinhVuc = document.getElementById("searchLinhVuc").value;
+        var url = '@Url.Action("ListDG", new { id = ViewBag.idUV, page = 1, pageSize = ViewBag.PageSize })';
+
+        if (searchLinhVuc !== "") {
+            url += '&searchLinhVuc=' + encodeURIComponent(searchLinhVuc);
+        }
+
+        window.location.href = url;
+    }
+
+</script>
+

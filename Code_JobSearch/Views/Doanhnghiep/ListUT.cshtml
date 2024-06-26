@@ -11,6 +11,7 @@
     if (endItem == 0) { endItem = totalItems; }
     int stt = startItem;
     int idttd = ViewBag.IdTTD;
+    var trangthaiselected = ViewBag.SearchStatusUV ?? "";
 }
 
 <style>
@@ -59,9 +60,9 @@
         <span>Tìm kiếm</span>
         <select class="form-select" id="searchStatusUV" onchange="search()">
             <option value="">Trạng thái xét duyệt</option>
-            <option value="Đang xét duyệt" @(ViewBag.searchStatusUV == "Đang xét duyệt" ? "selected" : "")>Đang xét duyệt</option>
-            <option value="Đậu" @(ViewBag.searchStatusUV == "Đậu" ? "selected" : "")>Đậu</option>
-            <option value="Rớt" @(ViewBag.searchStatusUV == "Rớt" ? "selected" : "")>Rớt</option>
+            <option value="Đang xét duyệt" @(trangthaiselected == "Đang xét duyệt" ? "selected" : "")>Đang xét duyệt</option>
+            <option value="Đậu" @(trangthaiselected == "Đậu" ? "selected" : "")>Đậu</option>
+            <option value="Rớt" @(trangthaiselected == "Rớt" ? "selected" : "")>Rớt</option>
         </select>
     </div>
 </div>
@@ -126,10 +127,10 @@
                                                     <button title="Xem chi tiết" class="btn btn-icon btn-primary me-3" onclick="window.location.href='@Url.Action("XemChiTiet", new { id = uv.Id_UT })'">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    <button title="Nhận ứng viên" class="btn btn-icon btn-primary  me-3" @*onclick="confirmAction_Dau('@Url.Action("UpdateTTUT_Dau", new { id = uv.Id_UT })')"*@ onclick="confirmAndOpenEmailModal(@uv.Id_UT, 'Đậu')">
+                                                    <button title="Nhận ứng viên" class="btn btn-icon btn-primary  me-3" onclick="confirmAndOpenEmailModal(@uv.Id_UT, 'Đậu')">
                                                         <i class="bi bi-check-circle-fill"></i>
                                                     </button>
-                                                    <button title="Không nhận ứng viên" class="btn btn-icon btn-primary  me-3" @*onclick="confirmAction_Rot('@Url.Action("UpdateTTUT_Rot", new { id = uv.Id_UT })')"*@ onclick="confirmAndOpenEmailModal(@uv.Id_UT, 'Rớt')">
+                                                    <button title="Không nhận ứng viên" class="btn btn-icon btn-primary  me-3" onclick="confirmAndOpenEmailModal(@uv.Id_UT, 'Rớt')">
                                                         <i class="bi bi-x-circle-fill"></i>
                                                     </button>
                                                     <button title="Download hồ sơ" class="btn btn-icon btn-primary" onclick="window.location.href='@Url.Action("DownloadFile", new { fileName = uv.File_CV })'">
@@ -174,16 +175,16 @@
                     <nav aria-label="Page navigation example" style="display: inline-block;">
                         <ul class="pagination mb-0">
                             <li class="page-item @(page <= 1 ? "disabled" : "")">
-                                <a class="page-link" href="@Url.Action("ListUT", new { page = page - 1, pageSize = pageSize })" aria-label="Previous">
+                                <a class="page-link" href="@Url.Action("ListUT", new {id = idttd,searchStatusUV=trangthaiselected, page = page - 1, pageSize = pageSize })" aria-label="Previous">
                                     <span aria-hidden="true">«</span>
                                 </a>
                             </li>
                             @for (int i = 1; i <= totalPages; i++)
                             {
-                                <li class="page-item @(page == i ? "active" : "")"><a class="page-link" href="@Url.Action("ListUT",  new {id = idttd, page = i, pageSize = pageSize })">@i</a></li>
+                                <li class="page-item @(page == i ? "active" : "")"><a class="page-link" href="@Url.Action("ListUT",  new {id = idttd, searchStatusUV=trangthaiselected, page = i, pageSize = pageSize })">@i</a></li>
                             }
                             <li class="page-item @(page >= totalPages ? "disabled" : "")">
-                                <a class="page-link" href="@Url.Action("ListUT",  new {id = idttd, page = page + 1, pageSize = pageSize })" aria-label="Next">
+                                <a class="page-link" href="@Url.Action("ListUT",  new {id = idttd, searchStatusUV=trangthaiselected, page = page + 1, pageSize = pageSize })" aria-label="Next">
                                     <span aria-hidden="true">»</span>
                                 </a>
                             </li>

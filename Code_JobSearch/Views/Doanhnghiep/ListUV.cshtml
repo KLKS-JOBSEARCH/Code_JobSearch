@@ -1,0 +1,236 @@
+﻿@model List<Code_JobSearch.Models.UngVien>
+@{
+    ViewBag.Title = "Ứng viên";
+    Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
+    int totalItems = ViewBag.TotalItems;
+    int page = ViewBag.Page;
+    int pageSize = ViewBag.PageSize;
+    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+    int startItem = (page - 1) * pageSize + 1;
+    int endItem = Math.Min(page * pageSize, totalItems);
+    if (endItem == 0) { endItem = totalItems; }
+    int stt = startItem;
+    int idntd = ViewBag.IDNTD;
+    var diemdg = ViewBag.DiemDanhGia as List<double>;
+}
+<style>
+    .img-thumbnail {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 3px;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    table tr {
+        vertical-align: middle;
+    }
+
+    .table-responsive thead {
+        position: sticky;
+        top: 0;
+        background-color: #fff;
+        z-index: 1;
+    }
+</style>
+<h2 class="text-center text-success mb-4">ỨNG VIÊN</h2>
+<br />
+<div class="row">
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách ứng viên</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped ">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center">STT</th>
+                                <th scope="col" class="text-center">Ảnh đại diện</th>
+                                <th scope="col" class="text-center">Họ tên</th>
+                                <th scope="col" class="text-center">Số điện thoại</th>
+                                <th scope="col" class="text-center">Email</th>
+                                <th scope="col" class="text-center">Đánh giá</th>
+                                <th scope="col" class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Count; i++)
+                            {
+                                <tr>
+                                    <td class="text-center">@stt</td>
+                                    <td class="text-center">
+                                        @if (string.IsNullOrEmpty(Model[i].HinhAnhTKUV))
+                                        {
+                                            <img src="~/Image/basic.png" alt="Ảnh đại diện" class="img-thumbnail" style="width: 100px;">
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Image/Khachhang/@Html.Raw(Model[i].HinhAnhTKUV)" alt="Ảnh đại diện" class="img-thumbnail" style="width: 100px;">
+                                        }
+
+                                    </td>
+                                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="@Model[i].HoTen_TKUV">@Model[i].HoTen_TKUV</td>
+                                    <td class="text-center">@Model[i].SoDienThoai_TKUV</td>
+                                    <td class="text-center">@Model[i].Email_TKUV</td>
+                                    <td class="text-center">
+                                        @if (diemdg[i] != -1)
+                                        {
+                                            <span>@diemdg[i]/5 <i class="bi bi-star-fill" style="color: yellow;"></i></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">Chưa có</span>
+                                        }
+                                    </td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <div class="d-flex justify-content-center">
+                                            <button title="Xem chi tiết đánh giá" class="btn btn-icon btn-primary me-3" onclick="window.location.href='@Url.Action("ListDG", new { id = Model[i].Id_UV, page = 1, pageSize = 5 })'">
+                                                <i class="bi bi-eye-fill"></i>
+                                            </button>
+                                            <button title="Gửi lời nhắn" class="btn btn-icon btn-primary" onclick="confirmAndOpenEmailModal(@Model[i].Id_UV,@idntd)">
+                                                <i class="bi bi-envelope-fill"></i>
+                                            </button>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                stt++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+                <span>
+                    @if (startItem != endItem)
+                    {
+                        <span>Hiển thị @startItem - @endItem trong tổng số @totalItems</span>
+                    }
+                    else
+                    {
+                        <span>Hiển thị 1 trong tổng số @totalItems</span>
+                    }
+                </span>
+            </div>
+            <div>
+                <span>Số lượng dòng: </span>
+                <select id="pageSize" class="form-select" style="width: auto; display: inline-block;" onchange="changePageSize()">
+                    <option value="5" @(pageSize == 5 ? "selected" : "")>5</option>
+                    <option value="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                    <option value="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                    <option value="40" @(pageSize == 40 ? "selected" : "")>40</option>
+                </select>
+                <nav aria-label="Page navigation example" style="display: inline-block;">
+                    <ul class="pagination mb-0">
+                        <li class="page-item @(page <= 1 ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("ListUV", new { id = idntd, page = page - 1, pageSize = pageSize })" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(page == i ? "active" : "")"><a class="page-link" href="@Url.Action("ListUV", new { id = idntd, page = i, pageSize = pageSize })">@i</a></li>
+                        }
+                        <li class="page-item @(page >= totalPages ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("ListUV", new { id = idntd, page = page + 1, pageSize = pageSize })" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">
+            Không có ứng viên nào.
+        </div>
+    }
+</div>
+<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">Gửi thông báo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="emailForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="emailSubject" class="form-label">Tiêu đề</label>
+                        <input type="text" class="form-control" id="emailSubject" name="subject" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emailBody" class="form-label">Nội dung</label>
+                        <textarea class="form-control" id="emailBody" name="body" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emailFile" class="form-label">Tệp đính kèm</label>
+                        <input type="file" class="form-control" id="emailFile" name="file">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Gửi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function changePageSize() {
+        var pageSize = document.getElementById("pageSize").value;
+        var url = '/DoanhNghiep/ListUV/@idntd?page=1&pageSize=' + pageSize;
+        window.location.assign(url);
+    }
+    function confirmAndOpenEmailModal(id,idNTD) {
+        if (confirm('Bạn có chắc gửi lời nhắn đến ứng viên này không?')) {
+            openEmailModal(id, idNTD);
+        }
+    }
+    function openEmailModal(id, idNTD) {
+        $('#emailModal').modal('show');
+        $('#emailForm').off('submit').on('submit', function (e) {
+            e.preventDefault();
+            sendEmail(id, idNTD);
+        });
+    }
+    function sendEmail(id, idNTD) {
+        var formData = new FormData($('#emailForm')[0]);
+        formData.append('id', id);
+        formData.append('idNTD', idNTD);
+        $.ajax({
+            url: '@Url.Action("SendEmailDN")',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    alert('Email sent successfully!');
+                    $('#emailModal').modal('hide');
+                    $('#emailForm')[0].reset();
+                    location.reload();
+                } else {
+                    alert('Failed to send email.');
+                }
+            },
+            error: function () {
+                alert('Error occurred while sending email.');
+            }
+            });
+    }
+</script>
+

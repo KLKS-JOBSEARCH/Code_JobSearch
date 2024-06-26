@@ -41,8 +41,13 @@ namespace Code_JobSearch.Areas.Admin.Controllers
                               DanhGia_UV = db.DanhGia_UVs.Where(dg => dg.Id_UV == uv_ttd.Id_UV && dg.Id_TTD == uv_ttd.Id_TTD).ToList()
                           };
 
+            var danhGias = history.SelectMany(h => h.DanhGia_UV).ToList();
+            double averageRating = danhGias.Any() ? danhGias.Average(dg => dg.MucDoDiem ?? 0) : 0;
+            ViewBag.AverageRating = averageRating;
+
             return View(history.ToList());
         }
+
 
     }
 }

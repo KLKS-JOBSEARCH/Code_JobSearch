@@ -1,8 +1,9 @@
 ﻿@model Code_JobSearch.Models.TinTuyenDung
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Thêm mới tin";
     Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
     var danhSachTP = ViewBag.DSThanhPho as List<string>;
+    var danhSachLV = ViewBag.DSLinhVuc as List<string>;
 }
 <style>
     .col-md-10 {
@@ -82,6 +83,19 @@
                 else
                 {
                     <p>Danh sách địa điểm không có hoặc bị rỗng.</p>
+                }
+            </div>
+            <span>Lĩnh vực</span>
+            <div class="col-md-10">
+                @if (danhSachLV != null && danhSachLV.Any())
+                {
+                    <div class="input-group custom-input-group">
+                        @Html.DropDownListFor(model => model.LinhVuc, new SelectList(danhSachLV), new { @class = "form-control" })
+                    </div>
+                }
+                else
+                {
+                    <p>Danh sách lĩnh vực không có hoặc bị rỗng.</p>
                 }
             </div>
             <span>Mô tả</span>

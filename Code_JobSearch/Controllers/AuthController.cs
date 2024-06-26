@@ -282,7 +282,6 @@ namespace Code_JobSearch.Controllers
         #endregion
 
 
-
         #region Auth DoanhNghiep
         [HttpGet]
         public ActionResult DoanhNghiep_Register()
@@ -307,7 +306,7 @@ namespace Code_JobSearch.Controllers
             var sdt = f["SDT"];
             var tp = f["tp"];
             var vtct = f["vtct"];
-
+            var validPrefixes = new List<string> { "09", "03", "07", "08", "05" };
 
             // Lưu trữ dữ liệu đã nhập vào ViewBag để hiển thị lại trong input nếu có lỗi
             ViewBag.HotenKH = hoten;
@@ -407,6 +406,12 @@ namespace Code_JobSearch.Controllers
             if (db.NhaTuyenDungs.Any(t => t.SoDienThoai_NTD == sdt))
             {
                 ViewData["Loisdt"] = "Số điện thoại đã tồn tại.";
+                return View();
+            }
+            // Kiểm tra định dạng số điện thoại
+            if (!validPrefixes.Any(prefix => sdt.StartsWith(prefix)))
+            {
+                ViewData["Loisdt"] = "Số điện thoại không hợp lệ";
                 return View();
             }
             if (sothue.Length != 10 || !sothue.All(char.IsDigit))

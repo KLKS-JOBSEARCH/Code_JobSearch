@@ -1,7 +1,8 @@
 ﻿@model Code_JobSearch.Models.UV_TTD
 @{
-    ViewBag.Title = "XemChiTiet";
+    ViewBag.Title = "Chi tiết ứng viên";
     Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
+    string nddg = ViewBag.NoiDungDG ?? "";
 }
 
 <div class="card">
@@ -13,29 +14,46 @@
         <p class="card-text">Email: @Model.EmailUV_TD</p>
         <p class="card-text">Số điện thoại: @Model.SoDienThoaiUV_TD</p>
         <p class="card-text"> Trạng thái: @Model.TinhTrangUngTuyen </p>
+        @if (string.IsNullOrEmpty(nddg))
+        {
+            <p class="card-text">
+                <a href="@Url.Action("DanhGiaUV", new { idut = Model.Id_UT })" class="btn btn-primary">Đánh giá ứng viên</a>
+            </p>
+        }
+        else
+        {
+            <div class="card-text" style="border: 1px solid black; padding: 10px">
+                <b>Đánh giá ứng viên</b>
+                <p>Điểm đánh giá: @ViewBag.DiemDG/5 <i class="bi bi-star-fill" style="color: yellow;"></i></p>
+                <p>
+                    <label for="nddg">Nội dung đánh giá:</label>
+                    <textarea id="nddg" class="form-control" rows="3" readonly>@nddg</textarea>
+                </p>
+            </div>
+        }
         <p class="card-text">
             <label for="diaChi">Địa chỉ:</label>
-            <textarea id="diaChi" class="form-control" rows="10" readonly>@Model.DiaChiUV</textarea>
+            <textarea id="diaChi" class="form-control" rows="3" readonly>@Model.DiaChiUV</textarea>
         </p>
         <p class="card-text">
             <label for="hocVan">Thông tin học vấn:</label>
-            <textarea id="hocVan" class="form-control" rows="10" readonly>@Model.HocVan</textarea>
+            <textarea id="hocVan" class="form-control" rows="3" readonly>@Model.HocVan</textarea>
         </p>
         <p class="card-text">
             <label for="kyNang">Thông tin kỹ năng:</label>
-            <textarea id="kyNang" class="form-control" rows="10" readonly>@Model.KyNang</textarea>
+            <textarea id="kyNang" class="form-control" rows="3" readonly>@Model.KyNang</textarea>
         </p>
         <p class="card-text">
             <label for="duAn">Thông tin dự án tham gia:</label>
-            <textarea id="duAn" class="form-control" rows="10" readonly>@Model.DuAnThamGia</textarea>
+            <textarea id="duAn" class="form-control" rows="3" readonly>@Model.DuAnThamGia</textarea>
         </p>
         <p class="card-text">
             <label for="moTaBanThan">Thông tin khái quát ứng viên:</label>
-            <textarea id="moTaBanThan" class="form-control" rows="10" readonly>@Model.MoTaBanThan</textarea>
+            <textarea id="moTaBanThan" class="form-control" rows="3" readonly>@Model.MoTaBanThan</textarea>
         </p>
         <p class="card-text">
             <label for="thuGioiThieu">Thư giới thiệu:</label>
-            <textarea id="thuGioiThieu" class="form-control" rows="10" readonly>@Model.NoiDung_ThuGioiThieu</textarea>
+            <textarea id="thuGioiThieu" class="form-control" rows="3" readonly>@Model.NoiDung_ThuGioiThieu</textarea>
         </p>
         <p class="card-text">
             <label for="fileHoSo">File hồ sơ:</label>
@@ -46,7 +64,10 @@
 
 <a href="@Url.Action("ListUT", new {id=Model.Id_TTD})" class="btn btn-primary mt-3">Quay lại danh sách</a>
 <script>
-
+    var isDanhGia = '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.isDanhGia))';
+    if (isDanhGia) {
+        alert(isDanhGia);
+    }
 
 </script>
 

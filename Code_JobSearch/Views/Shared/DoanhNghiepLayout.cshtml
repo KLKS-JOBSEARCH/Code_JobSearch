@@ -31,14 +31,13 @@
     <link href="~/Content/css/style.css" rel="stylesheet">
     <style>
         .navbar-brand .logo {
-            max-height: 180px; /* Đặt chiều cao tối đa cho logo */
+            max-height: 180px;
         }
 
         .sidebar {
-            background-color: #28a745; /* Màu xanh lá cây */
+            background-color: #28a745;
             padding: 1rem;
-            /* Xóa vị trí cố định của sidebar */
-            width: 100%; /* Đặt chiều rộng 100% */
+            width: 100%;
             height: 110vh;
         }
 
@@ -60,14 +59,14 @@
         }
 
             .sidebar .list-group-item:hover {
-                background-color: #218838; /* Màu xanh đậm hơn khi hover */
+                background-color: #218838;
             }
 
         .container-fluid {
-            max-width: 100%; /* Giới hạn chiều rộng tối đa của container */
-            overflow-x: hidden; /* Ẩn phần dư thừa của nội dung khi container bị tràn */
-            padding-right: 15px; /* Đảm bảo khoảng cách bên phải của container */
-            padding-left: 15px; /* Đảm bảo khoảng cách bên trái của container */
+            max-width: 100%;
+            overflow-x: hidden;
+            padding-right: 15px;
+            padding-left: 15px;
         }
 
         .dropdown-menu.dropdown-menu-right {
@@ -135,6 +134,11 @@
                 <li class="nav-item">
                     <a href="@Url.Action("ListTTD","DoanhNghiep", new { id = ntd.Id_NTD,  page = 1, pageSize = 5 })" class="nav-link">
                         <i class="bi bi-card-checklist"></i> Tin tuyển dụng
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("ListUV","DoanhNghiep", new { id = ntd.Id_NTD, page = 1, pageSize = 5 })" class="nav-link">
+                        <i class="bi bi-person-lines-fill"></i> Ứng viên
                     </a>
                 </li>
             </ul>

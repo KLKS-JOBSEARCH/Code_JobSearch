@@ -1,7 +1,8 @@
-﻿
-@{
-    ViewBag.Title = "Góp ý";
+﻿@{
+    ViewBag.Title = "Đánh giá ứng viên";
     Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
+    int IDUT = ViewBag.idut;
+    string nddg = ViewBag.NoiDungDG ?? "";
 }
 
 <style>
@@ -45,43 +46,35 @@
         }
 </style>
 
-<script>
-    function showAlert() {
-        alert("Gửi góp ý thành công!");
-    }
-</script>
-
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="card-title" style="color: green;">Đóng góp gợi ý của bạn tại đây</h2>
-                    @using (Html.BeginForm("GopY", "DoanhNghiep", FormMethod.Post, new { id = "myForm", @class = "needs-validation", novalidate = "true", onsubmit = "showAlert()" }))
+                    <h2 class="card-title" style="color: green;">Đánh giá ứng viên tại đây</h2>
+                    @using (Html.BeginForm("DanhGiaUV", "DoanhNghiep", FormMethod.Post, new { @class = "needs-validation", novalidate = "true" }))
                     {
+                        @Html.Hidden("idut", IDUT) <!-- Hidden field for idut -->
+
                         <div class="mb-3">
                             @Html.ValidationSummary(true)
-                            <h7 class="error-message" style="color: red;">@ViewData["Loi"]</h7>
+                            <h7 class="error-message" style="color: red;">@ViewData["Loi1"]</h7>
                             <br />
-                            <span>Tiêu đề:</span>
-                            <div class="input-group mb-3">
-                                @Html.TextBox("TieuDeGY", ViewData["TieuDeGY"], new { @class = "form-control", type = "text", placeholder = "Góp ý A B C....", required = "required" })
-                            </div>
                             <span>Nội dung:</span>
                             <div class="input-group mb-3">
-                                @Html.TextBox("NoiDungGY", ViewData["NoiDungGY"], new { @class = "form-control", type = "text", placeholder = "Nội dung góp ý...", required = "required" })
+                                @Html.TextArea("NoiDungDG", nddg, new { @class = "form-control", type = "text", placeholder = "Nội dung đánh giá...", required = "required" })
                             </div>
 
                             <h7 class="error-message" style="color: red;">@ViewData["Loi2"]</h7>
                             <div class="input-group mb-3">
-                                <label class="form-label">Mức độ hài lòng:</label>
+                                <label class="form-label">Mức độ đánh giá:</label>
                                 <br />
                                 <div class="rating" style="margin-top:20px">
-                                    <input type="radio" id="star1" name="MucDoHaiLong" value="5" /><label for="star1"></label>
-                                    <input type="radio" id="star2" name="MucDoHaiLong" value="4" /><label for="star2"></label>
-                                    <input type="radio" id="star3" name="MucDoHaiLong" value="3" /><label for="star3"></label>
-                                    <input type="radio" id="star4" name="MucDoHaiLong" value="2" /><label for="star4"></label>
-                                    <input type="radio" id="star5" name="MucDoHaiLong" value="1" /><label for="star5"></label>
+                                    <input type="radio" id="star1" name="MucDoDanhGia" value="5" /><label for="star1"></label>
+                                    <input type="radio" id="star2" name="MucDoDanhGia" value="4" /><label for="star2"></label>
+                                    <input type="radio" id="star3" name="MucDoDanhGia" value="3" /><label for="star3"></label>
+                                    <input type="radio" id="star4" name="MucDoDanhGia" value="2" /><label for="star4"></label>
+                                    <input type="radio" id="star5" name="MucDoDanhGia" value="1" /><label for="star5"></label>
                                 </div>
                             </div>
 
@@ -98,3 +91,9 @@
     </div>
 </div>
 
+<script>
+    var LoiDG = '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.LoiDG))';
+    if (LoiDG) {
+        alert(LoiDG);
+    }
+</script>
