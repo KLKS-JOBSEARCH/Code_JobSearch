@@ -76,7 +76,7 @@ namespace Code_JobSearch.Controllers
                 return HttpNotFound();
             }
 
-            // Lấy danh sách các công việc liên quan
+            // Lấy danh sách các công việc liên quan theo lĩnh vực
             var relatedJobs = GetRelatedJobs(viewModel.TinTuyenDung.LinhVuc, id);
 
             ViewBag.Title = "Thông tin tuyển dụng";
@@ -86,13 +86,12 @@ namespace Code_JobSearch.Controllers
             return View(viewModel);
         }
 
-        private List<TinTuyenDung> GetRelatedJobs(string linhVuc, int excludeId)
+        public List<TinTuyenDung> GetRelatedJobs(string linhVuc, int excludeId)
         {
             return db.TinTuyenDungs
                      .Where(ttd => ttd.LinhVuc == linhVuc && ttd.Id_TTD != excludeId)
                      .ToList();
         }
-
 
 
         #endregion
@@ -360,7 +359,7 @@ namespace Code_JobSearch.Controllers
                     "An toàn lao động","Bán hàng kỹ thuật","Bán lẻ / Bán sỉ", "Báo chí / Truyền hình", "Bảo hiểm", "Bảo trì / Sửa chữa", "Bất động sản",
                     "Biên / Phiên dịch", "Bưu chính - Viễn thông", "Chứng khoáng / Vàng / Ngoại tệ", "Cơ khí / Chế tạo / Tự động hóa", "Công nghệ cao", 
                     "Công nghệ Ô tô", "Công nghệ thông tin", "Dầu khí / Hóa chất", "Dệt may / Giày da","Địa chất / Khoáng sản", "Dịch vụ khách hàng",
-                    "Điện / Điện tử / Điện lạnh","Điện tử viễn thông", "Du lịch", "Dược phẩm / Công nghệ sinh học", "Giáo dục / Đào tạo", "Hành chỉnh / Văn phòng",
+                    "Điện / Điện tử / Điện lạnh","Điện tử viễn thông", "Du lịch", "Dược phẩm / Công nghệ sinh học", "Giáo dục / Đào tạo", "Hành chính / Văn phòng",
                     "Hóa học / Sinh học", "IT phần cứng","IT phần mềm", "Kế toán / Kiểm toán", "Khách sạn / Nhà hàng","Kiến trúc", "Marketing / Truyền thông / Quảng cáo",
                     "Ngành nghề khác","Thiết kế đồ họa / Thiết kế nội thất", "Xuất nhập khẩu", "Y tế / Dược", "Ngành nghề khác"
             };
