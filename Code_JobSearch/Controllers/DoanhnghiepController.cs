@@ -298,7 +298,7 @@ namespace Code_JobSearch.Controllers
                     {
                         // Lấy thông tin người dùng cần chỉnh sửa từ cơ sở dữ liệu
                         DoanhNghiep dns = db.DoanhNghieps.Single(x => x.Id_DN == id);
-
+                        ViewBag.HADN = dns.Logo_DN;
                         // Cập nhật thông tin từ form chỉnh sửa
                         dns.Ten_DN = emp.Ten_DN;
                         dns.MaSoThue_DN = emp.MaSoThue_DN;
@@ -376,6 +376,7 @@ namespace Code_JobSearch.Controllers
         public ActionResult EditNTD(int id)
         {
             NhaTuyenDung emp = db.NhaTuyenDungs.SingleOrDefault(x => x.Id_NTD == id);
+
             // Kiểm tra xem người dùng có tồn tại không
             if (emp == null)
             {
@@ -397,6 +398,8 @@ namespace Code_JobSearch.Controllers
                     {
                         // Lấy thông tin người dùng cần chỉnh sửa từ cơ sở dữ liệu
                         NhaTuyenDung ntds = db.NhaTuyenDungs.Single(x => x.Id_NTD == id);
+                        ViewBag.HA = ntds.HinhAnh_NTD;
+
                         if (string.IsNullOrEmpty(emp.HoTen_NTD))
                         {
                             ViewData["Loi_HoTenNTD"] = "Họ tên không bỏ trống";
@@ -425,6 +428,7 @@ namespace Code_JobSearch.Controllers
                         ntds.ViTriCongTac = emp.ViTriCongTac;
                         ntds.TenTK = emp.TenTK;
 
+
                         // Xử lý upload hình ảnh nếu có
                         if (uploadFile != null && uploadFile.ContentLength > 0)
                         {
@@ -432,6 +436,7 @@ namespace Code_JobSearch.Controllers
                             if (uploadFile.ContentLength <= 1024 * 1024) // 1MB = 1024 * 1024 bytes
                             {
                                 var fileName = Path.GetFileName(uploadFile.FileName);
+
                                 var filePath = Path.Combine(Server.MapPath("~/Image/Khachhang"), fileName);
 
                                 // Xóa hình ảnh cũ nếu tồn tại
@@ -453,8 +458,10 @@ namespace Code_JobSearch.Controllers
                             else
                             {
                                 // Nếu kích thước vượt quá 1MB, xử lý lỗi
+
                                 ModelState.AddModelError("", "Kích thước tệp ảnh phải nhỏ hơn hoặc bằng 1MB.");
                                 return View(emp);
+
                             }
                         }
 
@@ -807,6 +814,8 @@ namespace Code_JobSearch.Controllers
             {
 
                 var query = db.DanhGia_UVs.Where(o => o.Id_UV.Equals(id));
+                ViewBag.UV = db.UngViens.SingleOrDefault(o => o.Id_UV.Equals(id));
+                ViewBag.HSUV = db.HoSoXinViecs.SingleOrDefault(o => o.Id_UV == id);
                 if (query.Count() > 0)
                 {
 

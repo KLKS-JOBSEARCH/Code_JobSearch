@@ -14,6 +14,8 @@
     double tongiem = ViewBag.TongDiem ?? 0;
     var LinhVucList = ViewBag.LinhVucList;
     var linhvucselected = ViewBag.SearchLinhVuc ?? "";
+    var UV = ViewBag.UV as Code_JobSearch.Models.UngVien ?? null;
+    var HSUV = ViewBag.HSUV as Code_JobSearch.Models.HoSoXinViec ?? null;
 }
 
 <style>
@@ -44,6 +46,48 @@
         z-index: 1;
     }
 </style>
+<div class="row mb-3">
+    <div class="card">
+        <div class="card-header">
+            Thông tin ứng viên
+        </div>
+        <div class="card-body">
+            <p class="card-title">Họ tên: @UV.HoTen_TKUV</p>
+            <p class="card-text">Email: @UV.Email_TKUV</p>
+            <p class="card-text">Số điện thoại: @UV.SoDienThoai_TKUV</p>
+            @if (HSUV != null)
+            {
+                <div class="card-text" style="border: 1px solid black; padding: 10px">
+                    <b>Hồ sơ ứng viên</b>
+                    <p class="card-text">
+                        <label for="diaChi">Địa chỉ:</label>
+                        <textarea id="diaChi" class="form-control" rows="2" readonly>@HSUV.DiaChiUV</textarea>
+                    </p>
+                    <p class="card-text">
+                        <label for="hocVan">Thông tin học vấn:</label>
+                        <textarea id="hocVan" class="form-control" rows="2" readonly>@HSUV.HocVan</textarea>
+                    </p>
+                    <p class="card-text">
+                        <label for="kyNang">Thông tin kỹ năng:</label>
+                        <textarea id="kyNang" class="form-control" rows="2" readonly>@HSUV.KyNang</textarea>
+                    </p>
+                    <p class="card-text">
+                        <label for="duAn">Thông tin dự án tham gia:</label>
+                        <textarea id="duAn" class="form-control" rows="2" readonly>@HSUV.DuAnThamGia</textarea>
+                    </p>
+                    <p class="card-text">
+                        <label for="moTaBanThan">Thông tin khái quát ứng viên:</label>
+                        <textarea id="moTaBanThan" class="form-control" rows="2" readonly>@HSUV.MoTaBanThan</textarea>
+                    </p>
+                    <p class="card-text">
+                        <label for="fileHoSo">File hồ sơ:</label>
+                        <a href="@Url.Action("ViewFile", new { fileName = HSUV.File_HSXV })" target="_blank" class="btn btn-primary">Xem hồ sơ</a>
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
 <div class="row mb-3">
     <div class="col-md-4">
         <span>Tìm kiếm</span>

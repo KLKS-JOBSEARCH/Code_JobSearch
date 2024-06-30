@@ -3,6 +3,7 @@
     ViewBag.Title = "Cập nhật nhà tuyển dụng";
     Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
     var danhSachVTCT = ViewBag.DanhSachViTriCT as List<string> ?? new List<string>();
+    var haNTD = ViewBag.HA ?? "";
 }
 
 <h2>Chỉnh sửa thông tin cá nhân</h2>
@@ -69,7 +70,14 @@
             <div class="col-md-6">
                 <div class="mb-3 row justify-content-center">
                     <div class="col-sm-8 text-center">
-                        <img id="previewImage" style="max-width: 160px; margin-bottom: 10px; border-radius: 50%;" src="~/Image/Khachhang/@Html.Raw(Model.HinhAnh_NTD)" alt="...">
+                        @if (string.IsNullOrEmpty(Model.HinhAnh_NTD))
+                        {
+                            <img id="previewImage" style="max-width: 160px; margin-bottom: 10px; border-radius: 50%;" src="~/Image/Khachhang/@Html.Raw(haNTD)" alt="Ảnh đại điện">
+                        }
+                        else
+                        {
+                            <img id="previewImage" style="max-width: 160px; margin-bottom: 10px; border-radius: 50%;" src="~/Image/Khachhang/@Html.Raw(Model.HinhAnh_NTD)" alt="Ảnh đại điện">
+                        }
                         <input type="file" name="uploadFile" id="inputFile" onchange="previewFile()" class="form-control">
                     </div>
                 </div>

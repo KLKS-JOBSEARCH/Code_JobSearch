@@ -3,7 +3,9 @@
     ViewBag.Title = "Cập nhật doanh nghiệp";
     Layout = "~/Views/Shared/DoanhNghiepLayout.cshtml";
     var danhSachTP = ViewBag.DSTP as List<string>;
+    var haDN = ViewBag.HADN ?? "";
 }
+
 
 <h2>Chỉnh sửa thông tin doanh nghiệp</h2>
 
@@ -86,7 +88,15 @@
             <div class="col-md-6">
                 <div class="mb-3 row justify-content-center">
                     <div class="col-sm-8 text-center">
-                        <img id="previewImage" style="max-width: 160px; margin-bottom: 10px; border-radius: 50%;" src="~/Content/Logo_DoanhNghiep/@Html.Raw(Model.Logo_DN)" alt="...">
+                        @if (string.IsNullOrEmpty(Model.Logo_DN))
+                        {
+                            <img id="previewImage" style="max-width: 160px; margin-bottom: 10px; border-radius: 50%;" src="~/Content/Logo_DoanhNghiep/@Html.Raw(haDN)" alt="...">
+                        }
+                        else
+                        {
+                            <img id="previewImage" style="max-width: 160px; margin-bottom: 10px; border-radius: 50%;" src="~/Content/Logo_DoanhNghiep/@Html.Raw(Model.Logo_DN)" alt="...">
+                        }
+
                         <input type="file" name="uploadFile" id="inputFile" onchange="previewFile()" class="form-control">
                     </div>
                 </div>
